@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BiOOH • Admin</title>
+  <link rel="stylesheet" href="../assets/styles.css"/>
+  <style>
+    .wrap{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 64px)}
+    aside{border-right:1px solid var(--line);padding:14px;background:#FAFBFD}
+    main{padding:16px;overflow:auto}
+    .row{display:flex;gap:8px;align-items:center}
+    .inp{border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%}
+    .btn{border:1px solid var(--line);background:var(--panel);padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700}
+    .btn.primary{background:linear-gradient(180deg,#1F6FEB,#0EA5E9);color:#fff;border:0}
+    .list{display:grid;gap:10px;margin-top:12px}
+    .card{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    label{font-size:12px;color:var(--mut)}
+  </style>
+</head>
+<body>
+  <div class="header"><div class="brand"><div class="mark"></div><div class="brandtxt">Admin BiOOH</div></div><div class="row"><input id="api" class="inp" value="http://localhost:4000"/><button class="btn" onclick="load()">Conectar</button></div></div>
+  <div class="wrap">
+    <aside>
+      <h3>Clínica</h3>
+      <input id="clinic" class="inp" value="default"/>
+      <h3 style="margin-top:12px">Ações</h3>
+      <button class="btn" onclick="add('imageText')">+ Slide imagem+texto</button>
+      <button class="btn" onclick="add('video')">+ Slide vídeo</button>
+      <button class="btn" onclick="add('quiz')">+ Slide quiz</button>
+      <button class="btn" onclick="applyTemplate('diabetes')">Usar template: Diabetes</button>
+      <button class="btn" onclick="applyTemplate('colesterol')">Usar template: Colesterol</button>
+      <button class="btn" onclick="applyTemplate('prevencao')">Usar template: Prevenção</button>
+    </aside>
+    <main>
+      <div class="grid">
+        <div class="card">
+          <h3>Branding</h3>
+          <label>Nome</label>
+          <input id="brandName" class="inp"/>
+          <label>QR URL</label>
+          <input id="qrUrl" class="inp" value="https://biooh.link/checkin"/>
+          <label>Ticker (separe por |)</label>
+          <input id="ticker" class="inp" value="Use o QR para check‑in|Anote 3 dúvidas|Hidrate-se"/>
+        </div>
+        <div class="card" style="grid-column:span 2">
+          <h3>Playlist</h3>
+          <div id="items" class="list"></div>
+          <div class="row" style="justify-content:flex-end;margin-top:8px">
+            <button class="btn" onclick="save()">Salvar</button>
+            <button class="btn primary" onclick="publish()">Publicar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="admin.js"></script>
+</body>
+</html>
