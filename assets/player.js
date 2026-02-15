@@ -18,20 +18,20 @@
 
   var params = {};
   if (search) {
-    var pairs = search.split('&'); // ATENÇÃO: '&' normal (NÃO '&amp;')
+    var pairs = search.split('&');
     for (var i = 0; i < pairs.length; i++) {
       if (!pairs[i]) continue;
       var kv = pairs[i].split('=');
       var k = decodeURIComponent(kv[0] || '');
       var raw = (kv[1] || '');
-      raw = raw.split('+').join(' '); // evita /+/g
+      raw = raw.split('+').join(' ');
       var v = decodeURIComponent(raw);
       params[k] = v;
     }
   }
 
   var CLINIC = params.clinic || 'default';
-  var API    = params.api    || '[http://localhost:4000';/]http://localhost:4000';
+  var API = params.api || 'http://localhost:4000';
 
   // ===== Estado =====
   var state = {
@@ -65,7 +65,7 @@
         ];
         var html = '';
         for(var i=0;i<msgs.length;i++){ html += '<span>'+escapeHtml(msgs[i])+'</span>'; }
-        flowEl.innerHTML = html + html; // duplica para rolar continuamente
+        flowEl.innerHTML = html + html;
       }
 
       var screen = $('screen');
@@ -82,7 +82,7 @@
         return;
       }
 
-      nextSlide(); // inicia rotação
+      nextSlide();
     }).catch(function (e) {
       console.error(e);
       var screen = $('screen');
@@ -109,7 +109,6 @@
     s.className = 'slide active';
 
     if (item.type === 'imageText'){
-      // Coluna texto + imagem; QR dentro do slide (opcional)
       var bulletsHtml = '';
       if (Object.prototype.toString.call(item.bullets)==='[object Array]' && item.bullets.length){
         var li = [];
@@ -134,10 +133,9 @@
           '<div class="hero">'+ imgTag(item.image, item.alt) +'</div>'+
         '</div>';
 
-      // Preenche texto do QR dentro do slide
       var qrEl = $qs('#qrurl', s);
       if (qrEl){
-        var urlTxt = (item.qrUrl || state.qrUrl || '').toString().replace(/^https?:///,'');
+        var urlTxt = (item.qrUrl || state.qrUrl || '').toString().replace(/^https?:\/\//,'');
         qrEl.textContent = urlTxt;
       }
     }
@@ -155,7 +153,6 @@
         '</div>';
       var v = $qs('#v', s);
       if (v){
-        // Quando o vídeo terminar, avança
         v.addEventListener('ended', function(){ nextSlide(); });
       }
     }
@@ -176,7 +173,6 @@
       setTimeout(function(){ s.classList.add('revealed'); }, item.revealMs || 6000);
     }
     else {
-      // Tipo desconhecido: não quebra
       s.innerHTML =
         '<div class="center" style="display:grid;place-content:center;height:100%;text-align:center;padding:24px">'+
           '<h2 style="margin:0 0 8px">Conteúdo não suportado</h2>'+
@@ -195,41 +191,3 @@
     state.idx = (state.idx + 1) % state.playlist.length;
     var item = state.playlist[state.idx];
     mountSlide(item);
-
-    // Duração: se 'video', quem avança é o 'ended'; senão usa duração do item ou 16s
-    var dur = (item && item.type === 'video')
-      ? 0
-      : (item && item.duration) ? item.duration : 16000;
-
-    if (dur > 0) {
-      state.timer = setTimeout(nextSlide, dur);
-    }
-
-    // Telemetria best-effort
-    track('slide_impression', { idx: state.idx, id: (item && item.id) || null, type: (item && item.type) || 'unknown' });
-  }
-
-  // ===== Relógio =====
-  function updateClock() {
-    var el = $('clock');
-    if (!el) return;
-    var d = new Date();
-    el.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  // ===== Analytics (não bloqueante) =====
-  function track(evt, payload){
-    try{
-      fetch(API + '/api/analytics', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ clinic: CLINIC, evt: evt, payload: payload, ts: Date.now() })
-      });
-    }catch(_){}
-  }
-
-  // ===== Boot =====
-  window.addEventListener('load', load);
-})();
