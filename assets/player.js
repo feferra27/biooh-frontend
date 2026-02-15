@@ -20,7 +20,7 @@ if (search) {
     if (!pairs[i]) continue;
     var kv = pairs[i].split('=');
     var k = decodeURIComponent(kv[0] || '');
-    var v = decodeURIComponent((kv[1] || '').replace(/+/g, ' '));
+    var v = decodeURIComponent((kv[1] || '').replace(/\+/g, ' '));
     params[k] = v;
   }
 }
