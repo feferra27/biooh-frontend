@@ -18,14 +18,9 @@
   var CLINIC = params.clinic || 'default';
   var API = params.api || 'http://localhost:4000';
 
-  var state = {
-    playlist: [],
-    idx: -1,
-    timer: null,
-    brand: 'BiOOH'
-  };
+  var state = { playlist: [], idx: -1, timer: null, brand: 'BiOOH' };
 
-  // Conteúdo padrão rico
+  // CONTEÚDO PADRÃO COM ILUSTRAÇÕES BONITAS
   var DEFAULT_CONTENT = [
     {
       type: 'imageText',
@@ -37,9 +32,9 @@
         'Anote metas pessoais de saúde'
       ],
       badge: 'Check-in',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=80',
-      fallbackColor: '#EEF6FF',
-      fallbackEmoji: '🏥',
+      // SVG embutido ao invés de imagem externa
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" /><stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" /></linearGradient></defs><circle cx="200" cy="200" r="180" fill="url(#grad1)" opacity="0.1"/><circle cx="200" cy="200" r="120" fill="url(#grad1)" opacity="0.2"/><path d="M200 100 L250 150 L200 200 L150 150 Z" fill="#3B82F6"/><circle cx="200" cy="200" r="40" fill="#60A5FA"/><text x="200" y="340" font-size="48" fill="#1F3A8A" text-anchor="middle" font-weight="bold">🏥</text></svg>',
       duration: 16000
     },
     {
@@ -52,15 +47,14 @@
         'Com cuidados, pode durar 80+ anos saudável'
       ],
       badge: 'Curiosidade',
-      image: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1200&q=80',
-      fallbackColor: '#FEE2E2',
-      fallbackEmoji: '❤️',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="heart-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#EF4444;stop-opacity:1" /><stop offset="100%" style="stop-color:#DC2626;stop-opacity:1" /></linearGradient></defs><circle cx="200" cy="200" r="180" fill="#FEE2E2"/><path d="M200 280 C150 240, 120 200, 120 160 C120 120, 160 100, 200 140 C240 100, 280 120, 280 160 C280 200, 250 240, 200 280 Z" fill="url(#heart-grad)" stroke="#B91C1C" stroke-width="4"/><circle cx="170" cy="150" r="8" fill="#FCA5A5" opacity="0.7"/><text x="200" y="360" font-size="36" fill="#991B1B" text-anchor="middle" font-weight="bold">100.000 batidas/dia</text></svg>',
       duration: 15000
     },
     {
       type: 'imageText',
-      title: '⚠️ Reconheça os sinais de infarto',
-      lead: 'Se sentir esses sintomas, procure atendimento médico IMEDIATAMENTE:',
+      title: '⚠️ Sinais de alerta de infarto',
+      lead: 'Se sentir esses sintomas, procure atendimento IMEDIATAMENTE:',
       bullets: [
         '💔 Dor ou pressão forte no peito',
         '🫁 Falta de ar súbita e intensa',
@@ -68,9 +62,8 @@
         '💦 Suor frio, náusea ou tontura'
       ],
       badge: 'URGENTE - LIGUE 192',
-      image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1200&q=80',
-      fallbackColor: '#FEE2E2',
-      fallbackEmoji: '⚠️',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="alert-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#FCA5A5;stop-opacity:1" /><stop offset="100%" style="stop-color:#FEE2E2;stop-opacity:1" /></linearGradient></defs><rect width="400" height="400" fill="url(#alert-grad)"/><polygon points="200,80 320,320 80,320" fill="#DC2626" opacity="0.9"/><polygon points="200,100 300,300 100,300" fill="#EF4444"/><text x="200" y="220" font-size="120" fill="white" text-anchor="middle" font-weight="bold">!</text><text x="200" y="370" font-size="32" fill="#991B1B" text-anchor="middle" font-weight="bold">LIGUE 192</text></svg>',
       duration: 18000
     },
     {
@@ -84,15 +77,14 @@
         'Exame rápido: apenas 5-10 minutos'
       ],
       badge: 'Exame',
-      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&q=80',
-      fallbackColor: '#DBEAFE',
-      fallbackEmoji: '🧪',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ecg-grad"><stop offset="0%" style="stop-color:#DBEAFE" /><stop offset="100%" style="stop-color:#93C5FD" /></linearGradient></defs><rect width="400" height="400" fill="url(#ecg-grad)"/><path d="M50 200 L100 200 L120 150 L140 250 L160 180 L180 200 L350 200" stroke="#1E40AF" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="200" cy="200" r="60" fill="none" stroke="#3B82F6" stroke-width="4"/><text x="200" y="340" font-size="36" fill="#1E3A8A" text-anchor="middle" font-weight="bold">ECG</text></svg>',
       duration: 15000
     },
     {
       type: 'imageText',
       title: '🏃 Movimente-se diariamente!',
-      lead: 'Caminhar 30 minutos por dia, 5 vezes por semana, reduz em até 30% o risco cardiovascular.',
+      lead: 'Caminhar 30 minutos por dia, 5 vezes por semana, reduz em 30% o risco cardiovascular.',
       bullets: [
         'Comece devagar e aumente gradualmente',
         'Escolha atividades que você goste',
@@ -100,73 +92,68 @@
         'Exercícios leves já fazem grande diferença'
       ],
       badge: 'Prevenção',
-      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1200&q=80',
-      fallbackColor: '#D1FAE5',
-      fallbackEmoji: '🏃',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="run-grad"><stop offset="0%" style="stop-color:#D1FAE5" /><stop offset="100%" style="stop-color:#6EE7B7" /></linearGradient></defs><rect width="400" height="400" fill="url(#run-grad)"/><circle cx="180" cy="120" r="30" fill="#059669"/><path d="M180 150 L180 240 M180 180 L140 200 M180 180 L220 200 M180 240 L150 320 M180 240 L210 320" stroke="#059669" stroke-width="8" stroke-linecap="round"/><text x="200" y="370" font-size="32" fill="#065F46" text-anchor="middle" font-weight="bold">30 min/dia</text></svg>',
       duration: 15000
     },
     {
       type: 'imageText',
       title: '🍽️ Alimentos amigos do coração',
-      lead: 'Inclua esses alimentos no seu dia a dia para proteger seu sistema cardiovascular:',
+      lead: 'Inclua esses alimentos no seu dia a dia:',
       bullets: [
-        '🫐 Frutas vermelhas - Ricos em antioxidantes',
-        '🐟 Peixes (salmão, sardinha) - Ômega-3 anti-inflamatório',
-        '🫒 Azeite de oliva extra virgem - Gorduras saudáveis',
-        '🥜 Nozes, castanhas e amêndoas - Proteção cardíaca'
+        '🫐 Frutas vermelhas - Antioxidantes',
+        '🐟 Peixes (salmão) - Ômega-3',
+        '🫒 Azeite de oliva - Gorduras boas',
+        '🥜 Nozes e castanhas - Proteção'
       ],
       badge: 'Nutrição',
-      image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200&q=80',
-      fallbackColor: '#FEF3C7',
-      fallbackEmoji: '🍽️',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="food-grad"><stop offset="0%" style="stop-color:#FEF3C7" /><stop offset="100%" style="stop-color:#FCD34D" /></linearGradient></defs><rect width="400" height="400" fill="url(#food-grad)"/><circle cx="150" cy="150" r="40" fill="#DC2626"/><circle cx="250" cy="150" r="40" fill="#0EA5E9"/><circle cx="150" cy="250" r="40" fill="#10B981"/><circle cx="250" cy="250" r="40" fill="#F59E0B"/><text x="200" y="350" font-size="28" fill="#92400E" text-anchor="middle" font-weight="bold">Alimentos saudáveis</text></svg>',
       duration: 18000
     },
     {
       type: 'imageText',
-      title: '🛌 A qualidade do seu sono importa',
-      lead: 'Dormir menos de 6 horas por noite aumenta significativamente o risco de hipertensão.',
+      title: '🛌 Qualidade do sono importa',
+      lead: 'Dormir menos de 6 horas aumenta risco de hipertensão.',
       bullets: [
-        'Estabeleça uma rotina regular de sono',
-        'Evite telas pelo menos 1 hora antes de dormir',
-        'Mantenha o quarto escuro, silencioso e fresco',
-        'Evite cafeína depois das 16h'
+        'Estabeleça rotina regular de sono',
+        'Evite telas 1h antes de dormir',
+        'Quarto escuro, silencioso e fresco',
+        'Evite cafeína após 16h'
       ],
       badge: 'Importante',
-      image: 'https://images.unsplash.com/photo-1541480551145-2370a440d585?w=1200&q=80',
-      fallbackColor: '#E0E7FF',
-      fallbackEmoji: '🛌',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sleep-grad"><stop offset="0%" style="stop-color:#E0E7FF" /><stop offset="100%" style="stop-color:#A5B4FC" /></linearGradient></defs><rect width="400" height="400" fill="url(#sleep-grad)"/><circle cx="200" cy="180" r="80" fill="#4F46E5" opacity="0.8"/><path d="M240 160 Q260 180 240 200" fill="#818CF8"/><path d="M260 140 Q280 160 260 180" fill="#818CF8"/><path d="M280 120 Q300 140 280 160" fill="#818CF8"/><text x="200" y="340" font-size="32" fill="#3730A3" text-anchor="middle" font-weight="bold">7-8h por noite</text></svg>',
       duration: 15000
     },
     {
       type: 'imageText',
-      title: '🩺 Ecocardiograma: Ultrassom do coração',
-      lead: 'Exame que avalia válvulas, fluxo sanguíneo e força de bombeamento. Indolor e sem radiação.',
+      title: '🩺 Ecocardiograma',
+      lead: 'Ultrassom do coração. Indolor e sem radiação.',
       bullets: [
-        'Avalia funcionamento das válvulas cardíacas',
-        'Mede a força de bombeamento do coração',
-        'Detecta problemas estruturais precocemente',
-        'Procedimento totalmente seguro e indolor'
+        'Avalia válvulas cardíacas',
+        'Mede força de bombeamento',
+        'Detecta problemas estruturais',
+        'Totalmente seguro e indolor'
       ],
       badge: 'Exame',
-      image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1200&q=80',
-      fallbackColor: '#DBEAFE',
-      fallbackEmoji: '🩺',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#F0F9FF"/><circle cx="200" cy="200" r="100" fill="none" stroke="#0284C7" stroke-width="4"/><circle cx="200" cy="200" r="70" fill="none" stroke="#0EA5E9" stroke-width="3"/><circle cx="200" cy="200" r="40" fill="none" stroke="#38BDF8" stroke-width="2"/><path d="M200 120 L200 280 M120 200 L280 200" stroke="#0284C7" stroke-width="2"/><text x="200" y="350" font-size="30" fill="#075985" text-anchor="middle" font-weight="bold">Ecocardiograma</text></svg>',
       duration: 15000
     },
     {
       type: 'imageText',
-      title: '🧘 Técnica de respiração 4-7-8',
-      lead: 'Estresse constante aumenta a pressão arterial. Pratique esta técnica simples:',
+      title: '🧘 Técnica 4-7-8',
+      lead: 'Respiração para reduzir estresse:',
       bullets: [
-        '4️⃣ Inspire profundamente pelo nariz (4 segundos)',
-        '7️⃣ Segure a respiração com calma (7 segundos)',
-        '8️⃣ Expire completamente pela boca (8 segundos)',
-        '🔄 Repita o ciclo 3-4 vezes quando sentir estresse'
+        '4️⃣ Inspire pelo nariz (4 segundos)',
+        '7️⃣ Segure a respiração (7 segundos)',
+        '8️⃣ Expire pela boca (8 segundos)',
+        '🔄 Repita 3-4 vezes'
       ],
       badge: 'Bem-estar',
-      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80',
-      fallbackColor: '#D1FAE5',
-      fallbackEmoji: '🧘',
+      useSvg: true,
+      svgContent: '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="breath-grad"><stop offset="0%" style="stop-color:#D1FAE5" /><stop offset="100%" style="stop-color:#A7F3D0" /></linearGradient></defs><rect width="400" height="400" fill="url(#breath-grad)"/><circle cx="200" cy="150" r="60" fill="#10B981" opacity="0.3"/><circle cx="200" cy="200" r="60" fill="#10B981" opacity="0.5"/><circle cx="200" cy="250" r="60" fill="#10B981" opacity="0.7"/><text x="200" y="350" font-size="48" fill="#065F46" text-anchor="middle" font-weight="bold">4-7-8</text></svg>',
       duration: 16000
     }
   ];
@@ -185,10 +172,7 @@
   }
 
   function load() {
-    console.log('Carregando playlist...');
-    
     var timeoutId = setTimeout(function() {
-      console.log('Usando conteúdo padrão');
       useDefaultContent();
     }, 5000);
     
@@ -202,20 +186,11 @@
       })
       .then(function(data) {
         clearTimeout(timeoutId);
-        console.log('Dados recebidos:', data);
         
         if (!data || !data.items || !data.items.length) {
-          console.log('Sem items, usando padrão');
           useDefaultContent();
           return;
         }
-        
-        // Adicionar fallback colors aos items do backend
-        data.items = data.items.map(function(item) {
-          if (!item.fallbackColor) item.fallbackColor = '#EEF6FF';
-          if (!item.fallbackEmoji) item.fallbackEmoji = '💙';
-          return item;
-        });
         
         state.playlist = data.items;
         state.brand = (data.brand && data.brand.name) || 'BiOOH';
@@ -227,7 +202,6 @@
         nextSlide();
       })
       .catch(function(e) {
-        console.error('Erro:', e);
         clearTimeout(timeoutId);
         useDefaultContent();
       });
@@ -238,11 +212,7 @@
     state.brand = 'BiOOH';
     
     updateBranding();
-    updateTicker([
-      'Bem-vindo à nossa clínica',
-      'Sua saúde é nossa prioridade',
-      'Estamos aqui para cuidar de você'
-    ]);
+    updateTicker(['Bem-vindo', 'Saúde em primeiro lugar', 'Estamos aqui para você']);
     
     hideLoading();
     showScreen();
@@ -258,9 +228,7 @@
     var flowEl = $('tickerFlow');
     if (!flowEl) return;
     
-    if (!msgs || !msgs.length) {
-      msgs = ['Bem-vindo', 'Saúde em primeiro lugar', 'Cuidado com você'];
-    }
+    if (!msgs || !msgs.length) msgs = ['Bem-vindo', 'Saúde'];
     
     var html = '';
     for(var i=0; i<msgs.length; i++){ 
@@ -275,8 +243,6 @@
     screen.innerHTML = '';
     if (!item) return;
 
-    console.log('Montando:', item.title);
-
     var s = document.createElement('div');
     s.className = 'slide active';
 
@@ -289,30 +255,14 @@
       bulletsHtml = '<ul class="bul">'+li.join('')+'</ul>';
     }
     
-    // Hero com fallback visual bonito
+    // Hero com SVG ou imagem
     var heroContent = '';
-    if (item.image) {
-      var fallbackBg = item.fallbackColor || '#EEF6FF';
-      var fallbackIcon = item.fallbackEmoji || '💙';
-      
-      heroContent = 
-        '<img src="'+escapeHtml(item.image)+'" '+
-        'alt="'+escapeHtml(item.title)+'" '+
-        'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'grid\'" '+
-        'onload="this.parentElement.classList.remove(\'loading\')"'+
-        '>'+
-        '<div class="hero-fallback" style="display:none;background:'+fallbackBg+';grid-template-rows:1fr auto;padding:40px;text-align:center;">'+
-          '<div style="font-size:120px;line-height:1">'+fallbackIcon+'</div>'+
-          '<div style="font-size:18px;font-weight:600;color:#374151;margin-top:20px">'+escapeHtml(item.title)+'</div>'+
-        '</div>';
+    if (item.useSvg && item.svgContent) {
+      heroContent = item.svgContent;
+    } else if (item.image) {
+      heroContent = '<img src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.title)+'" style="width:100%;height:100%;object-fit:cover">';
     } else {
-      var fallbackBg = item.fallbackColor || '#EEF6FF';
-      var fallbackIcon = item.fallbackEmoji || '💙';
-      heroContent = 
-        '<div class="hero-fallback" style="display:grid;background:'+fallbackBg+';grid-template-rows:1fr auto;padding:40px;text-align:center;">'+
-          '<div style="font-size:120px;line-height:1">'+fallbackIcon+'</div>'+
-          '<div style="font-size:18px;font-weight:600;color:#374151;margin-top:20px">'+escapeHtml(item.title)+'</div>'+
-        '</div>';
+      heroContent = '<div style="display:grid;place-content:center;height:100%;font-size:80px">💙</div>';
     }
     
     s.innerHTML =
@@ -323,7 +273,7 @@
           bulletsHtml+
           (item.badge ? '<span class="badge">'+ escapeHtml(item.badge) +'</span>' : '')+
         '</div>'+
-        '<div class="hero loading">'+ heroContent +'</div>'+
+        '<div class="hero">'+ heroContent +'</div>'+
       '</div>';
 
     screen.appendChild(s);
@@ -336,7 +286,6 @@
     state.idx = (state.idx + 1) % state.playlist.length;
     var item = state.playlist[state.idx];
     
-    console.log('Slide', (state.idx + 1), '/', state.playlist.length);
     mountSlide(item);
 
     var dur = item.duration || 15000;
@@ -358,5 +307,3 @@
     load();
   }
 })();
-
-
