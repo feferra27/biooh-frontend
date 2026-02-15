@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BiOOH • Plataforma de Saúde Digital</title>
+  <link rel="stylesheet" href="assets/styles.css"/>
+  <style>
+    .landing-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      background: linear-gradient(135deg, #F7FAFC 0%, #EEF6FF 100%);
+    }
+
+    .brand-hero {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      animation: fadeInDown 0.6s ease;
+    }
+
+    .mark-large {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #60A5FA, #34D399);
+      box-shadow: 0 8px 24px rgba(96, 165, 250, 0.3);
+    }
+
+    .title-main {
+      font-weight: 900;
+      font-size: clamp(36px, 5vw, 56px);
+      letter-spacing: 0.3px;
+      color: #1F3A8A;
+      text-shadow: 0 2px 4px rgba(31, 58, 138, 0.1);
+    }
+
+    .subtitle {
+      max-width: 680px;
+      text-align: center;
+      color: var(--mut);
+      font-size: clamp(16px, 2.5vw, 20px);
+      margin-bottom: 40px;
+      line-height: 1.6;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
+      gap: 24px;
+      max-width: 900px;
+      width: 100%;
+      animation: fadeInUp 0.6s ease 0.4s both;
+    }
+
+    .option-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 32px 28px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #60A5FA, #34D399);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .option-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .option-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(31, 111, 235, 0.15);
+      border-color: rgba(31, 111, 235, 0.3);
+    }
+
+    .card-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1F3A8A;
+      margin-bottom: 8px;
+    }
+
+    .card-description {
+      color: var(--mut);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .card-features {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .card-features li {
+      padding: 8px 0;
+      color: var(--ink);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-features li::before {
+      content: '✓';
+      color: #10B981;
+      font-weight: bold;
+    }
+
+    .card-button {
+      width: 100%;
+      padding: 14px 20px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #1F6FEB, #0EA5E9);
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .card-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(31, 111, 235, 0.3);
+    }
+
+    .card-button:active {
+      transform: translateY(0);
+    }
+
+    .footer-info {
+      margin-top: 48px;
+      text-align: center;
+      color: var(--mut);
+      font-size: 14px;
+      animation: fadeIn 0.6s ease 0.6s both;
+    }
+
+    .footer-info a {
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-info a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .cards-container {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="landing-container">
+    <div class="brand-hero">
+      <div class="mark-large" aria-hidden="true"></div>
+      <div class="title-main">BiOOH</div>
+    </div>
+
+    <div class="subtitle">
+      Plataforma completa de saúde digital para <strong>clínicas</strong> e <strong>profissionais</strong>. 
+      Escolha a experiência ideal para seu ambiente.
+    </div>
+
+    <div class="cards-container">
+      <!-- Card: Consultório -->
+      <div class="option-card" onclick="goToConsultorio()">
+        <span class="card-icon">🩺</span>
+        <h2 class="card-title">Consultório</h2>
+        <p class="card-description">
+          Visualizador 3D interativo para explicar condições médicas aos pacientes durante a consulta.
+        </p>
+        <ul class="card-features">
+          <li>Modelos anatômicos 3D</li>
+          <li>Diabetes, cardiovascular, respiratório</li>
+          <li>Interface profissional</li>
+          <li>Integração BioDigital Human</li>
+        </ul>
+        <button class="card-button">Abrir Consultório</button>
+      </div>
+
+      <!-- Card: Sala de Espera -->
+      <div class="option-card" onclick="goToWaitingRoom()">
+        <span class="card-icon">📺</span>
+        <h2 class="card-title">Sala de Espera</h2>
+        <p class="card-description">
+          Conteúdo educacional rotativo para engajar pacientes enquanto aguardam atendimento.
+        </p>
+        <ul class="card-features">
+          <li>Slides educacionais animados</li>
+          <li>Vídeos e quiz interativos</li>
+          <li>QR code para check-in</li>
+          <li>Gerenciamento via Admin</li>
+        </ul>
+        <button class="card-button">Abrir Sala de Espera</button>
+      </div>
+    </div>
+
+    <div class="footer-info">
+      <p>
+        Precisa configurar conteúdo? 
+        <a href="admin/index.html">Acessar Painel Admin</a>
+      </p>
+      <p style="margin-top: 12px; opacity: 0.7;">
+        BiOOH • Desenvolvido para profissionais de saúde
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function goToConsultorio() {
+      // Adicionar parâmetros da URL se necessário
+      const params = new URLSearchParams(window.location.search);
+      const clinic = params.get('clinic') || 'default';
+      window.location.href = `consultorio.html?clinic=${clinic}`;
+    }
+
+    function goToWaitingRoom() {
+      // Pegar parâmetros da URL atual
+      const params = new URLSearchParams(window.location.search);
+      const clinic = params.get('clinic') || 'default';
+      const api = params.get('api') || 'https://biooh-backend-1.onrender.com';
+      
+      window.location.href = `waiting-room.html?clinic=${clinic}&api=${api}`;
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.key === '1') goToConsultorio();
+      if (e.key === '2') goToWaitingRoom();
+    });
+  </script>
+</body>
+</html>

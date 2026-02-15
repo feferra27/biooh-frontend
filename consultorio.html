@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BiOOH • Consultório — Visualizador 3D</title>
+  <link rel="stylesheet" href="assets/styles.css"/>
+  <style>
+    /* Estilos específicos do consultório */
+    .consultorio-container {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    .sidebar {
+      width: 320px;
+      border-right: 1px solid var(--line);
+      background: #FAFBFD;
+      padding: 14px;
+      overflow-y: auto;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .sidebar h3 {
+      font-size: 14px;
+      color: #1F3A8A;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin: 16px 0 10px;
+    }
+
+    .model-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+
+    .model-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(31, 99, 179, 0.08);
+    }
+
+    .model-card.active {
+      outline: 2px solid rgba(31, 111, 235, 0.4);
+      background: #F3F8FF;
+    }
+
+    .model-card strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .model-card .desc {
+      font-size: 13px;
+      color: var(--mut);
+    }
+
+    .viewer-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .viewer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(6px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .back-btn {
+      background: none;
+      border: 1px solid var(--line);
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--ink);
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: var(--calm);
+      border-color: var(--brand);
+    }
+
+    .viewer-main {
+      flex: 1;
+      position: relative;
+      background: #f9fafb;
+    }
+
+    #biodigital-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: none;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 50;
+    }
+
+    .loading-overlay.hidden {
+      display: none;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid #E5EAF0;
+      border-top-color: #1F6FEB;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      text-align: center;
+      color: var(--mut);
+      font-weight: 600;
+    }
+
+    .controls-panel {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .ctrl-btn {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .ctrl-btn:hover {
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .info-panel {
+      border-top: 1px solid var(--line);
+      background: #fff;
+      padding: 14px 16px;
+      color: var(--mut);
+      line-height: 1.6;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .info-panel.hidden {
+      display: none;
+    }
+
+    .search-box {
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
+    }
+
+    .category {
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .consultorio-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .controls-panel {
+        flex-direction: row;
+        right: auto;
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        top: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="consultorio-container">
+    <!-- Sidebar com lista de modelos -->
+    <aside class="sidebar">
+      <div class="brand" style="margin-bottom: 20px;">
+        <div class="mark"></div>
+        <div class="brandtxt" style="font-size: 18px; font-weight: 900; color: #1F3A8A;">Consultório</div>
+      </div>
+
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Buscar modelos..."
+          oninput="filterModels()"
+        />
+      </div>
+
+      <div id="modelsContainer">
+        <!-- Categoria: Diabetes e Metabolismo -->
+        <div class="category">
+          <h3>🩸 Diabetes & Metabolismo</h3>
+          <div class="model-card active" onclick="loadModel('production/maleAdult/diabetes_mellitus_type_2', this)" data-keywords="diabetes tipo2 insulina glicose">
+            <strong>Diabetes Tipo 2</strong>
+            <div class="desc">Resistência à insulina e metabolismo</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/pancreas', this)" data-keywords="pancreas insulina hormonio">
+            <strong>Pâncreas</strong>
+            <div class="desc">Órgão produtor de insulina</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Sistema Cardiovascular -->
+        <div class="category">
+          <h3>❤️ Cardiovascular</h3>
+          <div class="model-card" onclick="loadModel('cardiovascular_system', this)" data-keywords="coracao circulacao sangue">
+            <strong>Sistema Cardiovascular</strong>
+            <div class="desc">Coração e circulação sanguínea</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/heart', this)" data-keywords="coracao batimento cardiaco">
+            <strong>Coração</strong>
+            <div class="desc">Anatomia cardíaca detalhada</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/hypertension', this)" data-keywords="hipertensao pressao arterial">
+            <strong>Hipertensão</strong>
+            <div class="desc">Pressão arterial elevada</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Sistema Respiratório -->
+        <div class="category">
+          <h3>🫁 Respiratório</h3>
+          <div class="model-card" onclick="loadModel('respiratory_system', this)" data-keywords="pulmao respiracao ar">
+            <strong>Sistema Respiratório</strong>
+            <div class="desc">Pulmões e vias aéreas</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/asthma', this)" data-keywords="asma bronquite">
+            <strong>Asma</strong>
+            <div class="desc">Inflamação das vias aéreas</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Sistema Digestivo -->
+        <div class="category">
+          <h3>🍴 Digestivo</h3>
+          <div class="model-card" onclick="loadModel('digestive_system', this)" data-keywords="estomago intestino digestao">
+            <strong>Sistema Digestivo</strong>
+            <div class="desc">Órgãos da digestão</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/liver', this)" data-keywords="figado hepatico">
+            <strong>Fígado</strong>
+            <div class="desc">Função hepática</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Sistema Esquelético -->
+        <div class="category">
+          <h3>🦴 Esquelético</h3>
+          <div class="model-card" onclick="loadModel('skeletal_system', this)" data-keywords="ossos esqueleto">
+            <strong>Sistema Esquelético</strong>
+            <div class="desc">Estrutura óssea completa</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/osteoarthritis', this)" data-keywords="artrite articulacao">
+            <strong>Osteoartrite</strong>
+            <div class="desc">Desgaste articular</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Sistema Nervoso -->
+        <div class="category">
+          <h3>🧠 Nervoso</h3>
+          <div class="model-card" onclick="loadModel('nervous_system', this)" data-keywords="cerebro nervos">
+            <strong>Sistema Nervoso</strong>
+            <div class="desc">Cérebro e nervos</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/brain', this)" data-keywords="cerebro cortex">
+            <strong>Cérebro</strong>
+            <div class="desc">Anatomia cerebral</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Viewer principal -->
+    <div class="viewer-container">
+      <div class="viewer-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="back-btn" onclick="goBack()">← Voltar</button>
+          <div style="color: var(--mut); font-weight: 600;" id="currentModelName">Diabetes Tipo 2</div>
+        </div>
+        <div style="color: var(--mut); font-size: 14px;">
+          <span id="viewerStatus">🟢 Ativo</span>
+        </div>
+      </div>
+
+      <div class="viewer-main">
+        <div class="loading-overlay" id="loadingOverlay">
+          <div class="spinner"></div>
+          <div class="loading-text">Carregando modelo 3D...</div>
+        </div>
+
+        <iframe 
+          id="biodigital-iframe" 
+          title="BioDigital Human Viewer"
+          allow="fullscreen"
+        ></iframe>
+
+        <div class="controls-panel">
+          <button class="ctrl-btn" onclick="reloadModel()" title="Recarregar modelo">
+            🔄 Recarregar
+          </button>
+          <button class="ctrl-btn" onclick="toggleFullscreen()" title="Tela cheia">
+            ⛶ Tela Cheia
+          </button>
+          <button class="ctrl-btn" onclick="toggleInfo()" title="Informações">
+            ℹ️ Informações
+          </button>
+          <button class="ctrl-btn" onclick="resetCamera()" title="Resetar câmera">
+            📷 Resetar
+          </button>
+        </div>
+      </div>
+
+      <div class="info-panel" id="infoPanel">
+        <div id="modelInfo">
+          🩸 <strong>Diabetes Tipo 2:</strong> Condição crônica que afeta a forma como o corpo processa glicose. 
+          A resistência à insulina e a diminuição da produção pancreática levam a níveis elevados de açúcar no sangue. 
+          O controle glicêmico, alimentação saudável e atividade física são fundamentais para o tratamento.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuração e estado
+    let currentModelId = 'production/maleAdult/diabetes_mellitus_type_2';
+    let currentModelElement = null;
+
+    // Informações dos modelos
+    const modelInfo = {
+      'production/maleAdult/diabetes_mellitus_type_2': {
+        name: 'Diabetes Tipo 2',
+        info: '🩸 <strong>Diabetes Tipo 2:</strong> Condição crônica que afeta a forma como o corpo processa glicose. A resistência à insulina e a diminuição da produção pancreática levam a níveis elevados de açúcar no sangue. O controle glicêmico, alimentação saudável e atividade física são fundamentais para o tratamento.'
+      },
+      'production/maleAdult/pancreas': {
+        name: 'Pâncreas',
+        info: '🫀 <strong>Pâncreas:</strong> Órgão vital que produz insulina e glucagon, hormônios essenciais para regular o açúcar no sangue. Também secreta enzimas digestivas importantes.'
+      },
+      'cardiovascular_system': {
+        name: 'Sistema Cardiovascular',
+        info: '❤️ <strong>Sistema Cardiovascular:</strong> Rede complexa de coração, vasos sanguíneos e sangue que transporta oxigênio e nutrientes por todo o corpo. O coração bombeia cerca de 5 litros de sangue por minuto em repouso.'
+      },
+      'production/maleAdult/heart': {
+        name: 'Coração',
+        info: '❤️ <strong>Coração:</strong> Músculo que bombeia sangue continuamente. Dividido em quatro câmaras (dois átrios e dois ventrículos), trabalha incansavelmente batendo aproximadamente 100.000 vezes por dia.'
+      },
+      'production/maleAdult/hypertension': {
+        name: 'Hipertensão',
+        info: '📈 <strong>Hipertensão:</strong> Pressão arterial elevada que força o coração a trabalhar mais. Pode danificar artérias e aumentar risco de doenças cardíacas, AVC e problemas renais.'
+      },
+      'respiratory_system': {
+        name: 'Sistema Respiratório',
+        info: '🫁 <strong>Sistema Respiratório:</strong> Responsável pela troca de gases, levando oxigênio aos tecidos e removendo dióxido de carbono. Inclui pulmões, brônquios e vias aéreas.'
+      },
+      'production/maleAdult/asthma': {
+        name: 'Asma',
+        info: '🌬️ <strong>Asma:</strong> Inflamação crônica das vias aéreas que causa estreitamento, produção de muco e dificuldade respiratória. Gatilhos incluem alérgenos, exercício e irritantes.'
+      },
+      'digestive_system': {
+        name: 'Sistema Digestivo',
+        info: '🍴 <strong>Sistema Digestivo:</strong> Processa alimentos, extrai nutrientes e elimina resíduos. Inclui boca, esôfago, estômago, intestinos, fígado e pâncreas.'
+      },
+      'production/maleAdult/liver': {
+        name: 'Fígado',
+        info: '🫀 <strong>Fígado:</strong> Maior órgão interno, realiza mais de 500 funções vitais incluindo desintoxicação, produção de bile, armazenamento de nutrientes e metabolismo.'
+      },
+      'skeletal_system': {
+        name: 'Sistema Esquelético',
+        info: '🦴 <strong>Sistema Esquelético:</strong> 206 ossos que fornecem estrutura, protegem órgãos, produzem células sanguíneas e armazenam minerais. Trabalha com músculos para permitir movimento.'
+      },
+      'production/maleAdult/osteoarthritis': {
+        name: 'Osteoartrite',
+        info: '🦴 <strong>Osteoartrite:</strong> Desgaste da cartilagem articular causando dor, rigidez e redução da mobilidade. Mais comum em joelhos, quadris, mãos e coluna.'
+      },
+      'nervous_system': {
+        name: 'Sistema Nervoso',
+        info: '🧠 <strong>Sistema Nervoso:</strong> Rede de controle do corpo, processa informações sensoriais e coordena ações voluntárias e involuntárias. Dividido em central (cérebro e medula) e periférico.'
+      },
+      'production/maleAdult/brain': {
+        name: 'Cérebro',
+        info: '🧠 <strong>Cérebro:</strong> Centro de comando com aproximadamente 86 bilhões de neurônios. Controla pensamento, memória, emoções, movimento e todas as funções corporais.'
+      }
+    };
+
+    // Carregar modelo no iframe
+    function loadModel(modelId, element) {
+      currentModelId = modelId;
+      currentModelElement = element;
+
+      // Atualizar UI
+      document.querySelectorAll('.model-card').forEach(card => card.classList.remove('active'));
+      if (element) element.classList.add('active');
+
+      // Mostrar loading
+      const loading = document.getElementById('loadingOverlay');
+      const iframe = document.getElementById('biodigital-iframe');
+      loading.classList.remove('hidden');
+      iframe.style.display = 'none';
+
+      // Atualizar nome e info
+      const modelData = modelInfo[modelId] || { name: 'Modelo 3D', info: 'Carregando informações...' };
+      document.getElementById('currentModelName').textContent = modelData.name;
+      document.getElementById('modelInfo').innerHTML = modelData.info;
+
+      // Carregar iframe
+      iframe.src = `https://human.biodigital.com/view?id=${modelId}&lang=pt`;
+
+      // Esconder loading quando carregar
+      iframe.onload = function() {
+        setTimeout(() => {
+          loading.classList.add('hidden');
+          iframe.style.display = 'block';
+          document.getElementById('viewerStatus').textContent = '🟢 Ativo';
+        }, 500);
+      };
+
+      iframe.onerror = function() {
+        loading.classList.add('hidden');
+        document.getElementById('viewerStatus').textContent = '🔴 Erro';
+        alert('Erro ao carregar modelo. Verifique sua conexão ou tente outro modelo.');
+      };
+    }
+
+    // Recarregar modelo atual
+    function reloadModel() {
+      if (currentModelElement) {
+        loadModel(currentModelId, currentModelElement);
+      }
+    }
+
+    // Resetar câmera (recarrega o iframe)
+    function resetCamera() {
+      reloadModel();
+    }
+
+    // Toggle fullscreen
+    function toggleFullscreen() {
+      const viewer = document.querySelector('.viewer-main');
+      if (!document.fullscreenElement) {
+        viewer.requestFullscreen().catch(err => {
+          alert('Erro ao entrar em tela cheia: ' + err.message);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Toggle painel de informações
+    function toggleInfo() {
+      const panel = document.getElementById('infoPanel');
+      panel.classList.toggle('hidden');
+    }
+
+    // Filtrar modelos por busca
+    function filterModels() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.model-card');
+
+      cards.forEach(card => {
+        const keywords = card.getAttribute('data-keywords') || '';
+        const text = card.textContent.toLowerCase();
+        const matches = text.includes(search) || keywords.includes(search);
+        card.style.display = matches ? 'block' : 'none';
+      });
+
+      // Esconder categorias vazias
+      document.querySelectorAll('.category').forEach(category => {
+        const visibleCards = category.querySelectorAll('.model-card[style*="display: block"], .model-card:not([style*="display: none"])');
+        category.style.display = visibleCards.length > 0 ? 'block' : 'none';
+      });
+    }
+
+    // Voltar para página anterior
+    function goBack() {
+      // Detectar de onde veio
+      if (document.referrer && document.referrer.includes('waiting-room')) {
+        window.location.href = 'waiting-room.html';
+      } else if (document.referrer && document.referrer.includes('admin')) {
+        window.location.href = 'admin/index.html';
+      } else {
+        // Criar landing page ou voltar para home
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Inicializar no carregamento
+    window.addEventListener('load', function() {
+      // Carregar primeiro modelo
+      const firstCard = document.querySelector('.model-card.active');
+      if (firstCard) {
+        loadModel(currentModelId, firstCard);
+      }
+    });
+  </script>
+</body>
+</html>
