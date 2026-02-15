@@ -13,12 +13,11 @@
 
   var params = {};
   if (search) {
-    var pairs = search.split('&'); // <<< ATENÇÃO: '&' normal (NÃO '&amp;')
+    var pairs = search.split('&');
     for (var i = 0; i < pairs.length; i++) {
       if (!pairs[i]) continue;
       var kv = pairs[i].split('=');
       var k = decodeURIComponent(kv[0] || '');
-      // converte '+' em espaço sem regex (evita /+/g quebrado)
       var raw = (kv[1] || '');
       raw = raw.split('+').join(' ');
       var v = decodeURIComponent(raw);
@@ -27,18 +26,17 @@
   }
 
   var CLINIC = params.clinic || 'default';
-  var API    = params.api    || '[http://localhost:4000';/]http://localhost:4000';
+  var API = params.api || 'http://localhost:4000';
 
   // ===== Estado =====
   var state = { playlist: [], idx: -1, timer: null };
 
-  // ===== Carrega playlist e inicia LOOp =====
+  // ===== Carrega playlist e inicia LOOP =====
   function load() {
     var url = API + '/api/playlist?clinic=' + encodeURIComponent(CLINIC);
     fetch(url).then(function (r) { return r.json(); }).then(function (data) {
       data = data || {};
       state.playlist = (data.items && data.items.length) ? data.items : [];
-
       var screen = $('screen');
       if (!screen) return;
 
@@ -50,8 +48,7 @@
           '</div>';
         return;
       }
-
-      nextSlide(); // inicia rotação
+      nextSlide();
     }).catch(function (e) {
       console.error(e);
       var screen = $('screen');
@@ -82,12 +79,9 @@
   function nextSlide() {
     clearTimeout(state.timer);
     if (!state.playlist.length) return;
-
     state.idx = (state.idx + 1) % state.playlist.length;
     var item = state.playlist[state.idx];
     mountSimple(item);
-
-    // Duração básica (16s por slide). Na Parte B trataremos vídeo/quiz especificamente.
     var dur = (item && item.duration) ? item.duration : 16000;
     state.timer = setTimeout(nextSlide, dur);
   }
