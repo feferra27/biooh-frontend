@@ -7,7 +7,7 @@
       .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
-  // ===== Params (sem regex sensível) =====
+  // ===== Params =====
   var search = (typeof location !== 'undefined' && location.search) ? location.search : '';
   if (search && search.charAt(0) === '?') search = search.slice(1);
 
@@ -18,7 +18,6 @@
       if (!pairs[i]) continue;
       var kv = pairs[i].split('=');
       var k = decodeURIComponent(kv[0] || '');
-      // converte "+" em espaço sem regex para evitar /+/g
       var raw = (kv[1] || '');
       raw = raw.split('+').join(' ');
       var v = decodeURIComponent(raw);
@@ -27,9 +26,9 @@
   }
 
   var CLINIC = params.clinic || 'default';
-  var API    = params.api    || '[http://localhost:4000';/]http://localhost:4000';
+  var API    = params.api    || 'http://localhost:4000';
 
-  // ===== Carregar playlist e mostrar 1º item (versão mínima) =====
+  // ===== Carregar playlist =====
   function load() {
     var url = API + '/api/playlist?clinic=' + encodeURIComponent(CLINIC);
     fetch(url).then(function (r) { return r.json(); }).then(function (data) {
@@ -42,7 +41,7 @@
         screen.innerHTML =
           '<div style="display:grid;place-content:center;height:100%;text-align:center;padding:24px">' +
             '<h2>Sem conteúdo publicado</h2>' +
-            '<p class="lead" style="color:#5B677A">Use o Admin (Template: Diabetes) e recarregue.</p>' +
+            '<p class="lead" style="color:#5B677A">Use o Admin e recarregue.</p>' +
           '</div>';
         return;
       }
@@ -62,13 +61,13 @@
         screen.innerHTML =
           '<div style="display:grid;place-content:center;height:100%;text-align:center;padding:24px">' +
             '<h2>Erro ao carregar</h2>' +
-            '<p class="lead" style="color:#5B677A">Verifique a URL do backend e recarregue.</p>' +
+            '<p class="lead" style="color:#5B677A">Verifique a URL do backend.</p>' +
           '</div>';
       }
     });
   }
 
-  // ===== Relógio (opcional) =====
+  // ===== Relógio =====
   function updateClock() {
     var el = $('clock');
     if (!el) return;
