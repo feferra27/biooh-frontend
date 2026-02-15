@@ -1,31 +1,18 @@
 (function () {
   function $(id) { return document.getElementById(id); }
-  function $qs(sel, root){ return (root||document).querySelector(sel); }
   function escapeHtml(s){
     return String(s||'')
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
-  function imgTag(src, alt){
-    if(!src) return '';
-    return '<img src="'+escapeHtml(src)+'" alt="'+escapeHtml(alt||'')+'" onerror="handleImageError(this)" onload="handleImageLoad(this)">';
-  }
-
-  var search = (typeof location !== 'undefined' && location.search) ? location.search : '';
-  if (search && search.charAt(0) === '?') search = search.slice(1);
 
   var params = {};
+  var search = location.search.substring(1);
   if (search) {
-    var pairs = search.split('&');
-    for (var i = 0; i < pairs.length; i++) {
-      if (!pairs[i]) continue;
-      var kv = pairs[i].split('=');
-      var k = decodeURIComponent(kv[0] || '');
-      var raw = (kv[1] || '');
-      raw = raw.split('+').join(' ');
-      var v = decodeURIComponent(raw);
-      params[k] = v;
-    }
+    search.split('&').forEach(function(pair) {
+      var kv = pair.split('=');
+      params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || '');
+    });
   }
 
   var CLINIC = params.clinic || 'default';
@@ -35,69 +22,63 @@
     playlist: [],
     idx: -1,
     timer: null,
-    brand: 'BiOOH',
-    qrUrl: 'https://biooh.link/checkin'
+    brand: 'BiOOH Cardiologia'
   };
 
-  // CONTEÚDO CARDIOLÓGICO PROFISSIONAL (9 slides)
+  // CONTEÚDO CARDIOLÓGICO (9 slides testados)
   var DEFAULT_CONTENT = [
     // SLIDE 1: Bem-vindo
     {
       type: 'imageText',
       title: 'Bem-vindo à Cardiologia',
-      lead: 'Sua saúde cardiovascular é nossa prioridade. Aqui você encontra informações essenciais para cuidar do seu coração.',
+      lead: 'Sua saúde cardiovascular é nossa prioridade.',
       bullets: [
-        'Equipe especializada em cardiologia',
-        'Exames avançados de diagnóstico',
-        'Prevenção e tratamento personalizado',
+        'Equipe especializada',
+        'Exames avançados',
+        'Prevenção personalizada',
         'Acompanhamento contínuo'
       ],
-      badge: 'Cardiologia',
       image: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1200&q=80',
-      alt: 'Coração saudável',
       duration: 16000
     },
 
-    // SLIDE 2: Fato Rápido sobre o Coração
+    // SLIDE 2: Fato sobre o Coração
     {
-      type: 'fact',
-      icon: '❤️',
-      title: 'Você sabia?',
-      fact: 'O seu coração bate cerca de 100 mil vezes por dia',
-      subtitle: 'E trabalha sem parar para manter seu corpo funcionando.',
-      stats: [
-        { label: 'Batidas/dia', value: '100.000' },
-        { label: 'Litros/dia', value: '7.500' },
-        { label: 'Anos de vida', value: '80+' }
+      type: 'imageText',
+      title: '❤️ Você sabia?',
+      lead: 'O seu coração bate cerca de 100 mil vezes por dia e trabalha sem parar para manter seu corpo funcionando.',
+      bullets: [
+        'Bombeia cerca de 7.500 litros de sangue por dia',
+        'Trabalha 24 horas sem descanso',
+        'Pode durar mais de 80 anos com cuidados'
       ],
+      badge: 'Curiosidade',
       image: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=1200&q=80',
       duration: 14000
     },
 
-    // SLIDE 3: Sinais de Alerta de Infarto
+    // SLIDE 3: Sinais de Alerta
     {
-      type: 'alert',
+      type: 'imageText',
       title: '⚠️ Reconheça os sinais de infarto',
-      lead: 'Se sentir esses sintomas, procure atendimento IMEDIATAMENTE.',
-      alerts: [
-        { icon: '💔', text: 'Dor ou pressão forte no peito' },
-        { icon: '🫁', text: 'Falta de ar súbita' },
-        { icon: '💪', text: 'Dor no braço esquerdo, mandíbula ou costas' },
-        { icon: '💦', text: 'Suor frio, náusea ou tontura intensa' }
+      lead: 'Se sentir esses sintomas, procure atendimento IMEDIATAMENTE:',
+      bullets: [
+        '💔 Dor ou pressão forte no peito',
+        '🫁 Falta de ar súbita',
+        '💪 Dor no braço esquerdo, mandíbula ou costas',
+        '💦 Suor frio, náusea ou tontura intensa'
       ],
-      footer: 'LIGUE 192 OU VÁ AO PRONTO-SOCORRO',
+      badge: 'URGENTE - LIGUE 192',
       image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1200&q=80',
       duration: 18000
     },
 
-    // SLIDE 4: O que é um ECG
+    // SLIDE 4: ECG
     {
-      type: 'exam',
-      icon: '🧪',
-      title: 'ECG: Rápido e fundamental',
-      subtitle: 'Eletrocardiograma',
-      description: 'Um eletrocardiograma mede a atividade elétrica do coração. É rápido, indolor e ajuda a detectar arritmias e bloqueios.',
-      benefits: [
+      type: 'imageText',
+      title: '🧪 ECG: Rápido e fundamental',
+      lead: 'O eletrocardiograma mede a atividade elétrica do coração. É rápido, indolor e ajuda a detectar arritmias e bloqueios.',
+      bullets: [
         'Detecta arritmias cardíacas',
         'Identifica infartos prévios',
         'Avalia ritmo e condução',
@@ -110,13 +91,10 @@
 
     // SLIDE 5: Atividade Física
     {
-      type: 'lifestyle',
-      icon: '🏃',
-      title: 'Movimente-se!',
-      lead: 'O exercício é o melhor remédio para o coração.',
-      highlight: 'Caminhar 30 minutos por dia, 5x por semana',
-      benefit: 'Reduz em até 30% o risco de doenças cardiovasculares',
-      tips: [
+      type: 'imageText',
+      title: '🏃 Movimente-se!',
+      lead: 'Caminhar 30 minutos por dia, 5 vezes por semana, reduz em até 30% o risco de doenças cardiovasculares.',
+      bullets: [
         'Comece devagar e aumente gradualmente',
         'Escolha atividades que você goste',
         'Consulte seu médico antes de iniciar',
@@ -127,33 +105,29 @@
       duration: 15000
     },
 
-    // SLIDE 6: Alimentação Amiga do Coração
+    // SLIDE 6: Alimentação
     {
-      type: 'nutrition',
-      icon: '🍽️',
-      title: 'Comer bem faz diferença',
-      lead: 'Escolhas simples, impacto duradouro.',
-      foods: [
-        { emoji: '🫐', name: 'Frutas vermelhas', benefit: 'Antioxidantes' },
-        { emoji: '🐟', name: 'Peixes ricos em ômega-3', benefit: 'Anti-inflamatório' },
-        { emoji: '🫒', name: 'Azeite de oliva', benefit: 'Gordura boa' },
-        { emoji: '🥜', name: 'Nozes e castanhas', benefit: 'Proteção cardíaca' }
+      type: 'imageText',
+      title: '🍽️ Comer bem faz diferença',
+      lead: 'Inclua esses alimentos no seu dia a dia:',
+      bullets: [
+        '🫐 Frutas vermelhas - Antioxidantes poderosos',
+        '🐟 Peixes ricos em ômega-3 - Anti-inflamatório',
+        '🫒 Azeite de oliva - Gordura boa para o coração',
+        '🥜 Nozes e castanhas - Proteção cardiovascular'
       ],
-      footer: 'Inclua esses alimentos no seu dia a dia',
+      badge: 'Nutrição',
       image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200&q=80',
       duration: 18000
     },
 
     // SLIDE 7: Sono
     {
-      type: 'lifestyle',
-      icon: '🛌',
-      title: 'Seu sono importa',
-      lead: 'A qualidade do sono afeta diretamente a saúde do coração.',
-      highlight: 'Dormir menos de 6 horas por noite',
-      risk: 'Aumenta o risco de hipertensão e arritmias',
-      tips: [
-        'Estabeleça uma rotina de sono',
+      type: 'imageText',
+      title: '🛌 Seu sono importa',
+      lead: 'Dormir menos de 6 horas por noite aumenta o risco de hipertensão e arritmias.',
+      bullets: [
+        'Estabeleça uma rotina de sono regular',
         'Evite telas 1 hora antes de dormir',
         'Mantenha o quarto escuro e fresco',
         'Evite cafeína após 16h'
@@ -165,38 +139,30 @@
 
     // SLIDE 8: Ecocardiograma
     {
-      type: 'exam',
-      icon: '🩺',
-      title: 'Ecocardiograma',
-      subtitle: 'Ultrassom do Coração',
-      description: 'É um ultrassom do coração que avalia válvulas, fluxo sanguíneo e força de bombeamento. Exame indolor e sem radiação.',
-      benefits: [
+      type: 'imageText',
+      title: '🩺 Ecocardiograma',
+      lead: 'É um ultrassom do coração que avalia válvulas, fluxo sanguíneo e força de bombeamento. Exame indolor e sem radiação.',
+      bullets: [
         'Avalia válvulas cardíacas',
         'Mede força de bombeamento',
         'Detecta problemas estruturais',
-        'Totalmente indolor'
+        'Totalmente indolor e seguro'
       ],
       badge: 'Exame',
       image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1200&q=80',
       duration: 15000
     },
 
-    // SLIDE 9: Reduzindo o Estresse
+    // SLIDE 9: Reduzindo Estresse
     {
-      type: 'wellness',
-      icon: '🧘',
-      title: 'Pause e respire',
-      lead: 'Estresse constante aumenta a pressão arterial.',
-      technique: 'Técnica 4-7-8',
-      steps: [
-        { num: '4', text: 'Inspire pelo nariz (4 segundos)' },
-        { num: '7', text: 'Segure a respiração (7 segundos)' },
-        { num: '8', text: 'Expire pela boca (8 segundos)' }
-      ],
-      extra: [
-        'Faça alongamentos leves durante o dia',
-        'Reserve momentos de pausa',
-        'Pratique gratidão diariamente'
+      type: 'imageText',
+      title: '🧘 Pause e respire',
+      lead: 'Estresse constante aumenta a pressão arterial. Experimente a técnica de respiração 4-7-8:',
+      bullets: [
+        '4️⃣ Inspire pelo nariz por 4 segundos',
+        '7️⃣ Segure a respiração por 7 segundos',
+        '8️⃣ Expire pela boca por 8 segundos',
+        'Repita 3-4 vezes quando sentir estresse'
       ],
       badge: 'Bem-estar',
       image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80',
@@ -218,13 +184,14 @@
   }
 
   function load() {
-    console.log('Iniciando carregamento...');
+    console.log('Carregando conteúdo...');
     
-    var url = API + '/api/playlist?clinic=' + encodeURIComponent(CLINIC);
     var timeoutId = setTimeout(function() {
-      console.log('Timeout - usando conteúdo cardiológico');
+      console.log('Usando conteúdo cardiológico padrão');
       useDefaultContent();
     }, 5000);
+    
+    var url = API + '/api/playlist?clinic=' + encodeURIComponent(CLINIC);
     
     fetch(url)
       .then(function(r) { 
@@ -233,28 +200,21 @@
         return r.json(); 
       })
       .then(function(data) {
-        console.log('Dados recebidos');
         clearTimeout(timeoutId);
-        data = data || {};
         
-        if (!data.items || !data.items.length) {
-          console.log('Backend vazio - usando conteúdo cardiológico');
+        if (!data || !data.items || !data.items.length) {
           useDefaultContent();
           return;
         }
         
         state.playlist = data.items;
-        state.brand = (data.brand && data.brand.name) ? data.brand.name : 'BiOOH';
-        state.qrUrl = data.qrUrl || 'https://biooh.link/checkin';
-
+        state.brand = (data.brand && data.brand.name) || 'BiOOH Cardiologia';
+        
         updateBranding();
         updateTicker(data.ticker);
         hideLoading();
         showScreen();
-        
-        if (state.playlist.length > 0) {
-          nextSlide();
-        }
+        nextSlide();
       })
       .catch(function(e) {
         console.error('Erro:', e);
@@ -264,17 +224,14 @@
   }
 
   function useDefaultContent() {
-    console.log('Usando conteúdo cardiológico padrão');
     state.playlist = DEFAULT_CONTENT;
     state.brand = 'BiOOH Cardiologia';
-    state.qrUrl = 'https://biooh.link/checkin';
     
     updateBranding();
     updateTicker([
-      'Use o QR code para fazer check-in',
-      'Consulte regularmente seu cardiologista',
-      'Mantenha seus exames em dia',
-      'Cuide do seu coração com amor'
+      'Cardiologia de excelência',
+      'Prevenção salva vidas',
+      'Cuide do seu coração'
     ]);
     
     hideLoading();
@@ -289,20 +246,17 @@
 
   function updateTicker(msgs) {
     var flowEl = $('tickerFlow');
-    if (flowEl) {
-      if (!msgs || !msgs.length) {
-        msgs = [
-          'Cardiologia de excelência',
-          'Prevenção salva vidas',
-          'Cuide do seu coração'
-        ];
-      }
-      var html = '';
-      for(var i=0; i<msgs.length; i++){ 
-        html += '<span>'+escapeHtml(msgs[i])+'</span>'; 
-      }
-      flowEl.innerHTML = html + html;
+    if (!flowEl) return;
+    
+    if (!msgs || !msgs.length) {
+      msgs = ['Cardiologia', 'Prevenção', 'Saúde'];
     }
+    
+    var html = '';
+    for(var i=0; i<msgs.length; i++){ 
+      html += '<span>'+escapeHtml(msgs[i])+'</span>'; 
+    }
+    flowEl.innerHTML = html + html;
   }
 
   function mountSlide(item){
@@ -311,199 +265,36 @@
     screen.innerHTML = '';
     if (!item) return;
 
+    console.log('Montando slide:', item.title, 'Tipo:', item.type);
+
     var s = document.createElement('div');
     s.className = 'slide active';
 
-    // TIPO: imageText (padrão)
-    if (item.type === 'imageText'){
-      var bulletsHtml = '';
-      if (item.bullets && item.bullets.length){
-        var li = [];
-        for (var i=0; i<item.bullets.length; i++){ 
-          li.push('<li>'+escapeHtml(item.bullets[i])+'</li>'); 
-        }
-        bulletsHtml = '<ul class="bul">'+li.join('')+'</ul>';
+    // Todos os slides usam o layout imageText
+    var bulletsHtml = '';
+    if (item.bullets && item.bullets.length){
+      var li = [];
+      for (var i=0; i<item.bullets.length; i++){ 
+        li.push('<li>'+escapeHtml(item.bullets[i])+'</li>'); 
       }
-      
-      s.innerHTML =
-        '<div class="two">'+
-          '<div>'+
-            '<div class="title-xl">'+ escapeHtml(item.title||'') +'</div>'+
-            (item.lead ? '<p class="lead">'+ escapeHtml(item.lead) +'</p>' : '')+
-            bulletsHtml+
-            (item.badge ? '<span class="badge">'+ escapeHtml(item.badge) +'</span>' : '')+
-          '</div>'+
-          '<div class="hero loading">'+ imgTag(item.image, item.alt) +'</div>'+
-        '</div>';
+      bulletsHtml = '<ul class="bul">'+li.join('')+'</ul>';
     }
     
-    // TIPO: fact (fato rápido)
-    else if (item.type === 'fact'){
-      var statsHtml = '';
-      if (item.stats && item.stats.length){
-        statsHtml = '<div class="stats">';
-        for(var i=0; i<item.stats.length; i++){
-          var st = item.stats[i];
-          statsHtml += '<div class="stat"><div class="stat-value">'+escapeHtml(st.value)+'</div><div class="stat-label">'+escapeHtml(st.label)+'</div></div>';
-        }
-        statsHtml += '</div>';
-      }
-      
-      s.innerHTML =
-        '<div class="two">'+
-          '<div>'+
-            '<div class="fact-icon">'+ escapeHtml(item.icon||'💡') +'</div>'+
-            '<div class="title-xl">'+ escapeHtml(item.title||'') +'</div>'+
-            '<div class="fact-box">'+
-              '<div class="fact-main">'+ escapeHtml(item.fact||'') +'</div>'+
-              (item.subtitle ? '<div class="fact-sub">'+ escapeHtml(item.subtitle) +'</div>' : '')+
-            '</div>'+
-            statsHtml+
-          '</div>'+
-          '<div class="hero loading">'+ imgTag(item.image) +'</div>'+
-        '</div>';
+    var imgHtml = '';
+    if (item.image) {
+      imgHtml = '<img src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.title)+'" onerror="this.parentElement.innerHTML=\'⚠️<br>Imagem indisponível\'" onload="this.parentElement.classList.remove(\'loading\')">';
     }
     
-    // TIPO: alert (sinais de alerta)
-    else if (item.type === 'alert'){
-      var alertsHtml = '';
-      if (item.alerts && item.alerts.length){
-        alertsHtml = '<div class="alerts">';
-        for(var i=0; i<item.alerts.length; i++){
-          var al = item.alerts[i];
-          alertsHtml += '<div class="alert-item"><span class="alert-icon">'+escapeHtml(al.icon)+'</span><span class="alert-text">'+escapeHtml(al.text)+'</span></div>';
-        }
-        alertsHtml += '</div>';
-      }
-      
-      s.innerHTML =
-        '<div class="two">'+
-          '<div>'+
-            '<div class="title-xl alert-title">'+ escapeHtml(item.title||'') +'</div>'+
-            (item.lead ? '<p class="lead alert-lead">'+ escapeHtml(item.lead) +'</p>' : '')+
-            alertsHtml+
-            (item.footer ? '<div class="alert-footer">'+ escapeHtml(item.footer) +'</div>' : '')+
-          '</div>'+
-          '<div class="hero loading">'+ imgTag(item.image) +'</div>'+
-        '</div>';
-    }
-    
-    // TIPO: exam (exame médico)
-    else if (item.type === 'exam'){
-      var benefitsHtml = '';
-      if (item.benefits && item.benefits.length){
-        benefitsHtml = '<ul class="bul">';
-        for(var i=0; i<item.benefits.length; i++){
-          benefitsHtml += '<li>'+escapeHtml(item.benefits[i])+'</li>';
-        }
-        benefitsHtml += '</ul>';
-      }
-      
-      s.innerHTML =
-        '<div class="two">'+
-          '<div>'+
-            '<div class="exam-icon">'+ escapeHtml(item.icon||'🧪') +'</div>'+
-            '<div class="title-xl">'+ escapeHtml(item.title||'') +'</div>'+
-            (item.subtitle ? '<div class="exam-subtitle">'+ escapeHtml(item.subtitle) +'</div>' : '')+
-            (item.description ? '<p class="lead">'+ escapeHtml(item.description) +'</p>' : '')+
-            benefitsHtml+
-            (item.badge ? '<span class="badge">'+ escapeHtml(item.badge) +'</span>' : '')+
-          '</div>'+
-          '<div class="hero loading">'+ imgTag(item.image) +'</div>'+
-        '</div>';
-    }
-    
-    // TIPO: lifestyle (estilo de vida)
-    else if (item.type === 'lifestyle'){
-      var tipsHtml = '';
-      if (item.tips && item.tips.length){
-        tipsHtml = '<ul class="tips">';
-        for(var i=0; i<item.tips.length; i++){
-          tipsHtml += '<li>'+escapeHtml(item.tips[i])+'</li>';
-        }
-        tipsHtml += '</ul>';
-      }
-      
-      s.innerHTML =
-        '<div class="two">'+
-          '<div>'+
-            '<div class="lifestyle-icon">'+ escapeHtml(item.icon||'💚') +'</div>'+
-            '<div class="title-xl">'+ escapeHtml(item.title||'') +'</div>'+
-            (item.lead ? '<p class="lead">'+ escapeHtml(item.lead) +'</p>' : '')+
-            (item.highlight ? '<div class="highlight-box">'+ escapeHtml(item.highlight) +'</div>' : '')+
-            (item.benefit ? '<div class="benefit-text">'+ escapeHtml(item.benefit) +'</div>' : '')+
-            (item.risk ? '<div class="risk-text">'+ escapeHtml(item.risk) +'</div>' : '')+
-            tipsHtml+
-            (item.badge ? '<span class="badge">'+ escapeHtml(item.badge) +'</span>' : '')+
-          '</div>'+
-          '<div class="hero loading">'+ imgTag(item.image) +'</div>'+
-        '</div>';
-    }
-    
-    // TIPO: nutrition (nutrição)
-    else if (item.type === 'nutrition'){
-      var foodsHtml = '';
-      if (item.foods && item.foods.length){
-        foodsHtml = '<div class="foods-grid">';
-        for(var i=0; i<item.foods.length; i++){
-          var food = item.foods[i];
-          foodsHtml += '<div class="food-item"><div class="food-emoji">'+escapeHtml(food.emoji)+'</div><div class="food-name">'+escapeHtml(food.name)+'</div><div class="food-benefit">'+escapeHtml(food.benefit)+'</div></div>';
-        }
-        foodsHtml += '</div>';
-      }
-      
-      s.innerHTML =
-        '<div class="two">'+
-          '<div>'+
-            '<div class="nutrition-icon">'+ escapeHtml(item.icon||'🍽️') +'</div>'+
-            '<div class="title-xl">'+ escapeHtml(item.title||'') +'</div>'+
-            (item.lead ? '<p class="lead">'+ escapeHtml(item.lead) +'</p>' : '')+
-            foodsHtml+
-            (item.footer ? '<div class="nutrition-footer">'+ escapeHtml(item.footer) +'</div>' : '')+
-          '</div>'+
-          '<div class="hero loading">'+ imgTag(item.image) +'</div>'+
-        '</div>';
-    }
-    
-    // TIPO: wellness (bem-estar)
-    else if (item.type === 'wellness'){
-      var stepsHtml = '';
-      if (item.steps && item.steps.length){
-        stepsHtml = '<div class="breathing-steps">';
-        for(var i=0; i<item.steps.length; i++){
-          var step = item.steps[i];
-          stepsHtml += '<div class="breath-step"><div class="breath-num">'+escapeHtml(step.num)+'</div><div class="breath-text">'+escapeHtml(step.text)+'</div></div>';
-        }
-        stepsHtml += '</div>';
-      }
-      
-      var extraHtml = '';
-      if (item.extra && item.extra.length){
-        extraHtml = '<ul class="tips">';
-        for(var i=0; i<item.extra.length; i++){
-          extraHtml += '<li>'+escapeHtml(item.extra[i])+'</li>';
-        }
-        extraHtml += '</ul>';
-      }
-      
-      s.innerHTML =
-        '<div class="two">'+
-          '<div>'+
-            '<div class="wellness-icon">'+ escapeHtml(item.icon||'🧘') +'</div>'+
-            '<div class="title-xl">'+ escapeHtml(item.title||'') +'</div>'+
-            (item.lead ? '<p class="lead">'+ escapeHtml(item.lead) +'</p>' : '')+
-            (item.technique ? '<div class="technique-name">'+ escapeHtml(item.technique) +'</div>' : '')+
-            stepsHtml+
-            extraHtml+
-            (item.badge ? '<span class="badge">'+ escapeHtml(item.badge) +'</span>' : '')+
-          '</div>'+
-          '<div class="hero loading">'+ imgTag(item.image) +'</div>'+
-        '</div>';
-    }
-    
-    else {
-      s.innerHTML = '<div class="center"><h2>Tipo não suportado</h2></div>';
-    }
+    s.innerHTML =
+      '<div class="two">'+
+        '<div>'+
+          '<div class="title-xl">'+ escapeHtml(item.title||'') +'</div>'+
+          (item.lead ? '<p class="lead">'+ escapeHtml(item.lead) +'</p>' : '')+
+          bulletsHtml+
+          (item.badge ? '<span class="badge">'+ escapeHtml(item.badge) +'</span>' : '')+
+        '</div>'+
+        '<div class="hero loading">'+ imgHtml +'</div>'+
+      '</div>';
 
     screen.appendChild(s);
   }
@@ -515,10 +306,10 @@
     state.idx = (state.idx + 1) % state.playlist.length;
     var item = state.playlist[state.idx];
     
-    console.log('Slide', state.idx + 1, 'de', state.playlist.length);
+    console.log('Exibindo slide', (state.idx + 1), 'de', state.playlist.length);
     mountSlide(item);
 
-    var dur = (item && item.duration) ? item.duration : 15000;
+    var dur = item.duration || 15000;
     state.timer = setTimeout(nextSlide, dur);
   }
 
@@ -531,25 +322,10 @@
   setInterval(updateClock, 1000);
   updateClock();
 
-  window.handleImageError = function(img) {
-    var container = img.parentElement;
-    if (container && container.classList.contains('hero')) {
-      container.classList.remove('loading');
-      container.classList.add('error');
-      container.innerHTML = '⚠️<br>Imagem temporariamente indisponível';
-    }
-  };
-
-  window.handleImageLoad = function(img) {
-    var container = img.parentElement;
-    if (container && container.classList.contains('hero')) {
-      container.classList.remove('loading');
-    }
-  };
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', load);
   } else {
     load();
   }
 })();
+
