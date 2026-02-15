@@ -8,20 +8,24 @@ function escapeHtml(s){ return String(s||'')
   .replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 // ===== Params =====
-var params = (function(){
-  var r = {};
-  var s = (location.search||'').replace(/^?/,'').split('&');
-  for(var i=0;i<s.length;i++){
-    if(!s[i]) continue;
-    var kv = s[i].split('=');
-    r[decodeURIComponent(kv[0])] = decodeURIComponent((kv[1]||'').replace(/+/g,' '));
+
+var search = (typeof location !== 'undefined' && location.search) ? location.search : '';
+if (search && search.charAt(0) === '?') search = search.slice(1);
+
+var params = {};
+if (search) {
+  var pairs = search.split('&');
+  for (var i = 0; i < pairs.length; i++) {
+    if (!pairs[i]) continue;
+    var kv = pairs[i].split('=');
+    var k = decodeURIComponent(kv[0] || '');
+    var v = decodeURIComponent((kv[1] || '').replace(/\+/g, ' '));
+    params[k] = v;
   }
-  return r;
-})();
+}
 
 var CLINIC = params.clinic || 'default';
 var API    = params.api    || '[http://localhost:4000';/]http://localhost:4000';
-
 // ===== State =====
 var state = {
   playlist: [],
