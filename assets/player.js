@@ -8,7 +8,7 @@
   }
   function imgTag(src, alt){
     if(!src) return '';
-    return '<img src="'+escapeHtml(src)+'" alt="'+escapeHtml(alt||'')+'">';
+    return '<img src="'+escapeHtml(src)+'" alt="'+escapeHtml(alt||'')+'" onerror="handleImageError(this)" onload="handleImageLoad(this)">';
   }
 
   var search = (typeof location !== 'undefined' && location.search) ? location.search : '';
@@ -39,57 +39,220 @@
     qrUrl: 'https' + String.fromCharCode(58) + '//biooh.link/checkin'
   };
 
+  // Conteúdo padrão de fallback com imagens que funcionam
+  var DEFAULT_CONTENT = {
+    brand: { name: 'BiOOH' },
+    qrUrl: 'https://biooh.link/checkin',
+    ticker: [
+      'Use o QR code para fazer check-in digital',
+      'Mantenha seus dados cadastrais atualizados',
+      'Anote suas dúvidas para a consulta',
+      'Hidrate-se regularmente',
+      'Pratique exercícios físicos diariamente'
+    ],
+    items: [
+      {
+        type: 'imageText',
+        title: 'Bem-vindo à nossa clínica',
+        lead: 'Estamos felizes em cuidar da sua saúde com excelência e dedicação.',
+        bullets: [
+          'Equipe altamente qualificada',
+          'Tecnologia de ponta',
+          'Atendimento humanizado',
+          'Ambiente acolhedor'
+        ],
+        image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&q=80',
+        alt: 'Equipe médica sorrindo',
+        duration: 18000
+      },
+      {
+        type: 'imageText',
+        title: 'Diabetes: conheça os sinais',
+        lead: 'O diagnóstico precoce faz toda a diferença no tratamento.',
+        bullets: [
+          'Sede excessiva e boca seca',
+          'Fome frequente mesmo após comer',
+          'Cansaço e fadiga constante',
+          'Visão embaçada',
+          'Vontade frequente de urinar'
+        ],
+        badge: 'Prevenção',
+        image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1200&q=80',
+        alt: 'Medição de glicose',
+        duration: 20000
+      },
+      {
+        type: 'imageText',
+        title: 'Saúde cardiovascular',
+        lead: 'Cuide do seu coração com hábitos saudáveis e acompanhamento médico.',
+        bullets: [
+          'Pratique 150 minutos de exercícios por semana',
+          'Reduza o consumo de sal e gorduras',
+          'Controle o estresse',
+          'Durma bem (7-8 horas por noite)',
+          'Faça check-ups regulares'
+        ],
+        badge: 'Importante',
+        image: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1200&q=80',
+        alt: 'Coração saudável',
+        duration: 20000
+      },
+      {
+        type: 'quiz',
+        question: 'A diabetes tipo 2 sempre apresenta sintomas no início?',
+        options: ['Sim, sempre', 'Não, pode ser silenciosa'],
+        answer: 'Não, pode ser silenciosa',
+        explain: 'Muitos casos de diabetes tipo 2 são assintomáticos no início, por isso exames preventivos são essenciais.',
+        image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1200&q=80',
+        duration: 20000,
+        revealMs: 8000
+      },
+      {
+        type: 'imageText',
+        title: 'Alimentação equilibrada',
+        lead: 'Uma dieta balanceada é fundamental para uma vida saudável.',
+        bullets: [
+          'Coma mais frutas e vegetais',
+          'Prefira grãos integrais',
+          'Inclua proteínas magras',
+          'Beba pelo menos 2 litros de água',
+          'Evite ultraprocessados'
+        ],
+        image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200&q=80',
+        alt: 'Alimentos saudáveis',
+        duration: 18000
+      },
+      {
+        type: 'imageText',
+        title: 'Exames preventivos salvam vidas',
+        lead: 'Mantenha seus exames em dia e previna doenças graves.',
+        bullets: [
+          'Hemograma completo (anual)',
+          'Glicemia e colesterol (anual)',
+          'Pressão arterial (trimestral)',
+          'Mamografia (mulheres 40+)',
+          'Colonoscopia (50+)'
+        ],
+        badge: 'Prevenção',
+        image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1200&q=80',
+        alt: 'Exame médico',
+        duration: 20000
+      },
+      {
+        type: 'imageText',
+        title: 'Saúde mental importa',
+        lead: 'Cuide da sua mente tanto quanto cuida do seu corpo.',
+        bullets: [
+          'Pratique mindfulness ou meditação',
+          'Mantenha conexões sociais',
+          'Procure ajuda profissional quando necessário',
+          'Reserve tempo para hobbies',
+          'Estabeleça limites saudáveis'
+        ],
+        image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80',
+        alt: 'Pessoa meditando',
+        duration: 18000
+      },
+      {
+        type: 'quiz',
+        question: 'Quantos minutos de exercício por semana são recomendados?',
+        options: ['30 minutos', '150 minutos', '300 minutos'],
+        answer: '150 minutos',
+        explain: 'A OMS recomenda pelo menos 150 minutos de atividade física moderada por semana para adultos.',
+        image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80',
+        duration: 20000,
+        revealMs: 8000
+      }
+    ]
+  };
+
   function load() {
+    var initialLoading = $('initialLoading');
+    if (initialLoading) initialLoading.style.display = 'grid';
+
     var url = API + '/api/playlist?clinic=' + encodeURIComponent(CLINIC);
-    fetch(url).then(function (r) { return r.json(); }).then(function (data) {
-      data = data || {};
-      state.playlist = (data.items && data.items.length) ? data.items : [];
-      state.brand = (data.brand && data.brand.name) ? data.brand.name : 'BiOOH';
-      state.qrUrl = data.qrUrl || 'https' + String.fromCharCode(58) + '//biooh.link/checkin';
+    
+    fetch(url)
+      .then(function(r) { 
+        if (!r.ok) throw new Error('Backend error');
+        return r.json(); 
+      })
+      .then(function(data) {
+        data = data || {};
+        
+        // Se não houver items no backend, usar conteúdo padrão
+        if (!data.items || !data.items.length) {
+          console.log('Usando conteúdo padrão (backend vazio)');
+          data = DEFAULT_CONTENT;
+        }
+        
+        state.playlist = data.items || [];
+        state.brand = (data.brand && data.brand.name) ? data.brand.name : 'BiOOH';
+        state.qrUrl = data.qrUrl || 'https://biooh.link/checkin';
 
-      var brandEl = $('brandName');
-      if (brandEl) brandEl.textContent = state.brand;
+        var brandEl = $('brandName');
+        if (brandEl) brandEl.textContent = state.brand;
 
-      var flowEl = $('tickerFlow');
-      if (flowEl){
-        var msgs = (data.ticker && data.ticker.length) ? data.ticker : [
-          'Use o QR para check-in e atualizar seus dados.',
-          'Anote 3 duvidas para sua consulta.',
-          'Hidrate-se com pequenos goles.'
-        ];
-        var html = '';
-        for(var i=0;i<msgs.length;i++){ html += '<span>'+escapeHtml(msgs[i])+'</span>'; }
-        flowEl.innerHTML = html + html;
-      }
+        var flowEl = $('tickerFlow');
+        if (flowEl){
+          var msgs = (data.ticker && data.ticker.length) ? data.ticker : DEFAULT_CONTENT.ticker;
+          var html = '';
+          for(var i=0;i<msgs.length;i++){ 
+            html += '<span>'+escapeHtml(msgs[i])+'</span>'; 
+          }
+          flowEl.innerHTML = html + html;
+        }
 
-      var screen = $('screen');
-      if (!screen) return;
+        var screen = $('screen');
+        if (!screen) return;
+        
+        if (initialLoading) initialLoading.style.display = 'none';
 
-      if (!state.playlist.length) {
-        screen.innerHTML =
-          '<div class="center" style="display:grid;place-content:center;height:100%;text-align:center;padding:24px">' +
-            '<h2 style="margin:0 0 8px">Sem conteudo publicado</h2>' +
-            '<p class="lead" style="max-width:720px;margin:0 auto;color:#5B677A">' +
-              'Use o Admin (Template: Diabetes) e recarregue.' +
-            '</p>' +
-          '</div>';
-        return;
-      }
+        if (!state.playlist.length) {
+          showEmptyState(screen);
+          return;
+        }
 
-      nextSlide();
-    }).catch(function (e) {
-      console.error(e);
-      var screen = $('screen');
-      if (screen) {
-        screen.innerHTML =
-          '<div class="center" style="display:grid;place-content:center;height:100%;text-align:center;padding:24px">' +
-            '<h2 style="margin:0 0 8px">Erro ao carregar</h2>' +
-            '<p class="lead" style="max-width:720px;margin:0 auto;color:#5B677A">' +
-              'Verifique a URL do backend e recarregue.' +
-            '</p>' +
-          '</div>';
-      }
-    });
+        nextSlide();
+      })
+      .catch(function(e) {
+        console.error('Erro ao carregar do backend:', e);
+        console.log('Usando conteúdo padrão (erro de conexão)');
+        
+        // Usar conteúdo padrão em caso de erro
+        state.playlist = DEFAULT_CONTENT.items;
+        state.brand = DEFAULT_CONTENT.brand.name;
+        state.qrUrl = DEFAULT_CONTENT.qrUrl;
+        
+        var brandEl = $('brandName');
+        if (brandEl) brandEl.textContent = state.brand;
+        
+        var flowEl = $('tickerFlow');
+        if (flowEl){
+          var html = '';
+          for(var i=0;i<DEFAULT_CONTENT.ticker.length;i++){ 
+            html += '<span>'+escapeHtml(DEFAULT_CONTENT.ticker[i])+'</span>'; 
+          }
+          flowEl.innerHTML = html + html;
+        }
+        
+        var initialLoading = $('initialLoading');
+        if (initialLoading) initialLoading.style.display = 'none';
+        
+        var screen = $('screen');
+        if (screen && state.playlist.length) {
+          nextSlide();
+        }
+      });
+  }
+
+  function showEmptyState(screen) {
+    screen.innerHTML =
+      '<div class="empty-state">' +
+        '<h2>Nenhum conteúdo disponível</h2>' +
+        '<p>Ainda não há slides configurados para esta clínica. Use o painel Admin para adicionar conteúdo educacional.</p>' +
+        '<a href="admin/index.html" class="cta-btn">Ir para o Admin</a>' +
+      '</div>';
   }
 
   function mountSlide(item){
@@ -105,9 +268,12 @@
       var bulletsHtml = '';
       if (Object.prototype.toString.call(item.bullets)==='[object Array]' && item.bullets.length){
         var li = [];
-        for (var i=0;i<item.bullets.length;i++){ li.push('<li>'+escapeHtml(item.bullets[i])+'</li>'); }
+        for (var i=0;i<item.bullets.length;i++){ 
+          li.push('<li>'+escapeHtml(item.bullets[i])+'</li>'); 
+        }
         bulletsHtml = '<ul class="bul">'+li.join('')+'</ul>';
       }
+      
       s.innerHTML =
         '<div class="two">'+
           '<div>'+
@@ -116,14 +282,14 @@
             bulletsHtml+
             (item.badge ? '<span class="badge">'+ escapeHtml(item.badge) +'</span>' : '')+
             ((item.qr !== false) ? (
-              '<div class="qrbox" style="margin-top:12px">'+
-                '<div style="font-weight:700">Aponte a camera para abrir</div>'+
+              '<div class="qrbox" style="margin-top:16px">'+
+                '<div style="font-weight:700;font-size:14px;margin-bottom:8px">📱 Aponte a câmera para fazer check-in</div>'+
                 '<div class="qrgrid" aria-hidden="true">'+ new Array(36+1).join('<span></span>') +'</div>'+
                 '<div class="qrurl" id="qrurl"></div>'+
               '</div>'
             ) : '')+
           '</div>'+
-          '<div class="hero">'+ imgTag(item.image, item.alt) +'</div>'+
+          '<div class="hero loading" id="heroContainer">'+ imgTag(item.image, item.alt) +'</div>'+
         '</div>';
 
       var qrEl = $qs('#qrurl', s);
@@ -146,7 +312,7 @@
               ? '<ul class="bul">'+ item.bullets.map(function(b){return '<li>'+escapeHtml(b)+'</li>';}).join('') +'</ul>' : ''
             )+
           '</div>'+
-          '<div class="hero"><video id="v" autoplay muted playsinline src="'+ escapeHtml(item.src||'') +'"></video></div>'+
+          '<div class="hero"><video id="v" autoplay muted playsinline src="'+ escapeHtml(item.src||'') +'" onerror="handleVideoError(this)"></video></div>'+
         '</div>';
       var v = $qs('#v', s);
       if (v){
@@ -159,21 +325,27 @@
         '<div class="slide quiz">'+
           '<div class="two">'+
             '<div>'+
-              '<span class="badge">Quiz</span>'+
-              '<div class="title-xl" style="margin-top:8px">'+ escapeHtml(item.question||'') +'</div>'+
-              '<div class="options">'+ opts +'</div>'+
-              '<div class="reveal">Resposta: <strong>'+ escapeHtml(item.answer||'') +'</strong>. '+ escapeHtml(item.explain||'') +'</div>'+
+              '<span class="badge" style="background:#E8F8EF;color:#0F7A47">Quiz</span>'+
+              '<div class="title-xl" style="margin-top:12px">'+ escapeHtml(item.question||'') +'</div>'+
+              '<div class="options" style="margin-top:16px">'+ opts +'</div>'+
+              '<div class="reveal" style="margin-top:16px;padding:16px;background:#F0FDF4;border-radius:12px;display:none">'+
+                '<strong style="color:#0F7A47">✓ Resposta: '+ escapeHtml(item.answer||'') +'</strong><br>'+
+                '<span style="color:#374151;margin-top:8px;display:block">'+ escapeHtml(item.explain||'') +'</span>'+
+              '</div>'+
             '</div>'+
-            '<div class="hero">'+ imgTag(item.image) +'</div>'+
+            '<div class="hero loading" id="heroContainer">'+ imgTag(item.image) +'</div>'+
           '</div>'+
         '</div>';
-      setTimeout(function(){ s.classList.add('revealed'); }, item.revealMs || 6000);
+      setTimeout(function(){ 
+        var reveal = s.querySelector('.reveal');
+        if (reveal) reveal.style.display = 'block';
+      }, item.revealMs || 8000);
     }
     else {
       s.innerHTML =
-        '<div class="center" style="display:grid;place-content:center;height:100%;text-align:center;padding:24px">'+
-          '<h2 style="margin:0 0 8px">Conteudo nao suportado</h2>'+
-          '<p class="lead" style="max-width:720px;margin:0 auto;color:#5B677A">Tipo: <code>'+ escapeHtml(String(item.type)) +'</code></p>'+
+        '<div class="center">'+
+          '<h2 style="margin:0 0 12px">Conteúdo não suportado</h2>'+
+          '<p class="lead" style="max-width:720px;margin:0 auto;color:#5B677A">Tipo: <code style="background:#F3F4F6;padding:4px 8px;border-radius:4px">'+ escapeHtml(String(item.type)) +'</code></p>'+
         '</div>';
     }
 
@@ -188,13 +360,17 @@
     var item = state.playlist[state.idx];
     mountSlide(item);
 
-    var dur = (item && item.type === 'video') ? 0 : (item && item.duration) ? item.duration : 16000;
+    var dur = (item && item.type === 'video') ? 0 : (item && item.duration) ? item.duration : 18000;
 
     if (dur > 0) {
       state.timer = setTimeout(nextSlide, dur);
     }
 
-    track('slide_impression', { idx: state.idx, id: (item && item.id) || null, type: (item && item.type) || 'unknown' });
+    track('slide_impression', { 
+      idx: state.idx, 
+      id: (item && item.id) || null, 
+      type: (item && item.type) || 'unknown' 
+    });
   }
 
   function updateClock() {
@@ -211,10 +387,44 @@
       fetch(API + '/api/analytics', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ clinic: CLINIC, evt: evt, payload: payload, ts: Date.now() })
-      });
+        body: JSON.stringify({ 
+          clinic: CLINIC, 
+          evt: evt, 
+          payload: payload, 
+          ts: Date.now() 
+        })
+      }).catch(function(){});
     }catch(_){}
   }
+
+  // Tratamento de erro de imagem
+  window.handleImageError = function(img) {
+    var container = img.parentElement;
+    if (container && container.classList.contains('hero')) {
+      container.classList.remove('loading');
+      container.classList.add('error');
+      container.innerHTML = '⚠️<br>Imagem não disponível<br><small style="opacity:0.7">Verifique a URL</small>';
+    }
+  };
+
+  window.handleImageLoad = function(img) {
+    var container = img.parentElement;
+    if (container && container.classList.contains('hero')) {
+      container.classList.remove('loading');
+    }
+  };
+
+  window.handleVideoError = function(video) {
+    var container = video.parentElement;
+    if (container) {
+      container.classList.add('error');
+      container.innerHTML = '⚠️<br>Vídeo não disponível<br><small style="opacity:0.7">Verifique a URL</small>';
+    }
+  };
+
+  window.addEventListener('load', load);
+})();
+
 
   window.addEventListener('load', load);
 })();
