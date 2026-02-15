@@ -3,12 +3,13 @@
 // ===== Helpers =====
 function $(q, root){ return (root||document).querySelector(q); }
 function $all(q, root){ return Array.prototype.slice.call((root||document).querySelectorAll(q)); }
-function escapeHtml(s){ return String(s||'')
-  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-  .replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function escapeHtml(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 
-// ===== Params =====
-
+// ===== Params (sem regex sensível) =====
 var search = (typeof location !== 'undefined' && location.search) ? location.search : '';
 if (search && search.charAt(0) === '?') search = search.slice(1);
 
@@ -19,13 +20,14 @@ if (search) {
     if (!pairs[i]) continue;
     var kv = pairs[i].split('=');
     var k = decodeURIComponent(kv[0] || '');
-    var v = decodeURIComponent((kv[1] || '').replace(/\+/g, ' '));
+    var v = decodeURIComponent((kv[1] || '').replace(/+/g, ' '));
     params[k] = v;
   }
 }
 
 var CLINIC = params.clinic || 'default';
 var API    = params.api    || '[http://localhost:4000';/]http://localhost:4000';
+
 // ===== State =====
 var state = {
   playlist: [],
