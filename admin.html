@@ -82,6 +82,7 @@
 
     /* ══ APP SHELL ════════════════════════════════════════════════════════ */
     #app { display: flex; flex-direction: column; height: 100%; }
+    #app.app-hidden { display: none !important; }
 
     /* HEADER */
     .header {
@@ -454,7 +455,7 @@
 </div>
 
 <!-- ══ APP ════════════════════════════════════════════════════════════════ -->
-<div id="app" style="display:none">
+<div id="app" class="app-hidden">
 
   <!-- HEADER -->
   <div class="header">
@@ -611,10 +612,7 @@ function doLogin(){
   var p = document.getElementById('loginPass').value;
   if(p === ADMIN_PASS){
     document.getElementById('loginScreen').classList.add('hidden');
-    var app = document.getElementById('app');
-    app.style.display = 'flex';
-    app.style.flexDirection = 'column';
-    app.style.height = '100%';
+    document.getElementById('app').classList.remove('app-hidden');
     loadPlaylist();
   } else {
     document.getElementById('loginErr').textContent = 'Senha incorreta. Tente novamente.';
@@ -625,7 +623,9 @@ function doLogin(){
 
 function doLogout(){
   document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('app').style.display = 'none';
+  document.getElementById('app').classList.add('app-hidden');
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').textContent = '';
 }
 
 // ─── LOAD PLAYLIST ───────────────────────────────────────────────────────────
