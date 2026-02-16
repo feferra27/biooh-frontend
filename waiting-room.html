@@ -5,300 +5,535 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>BiOOH • Sala de Espera</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     :root {
-      --red: #C8102E;
-      --red-light: #FFF0F2;
-      --ink: #111827;
-      --muted: #6B7280;
-      --border: #E5E7EB;
-      --footer-h: 96px;
-      --header-h: 64px;
+      --red:      #C8102E;
+      --ink:      #111827;
+      --muted:    #6B7280;
+      --border:   #E5E7EB;
+      --fh:       88px;   /* footer height */
+      --hh:       64px;   /* header height */
     }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; background: #fff; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; color: var(--ink); }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; overflow: hidden; }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: #fff;
-      color: var(--ink);
-    }
-
-    /* ── HEADER ── */
-    .header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--header-h);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* ════ HEADER ════ */
+    header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--hh);
+      display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      z-index: 200;
+      background: #fff; border-bottom: 1px solid var(--border);
+      z-index: 300;
     }
-
     .back-btn {
-      background: #fff;
-      border: 1px solid var(--border);
-      padding: 8px 18px;
-      border-radius: 8px;
-      color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
+      border: 1px solid var(--border); background: #fff;
+      padding: 7px 16px; border-radius: 8px;
+      font: 600 13px/1 'DM Sans', sans-serif; color: var(--ink);
+      cursor: pointer; transition: background .15s;
     }
     .back-btn:hover { background: #F9FAFB; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .mark  { width: 32px; height: 32px; border-radius: 7px; background: var(--red); }
+    .brandtxt { font-weight: 700; font-size: 17px; letter-spacing: -.3px; }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .mark {
-      width: 34px; height: 34px;
-      border-radius: 8px;
-      background: var(--red);
-    }
-    .brandtxt {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 18px;
-      color: var(--ink);
-      letter-spacing: -0.3px;
-    }
-
-    /* ── SCREEN AREA ── */
-    .screen {
+    /* ════ STAGE ════ */
+    #stage {
       position: fixed;
-      top: var(--header-h);
-      left: 0; right: 0;
-      bottom: var(--footer-h);
-      display: none;
+      top: var(--hh); bottom: var(--fh); left: 0; right: 0;
       overflow: hidden;
+      background: #fff;
     }
-    .screen.ready { display: block; }
 
-    /* Loading */
-    .loading-indicator {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+    /* ════ SPINNER ════ */
+    #spinner {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
       text-align: center;
     }
-    .loading-spinner {
-      width: 44px; height: 44px;
-      border: 3px solid var(--border);
-      border-top-color: var(--red);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 14px;
+    .spin-ring {
+      width: 42px; height: 42px;
+      border: 3px solid var(--border); border-top-color: var(--red);
+      border-radius: 50%; animation: spin .8s linear infinite;
+      margin: 0 auto 12px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text { color: var(--muted); font-size: 15px; font-weight: 500; }
+    #spinner p { color: var(--muted); font-size: 14px; font-weight: 500; }
 
-    /* ── SLIDE ── */
+    /* ════ SLIDE ════ */
     .slide {
-      position: absolute;
-      inset: 0;
-      display: none;
-      opacity: 0;
+      position: absolute; inset: 0;
+      display: grid; grid-template-columns: 46% 54%;
+      opacity: 0; animation: fi .55s ease forwards;
     }
-    .slide.active {
+    @keyframes fi { to { opacity: 1; } }
+
+    /* — photo col — */
+    .s-photo {
+      position: relative; overflow: hidden;
+      background: #e5e7eb;
+    }
+    .s-photo img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    /* soft right-edge fade */
+    .s-photo::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 50%, #fff 100%);
+      pointer-events: none;
+    }
+
+    /* — text col — */
+    .s-body {
+      display: flex; align-items: center;
+      padding: 32px 48px 32px 36px;
+      background: #fff; overflow: hidden;
+    }
+    .s-inner { width: 100%; }
+
+    .s-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 34px; font-weight: 400; line-height: 1.15;
+      color: var(--ink); margin-bottom: 22px;
+    }
+
+    .sec { margin-bottom: 16px; }
+    .sec-head {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.3px;
+      text-transform: uppercase; color: var(--red); margin-bottom: 5px;
+    }
+    .sec-text {
+      font-size: 14.5px; line-height: 1.65; color: #374151; font-weight: 400;
+    }
+    .bul { list-style: none; margin-top: 4px; }
+    .bul li {
+      font-size: 14.5px; line-height: 1.6; color: #374151;
+      padding: 4px 0 4px 22px; position: relative;
+    }
+    .bul li::before {
+      content: '›'; position: absolute; left: 0;
+      color: var(--red); font-size: 19px; line-height: 1.25; font-weight: 700;
+    }
+
+    /* ════ FOOTER ════ */
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: var(--fh);
       display: grid;
-      grid-template-columns: 48% 52%;
-      animation: fadeIn 0.5s ease forwards;
-    }
-    @keyframes fadeIn { to { opacity: 1; } }
-
-    /* Left: image */
-    .slide-image {
-      position: relative;
-      background: #F3F4F6;
-      overflow: hidden;
-    }
-    .slide-image img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    /* gradient fade into white on right edge */
-    .slide-image::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to right, transparent 55%, #fff 100%);
-    }
-
-    /* Right: content — vertically centered, padded away from footer */
-    .slide-content {
-      display: flex;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 40px 52px 40px 40px;
-      background: #fff;
-      overflow: hidden;
+      padding: 0 36px; gap: 0;
+      background: #fff; border-top: 1px solid var(--border);
+      z-index: 300;
     }
 
-    .text-box {
-      width: 100%;
+    .ft-left  { display: flex; align-items: baseline; gap: 10px; }
+    .ft-city  { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .ft-date  { font-size: 14px; font-weight: 400; color: var(--muted); }
+
+    .ft-mid   { display: flex; align-items: center; gap: 20px; }
+    .ft-div   { width: 1px; height: 44px; background: var(--border); }
+    .ft-time  {
+      font-size: 38px; font-weight: 700; color: var(--ink);
+      font-variant-numeric: tabular-nums; letter-spacing: -1.5px;
     }
 
-    .slide-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 38px;
-      font-weight: 400;
-      color: var(--ink);
-      line-height: 1.15;
-      margin-bottom: 24px;
-    }
-
-    /* section block */
-    .section { margin-bottom: 20px; }
-
-    .section-heading {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--red);
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      margin-bottom: 6px;
-    }
-
-    .section-text {
-      font-size: 15px;
-      color: #374151;
-      line-height: 1.65;
-      font-weight: 400;
-    }
-
-    .bullet-list {
-      list-style: none;
-      padding: 0;
-      margin: 4px 0 0 0;
-    }
-    .bullet-list li {
-      font-size: 15px;
-      color: #374151;
-      line-height: 1.6;
-      padding: 5px 0 5px 26px;
-      position: relative;
-    }
-    .bullet-list li::before {
-      content: '›';
-      position: absolute;
-      left: 0;
-      color: var(--red);
-      font-size: 20px;
-      line-height: 1.3;
-      font-weight: 600;
-    }
-
-    /* ── FOOTER ── */
-    .footer {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      height: var(--footer-h);
-      display: flex;
-      align-items: center;
-      padding: 0 36px;
-      background: #fff;
-      border-top: 1px solid var(--border);
-      z-index: 200;
-    }
-
-    /* Three equal columns */
-    .footer-col {
-      flex: 1;
-      display: flex;
-      align-items: center;
-    }
-    .footer-col.center { justify-content: center; }
-    .footer-col.right  { justify-content: flex-end; }
-
-    /* Location block */
-    .f-location { font-size: 15px; font-weight: 700; color: var(--ink); }
-    .f-date     { font-size: 15px; font-weight: 400; color: var(--muted); margin-left: 12px; }
-
-    /* Time */
-    .f-time {
-      font-size: 40px;
-      font-weight: 700;
-      color: var(--ink);
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -1px;
-    }
-
-    /* Weather */
-    .weather-group { display: flex; gap: 20px; }
-    .weather-item  { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-    .w-label { font-size: 12px; font-weight: 600; color: var(--muted); }
-    .w-temp  { font-size: 22px; font-weight: 700; color: var(--ink); }
-    .w-icon  { font-size: 22px; line-height: 1; }
-
-    /* dividers in footer */
-    .f-divider {
-      width: 1px; height: 48px;
-      background: var(--border);
-      margin: 0 24px;
-      flex-shrink: 0;
-    }
+    .ft-right { display: flex; justify-content: flex-end; gap: 22px; }
+    .wx       { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .wx-lbl   { font-size: 11px; font-weight: 600; color: var(--muted); }
+    .wx-tmp   { font-size: 21px; font-weight: 700; color: var(--ink); }
+    .wx-ico   { font-size: 20px; line-height: 1; }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <button class="back-btn" onclick="window.location.href='index.html'">← Voltar</button>
-    <div class="brand">
-      <div class="mark"></div>
-      <div class="brandtxt" id="brandName">BiOOH</div>
-    </div>
+<header>
+  <button class="back-btn" onclick="location.href='index.html'">← Voltar</button>
+  <div class="brand">
+    <div class="mark"></div>
+    <span class="brandtxt">BiOOH</span>
   </div>
+</header>
 
-  <div class="screen" id="screen">
-    <div class="loading-indicator" id="initialLoading">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Carregando conteúdo…</div>
-    </div>
+<div id="stage">
+  <div id="spinner">
+    <div class="spin-ring"></div>
+    <p>Carregando conteúdo…</p>
   </div>
+</div>
 
-  <div class="footer">
-    <div class="footer-col">
-      <span class="f-location" id="fLocation">São Paulo</span>
-      <span class="f-date" id="fDate">—</span>
-    </div>
-    <div class="f-divider"></div>
-    <div class="footer-col center">
-      <div class="f-time" id="fTime">--:--</div>
-    </div>
-    <div class="f-divider"></div>
-    <div class="footer-col right">
-      <div class="weather-group" id="weatherGroup">
-        <div class="weather-item"><div class="w-label">Hoje</div><div class="w-temp">23°</div><div class="w-icon">⛅</div></div>
-        <div class="weather-item"><div class="w-label">Terça</div><div class="w-temp">25°</div><div class="w-icon">☀️</div></div>
-        <div class="weather-item"><div class="w-label">Quarta</div><div class="w-temp">22°</div><div class="w-icon">🌧️</div></div>
-      </div>
-    </div>
+<footer>
+  <div class="ft-left">
+    <span class="ft-city">São Paulo</span>
+    <span class="ft-date" id="ftDate">—</span>
   </div>
+  <div class="ft-mid">
+    <div class="ft-div"></div>
+    <div class="ft-time" id="ftTime">--:--</div>
+    <div class="ft-div"></div>
+  </div>
+  <div class="ft-right">
+    <div class="wx"><div class="wx-lbl">Hoje</div><div class="wx-tmp">23°</div><div class="wx-ico">⛅</div></div>
+    <div class="wx"><div class="wx-lbl">Terça</div><div class="wx-tmp">25°</div><div class="wx-ico">☀️</div></div>
+    <div class="wx"><div class="wx-lbl">Quarta</div><div class="wx-tmp">22°</div><div class="wx-ico">🌧️</div></div>
+  </div>
+</footer>
 
-  <script src="assets/player.js"></script>
-  <script>
-    // Live clock + date
-    var DAYS   = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-    var MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    function tick() {
-      var d = new Date();
-      var timeEl = document.getElementById('fTime');
-      var dateEl = document.getElementById('fDate');
-      if (timeEl) timeEl.textContent = d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
-      if (dateEl) dateEl.textContent = DAYS[d.getDay()].toUpperCase() + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
-    }
-    tick();
-    setInterval(tick, 1000);
-  </script>
+<script>
+// ─── CLOCK ───────────────────────────────────────────────────────────────────
+var DAYS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+var MONS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function tick(){
+  var d=new Date();
+  var t=document.getElementById('ftTime');
+  var dt=document.getElementById('ftDate');
+  if(t) t.textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  if(dt) dt.textContent=DAYS[d.getDay()].toUpperCase()+', '+d.getDate()+' '+MONS[d.getMonth()];
+}
+tick(); setInterval(tick,1000);
+
+// ─── SLIDES DATA ─────────────────────────────────────────────────────────────
+var SLIDES=[
+  {
+    title:'Cuidar do coração começa no dia a dia',
+    img:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&q=75',
+    dur:20000,
+    secs:[
+      {h:'O que são doenças cardiovasculares?',
+       t:'Afetam coração e vasos sanguíneos — infartos, AVC e hipertensão são exemplos. Segundo a OMS, são a principal causa de mortes no mundo, e até 80% dos casos são evitáveis com mudanças no estilo de vida.'},
+      {h:'Hábitos que protegem seu coração',
+       b:['Movimente-se pelo menos 30 minutos por dia',
+          'Prefira alimentos naturais e variados',
+          'Reserve momentos para relaxar e descansar',
+          'Considere abandonar o cigarro — cada dia sem fumar já faz diferença',
+          'Consulte seu médico regularmente, mesmo sem sintomas']}
+    ]
+  },
+  {
+    title:'Colesterol: entenda o que realmente importa',
+    img:'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'O colesterol é uma gordura essencial para o organismo. O problema surge quando o LDL ("ruim") se acumula nas artérias, formando placas que dificultam o fluxo do sangue. O HDL ("bom"), ao contrário, remove esse excesso.'},
+      {h:'Como o corpo avisa',
+       b:['Geralmente não há sintomas visíveis',
+          'O diagnóstico é feito apenas por exame de sangue',
+          'Depósitos amarelados na pele podem surgir em casos avançados']},
+      {h:'Como manter o equilíbrio',
+       b:['Reduza frituras, embutidos e gorduras trans',
+          'Inclua mais fibras na dieta: aveia, frutas e legumes',
+          'Pratique atividade física com regularidade',
+          'Peça ao seu médico um perfil lipídico anual']}
+    ]
+  },
+  {
+    title:'Hipertensão: o inimigo que age em silêncio',
+    img:'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1200&q=75',
+    dur:24000,
+    secs:[
+      {h:'O que é?',
+       t:'Ocorre quando a pressão do sangue nas artérias se mantém acima de 140/90 mmHg. Esse esforço extra desgasta o coração e danifica os vasos gradualmente — podendo levar a infarto ou AVC sem qualquer sinal prévio.'},
+      {h:'Sinais que podem aparecer',
+       b:['Dor de cabeça, especialmente pela manhã',
+          'Tontura ou sensação de cabeça pesada',
+          'Visão turva ou pontinhos no campo visual',
+          'Na maioria das vezes, porém, não há sintomas']},
+      {h:'Como cuidar da pressão',
+       b:['Reduza o sal — use ervas e limão para realçar o sabor',
+          'Mantenha um peso saudável',
+          'Movimente-se com prazer: caminhadas, dança, natação',
+          'Meça a pressão regularmente e anote os valores']}
+    ]
+  },
+  {
+    title:'Infarto do miocárdio: reconheça os sinais',
+    img:'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1200&q=75',
+    dur:24000,
+    secs:[
+      {h:'O que é?',
+       t:'Acontece quando uma artéria coronária é bloqueada, geralmente por uma placa de gordura que se rompe e forma um coágulo. Sem sangue, as células do músculo cardíaco começam a morrer — por isso cada minuto conta.'},
+      {h:'Sinais de alerta — ligue 192 imediatamente',
+       b:['Dor ou pressão intensa no peito, como um aperto',
+          'Dor que irradia para o braço esquerdo, mandíbula ou costas',
+          'Suor frio repentino e intensa sensação de mal-estar',
+          'Falta de ar mesmo sem esforço físico',
+          'Náusea, tontura ou desmaio']},
+      {h:'Como reduzir o risco',
+       b:['Mantenha colesterol e pressão arterial sob controle',
+          'Cuide da saúde emocional — o estresse crônico pesa no coração',
+          'Adote uma alimentação rica em vegetais',
+          'Abandone o cigarro — o benefício começa nas primeiras 24 horas']}
+    ]
+  },
+  {
+    title:'AVC: quando o cérebro pede socorro',
+    img:'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&q=75',
+    dur:24000,
+    secs:[
+      {h:'O que é?',
+       t:'O Acidente Vascular Cerebral (AVC) ocorre quando o fluxo de sangue para uma área do cérebro é interrompido — por entupimento ou ruptura de um vaso. É emergência médica: quanto mais rápido o atendimento, menores as sequelas.'},
+      {h:'Sinais — ligue 192 imediatamente',
+       b:['Sorriso torto ou queda de um lado do rosto',
+          'Fraqueza ou dormência súbita em um braço ou perna',
+          'Dificuldade para falar ou entender o que dizem',
+          'Perda súbita de visão em um ou ambos os olhos',
+          'Desequilíbrio e dor de cabeça muito intensa']},
+      {h:'Como proteger o cérebro',
+       b:['Mantenha a pressão arterial sempre bem controlada',
+          'Cuide do diabetes com acompanhamento médico contínuo',
+          'Deixar de fumar reduz o risco de AVC em até 50%',
+          'Pratique atividade física com regularidade']}
+    ]
+  },
+  {
+    title:'Arritmia: quando o ritmo se perde',
+    img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'É qualquer alteração no ritmo normal dos batimentos cardíacos — muito rápido, muito lento ou irregular. Muitas são inofensivas; outras aumentam o risco de AVC e insuficiência cardíaca. O ECG é o exame que identifica o problema.'},
+      {h:'Como o coração avisa',
+       b:['Sensação de "coração pulando" ou acelerado',
+          'Pausa seguida de batida forte no peito',
+          'Tontura ou desmaio súbito',
+          'Cansaço desproporcional ao esforço realizado']},
+      {h:'Como reduzir o risco',
+       b:['Evite exageros de cafeína e bebidas energéticas',
+          'Priorize noites de sono reparador',
+          'Gerencie o estresse com respiração e pausas ao longo do dia',
+          'Relate ao cardiologista qualquer episódio que se repita']}
+    ]
+  },
+  {
+    title:'Insuficiência cardíaca: quando o coração pede ajuda',
+    img:'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'O coração perde parte de sua capacidade de bombear sangue adequadamente, fazendo com que líquido se acumule nos pulmões e nas pernas. É uma condição crônica que, com tratamento e cuidados, permite uma vida ativa e com qualidade.'},
+      {h:'Sinais que merecem atenção',
+       b:['Falta de ar que piora ao deitar ou em esforços leves',
+          'Inchaço progressivo nos tornozelos e pernas',
+          'Cansaço intenso para atividades simples do dia a dia',
+          'Tosse persistente, especialmente à noite',
+          'Ganho de peso rápido — mais de 2 kg em poucos dias']},
+      {h:'Como viver bem com o coração',
+       b:['Siga o tratamento prescrito sem interromper por conta própria',
+          'Controle sal e líquidos conforme a orientação médica',
+          'Pratique atividades físicas leves e supervisionadas']}
+    ]
+  },
+  {
+    title:'Aterosclerose: o entupimento silencioso',
+    img:'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'É o acúmulo gradual de gordura e outros depósitos nas paredes das artérias, formando placas que as estreitam progressivamente. O processo começa na juventude e avança de forma silenciosa — por isso a prevenção precoce é tão importante.'},
+      {h:'Sinais (costumam aparecer tarde)',
+       b:['Dor no peito ao se esforçar fisicamente',
+          'Cansaço ou dor nas pernas ao caminhar',
+          'Frequentemente não há sintomas até que algo grave aconteça']},
+      {h:'Como desacelerar o processo',
+       b:['Adote uma dieta rica em vegetais, frutas e grãos integrais',
+          'Reduza gorduras saturadas — presentes em carnes e laticínios gordurosos',
+          'Abandone o cigarro — ele acelera a doença de forma significativa',
+          'Mantenha colesterol e pressão dentro das metas com seu médico']}
+    ]
+  },
+  {
+    title:'Angina: o coração pedindo mais oxigênio',
+    img:'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'É uma dor ou pressão no peito causada pela redução temporária do fluxo sanguíneo ao coração. Funciona como um sinal de alerta de que as artérias coronárias estão parcialmente estreitadas. O desconforto costuma surgir ao esforço e aliviar com o repouso.'},
+      {h:'Como se manifesta',
+       b:['Pressão, aperto ou queimação no peito',
+          'Desconforto que pode se estender ao braço, pescoço ou mandíbula',
+          'Falta de ar ao fazer algo que antes era fácil',
+          'Sintomas que surgem ao esforço e melhoram com repouso']},
+      {h:'Como conviver com segurança',
+       b:['Evite esforços intensos sem aquecimento adequado',
+          'Siga rigorosamente o uso das medicações prescritas',
+          'Mantenha pressão, colesterol e glicemia controlados',
+          'Encontre formas saudáveis de lidar com o estresse cotidiano']}
+    ]
+  },
+  {
+    title:'Diabetes e coração: uma conexão importante',
+    img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=75',
+    dur:24000,
+    secs:[
+      {h:'O que é?',
+       t:'Pessoas com diabetes têm risco até 4 vezes maior de doenças cardíacas. O excesso de açúcar no sangue inflama e danifica os vasos sanguíneos ao longo do tempo, favorecendo aterosclerose, hipertensão e insuficiência cardíaca.'},
+      {h:'Sinais que merecem atenção',
+       b:['Cansaço desproporcional ao esforço',
+          'Falta de ar em atividades leves',
+          'Inchaço nos tornozelos e pés',
+          'Infartos em diabéticos podem ser silenciosos — sem dor']},
+      {h:'Como proteger o coração',
+       b:['Mantenha a glicemia próxima das metas definidas com seu médico',
+          'Pratique atividade física regular — ela melhora a sensibilidade à insulina',
+          'Prefira carboidratos de baixo índice glicêmico: integrais e legumes',
+          'Realize exames de rotina incluindo colesterol e função renal']}
+    ]
+  },
+  {
+    title:'Obesidade e coração: o peso certo faz diferença',
+    img:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'O excesso de peso, especialmente a gordura abdominal, força o coração a trabalhar mais e eleva o risco de hipertensão, diabetes e colesterol alto. Reduzir apenas 5% a 10% do peso corporal já traz benefícios mensuráveis ao coração.'},
+      {h:'Sinais de alerta',
+       b:['Pressão arterial elevada',
+          'Glicemia e colesterol acima do normal',
+          'Apneia do sono — que também sobrecarrega o coração',
+          'Falta de ar ao subir escadas ou caminhar distâncias curtas']},
+      {h:'Pequenos passos com grande impacto',
+       b:['Comece com metas realistas — não é necessário ser perfeito',
+          'Adote um padrão alimentar sustentável, não uma dieta restritiva',
+          'Inclua caminhadas diárias e aumente gradualmente a intensidade',
+          'Busque apoio profissional: nutrologia, nutrição, psicologia']}
+    ]
+  },
+  {
+    title:'Tabagismo: o coração agradece cada dia sem cigarro',
+    img:'https://images.unsplash.com/photo-1605973029521-8154da591cc7?w=1200&q=75',
+    dur:24000,
+    secs:[
+      {h:'O que é?',
+       t:'O cigarro libera mais de 7.000 substâncias químicas nocivas ao coração e aos vasos. Fumar triplica o risco de infarto e duplica o de AVC. Mas o corpo começa a se recuperar rapidamente — em 24 horas a pressão e o pulso já melhoram.'},
+      {h:'O que o fumo faz ao coração',
+       b:['Eleva a pressão arterial e a frequência cardíaca',
+          'Reduz o oxigênio disponível para os tecidos',
+          'Acelera a formação de placas nas artérias',
+          'Aumenta a tendência do sangue a coagular']},
+      {h:'Benefícios de parar — começa hoje',
+       b:['Em 20 minutos: pressão e pulso voltam ao normal',
+          'Em 1 ano: risco de infarto cai pela metade',
+          'Em 5 anos: risco equivale ao de quem nunca fumou',
+          'Peça apoio ao seu médico — existem tratamentos eficazes']}
+    ]
+  },
+  {
+    title:'Sedentarismo: mover-se é cuidar do coração',
+    img:'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'Passar a maior parte do dia sem atividade física é considerado pela OMS um fator de risco independente para doenças cardíacas — o quarto maior para mortalidade global. A boa notícia: qualquer movimento já ajuda.'},
+      {h:'O que acontece com o corpo',
+       b:['O coração se enfraquece progressivamente',
+          'Pressão e colesterol tendem a subir',
+          'Peso e risco de diabetes aumentam com mais facilidade']},
+      {h:'Como começar, no seu ritmo',
+       b:['Inicie com 10 minutos de caminhada e aumente devagar',
+          'Use escadas em vez de elevador sempre que possível',
+          'Levante-se e se mova a cada 60 minutos de trabalho',
+          'Encontre uma atividade que você goste — será mais fácil manter']}
+    ]
+  },
+  {
+    title:'Estresse crônico: cuide da mente, proteja o coração',
+    img:'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=75',
+    dur:22000,
+    secs:[
+      {h:'O que é?',
+       t:'O estresse prolongado mantém o organismo em alerta constante, elevando cortisol, pressão e inflamação. Segundo a Sociedade Brasileira de Cardiologia, está associado a maior risco de infarto e arritmias.'},
+      {h:'Como o estresse se manifesta',
+       b:['Dor de cabeça frequente e tensão muscular',
+          'Palpitações ou sensação de coração acelerado',
+          'Sono interrompido ou difícil de iniciar',
+          'Irritabilidade e dificuldade de concentração']},
+      {h:'Estratégias que fazem diferença',
+       b:['Experimente a respiração 4-7-8: inspire 4s, segure 7s, expire 8s',
+          'Inclua pausas conscientes ao longo do dia',
+          'Priorize o sono — ele regula os hormônios do estresse',
+          'Considere psicoterapia se o estresse estiver difícil de gerenciar']}
+    ]
+  },
+  {
+    title:'Síndrome metabólica: quando os fatores se somam',
+    img:'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1200&q=75',
+    dur:24000,
+    secs:[
+      {h:'O que é?',
+       t:'É a combinação de pelo menos três fatores de risco: obesidade abdominal, pressão alta, glicemia elevada, triglicerídeos altos e HDL baixo. Quem a tem tem risco cardiovascular 2 a 3 vezes maior — mas responde muito bem a mudanças de hábito.'},
+      {h:'Critérios de diagnóstico',
+       b:['Circunferência abdominal > 94 cm (homens) ou > 80 cm (mulheres)',
+          'Pressão arterial ≥ 130/85 mmHg',
+          'Glicemia em jejum ≥ 100 mg/dL',
+          'Triglicerídeos ≥ 150 mg/dL ou HDL baixo']},
+      {h:'Como reverter o quadro',
+       b:['Reduza a gordura abdominal — ela é a mais perigosa para o coração',
+          'Adote o padrão mediterrâneo: vegetais, azeite, peixes e integrais',
+          'Invista em pelo menos 200 minutos de atividade física por semana',
+          'Realize check-up anual completo com exames de sangue']}
+    ]
+  }
+];
+
+// ─── PLAYER ──────────────────────────────────────────────────────────────────
+(function(){
+  var idx=-1, timer=null;
+
+  function esc(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function buildSecs(secs){
+    if(!secs||!secs.length) return '';
+    return secs.map(function(s){
+      var h = s.h ? '<div class="sec-head">'+esc(s.h)+'</div>' : '';
+      var t = s.t ? '<p class="sec-text">'+esc(s.t)+'</p>' : '';
+      var b = '';
+      if(s.b&&s.b.length){
+        b='<ul class="bul">'+s.b.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>';
+      }
+      return '<div class="sec">'+h+t+b+'</div>';
+    }).join('');
+  }
+
+  function show(item){
+    var stage=document.getElementById('stage');
+    if(!stage||!item) return;
+    stage.innerHTML='';
+
+    var slide=document.createElement('div');
+    slide.className='slide';
+    slide.innerHTML=
+      '<div class="s-photo">'+
+        '<img src="'+esc(item.img||'')+'" alt="" loading="eager">'+
+      '</div>'+
+      '<div class="s-body">'+
+        '<div class="s-inner">'+
+          '<h1 class="s-title">'+esc(item.title||'')+'</h1>'+
+          buildSecs(item.secs)+
+        '</div>'+
+      '</div>';
+    stage.appendChild(slide);
+  }
+
+  function next(){
+    clearTimeout(timer);
+    idx=(idx+1)%SLIDES.length;
+    show(SLIDES[idx]);
+    timer=setTimeout(next, SLIDES[idx].dur||20000);
+  }
+
+  // hide spinner and start
+  var sp=document.getElementById('spinner');
+  if(sp) sp.style.display='none';
+  next();
+})();
+</script>
 </body>
 </html>
+
 
 
