@@ -4,148 +4,142 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>BiOOH • Sala de Espera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --red: #C8102E;
+      --red-light: #FFF0F2;
+      --ink: #111827;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --footer-h: 96px;
+      --header-h: 64px;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: white;
-      color: #1F2937;
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      color: var(--ink);
     }
 
-    /* Header */
+    /* ── HEADER ── */
     .header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 24px;
-      background: white;
-      border-bottom: 1px solid #E5E7EB;
-      z-index: 100;
+      padding: 0 28px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      z-index: 200;
     }
+
+    .back-btn {
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 8px 18px;
+      border-radius: 8px;
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .back-btn:hover { background: #F9FAFB; }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
-
     .mark {
-      width: 36px;
-      height: 36px;
+      width: 34px; height: 34px;
       border-radius: 8px;
-      background: linear-gradient(135deg, #EF4444, #DC2626);
+      background: var(--red);
     }
-
     .brandtxt {
-      font-weight: 900;
-      font-size: 20px;
-      color: #1F2937;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--ink);
+      letter-spacing: -0.3px;
     }
 
-    .back-btn {
-      background: white;
-      border: 1px solid #D1D5DB;
-      padding: 8px 16px;
-      border-radius: 8px;
-      color: #374151;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .back-btn:hover {
-      background: #F9FAFB;
-      border-color: #9CA3AF;
-    }
-
-    /* Screen */
+    /* ── SCREEN AREA ── */
     .screen {
-      position: absolute;
-      top: 69px;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      position: fixed;
+      top: var(--header-h);
+      left: 0; right: 0;
+      bottom: var(--footer-h);
       display: none;
-      background: white;
+      overflow: hidden;
     }
-
-    .screen.ready {
-      display: block;
-    }
+    .screen.ready { display: block; }
 
     /* Loading */
     .loading-indicator {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
     }
-
     .loading-spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid #E5E7EB;
-      border-top-color: #EF4444;
+      width: 44px; height: 44px;
+      border: 3px solid var(--border);
+      border-top-color: var(--red);
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 14px;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: var(--muted); font-size: 15px; font-weight: 500; }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      color: #6B7280;
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    /* Slide */
+    /* ── SLIDE ── */
     .slide {
       position: absolute;
       inset: 0;
       display: none;
       opacity: 0;
     }
-
     .slide.active {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      animation: fadeIn 0.6s forwards;
+      grid-template-columns: 48% 52%;
+      animation: fadeIn 0.5s ease forwards;
     }
+    @keyframes fadeIn { to { opacity: 1; } }
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-
+    /* Left: image */
     .slide-image {
       position: relative;
-      background-color: #F3F4F6;
+      background: #F3F4F6;
+      overflow: hidden;
     }
-
-    .image-overlay {
+    .slide-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* gradient fade into white on right edge */
+    .slide-image::after {
+      content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to right,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,0.3) 70%,
-        rgba(255,255,255,0.8) 100%
-      );
+      background: linear-gradient(to right, transparent 55%, #fff 100%);
     }
 
+    /* Right: content — vertically centered, padded away from footer */
     .slide-content {
       display: flex;
       align-items: center;
-      padding: 60px;
-      background: white;
+      padding: 40px 52px 40px 40px;
+      background: #fff;
+      overflow: hidden;
     }
 
     .text-box {
@@ -153,202 +147,110 @@
     }
 
     .slide-title {
-      font-size: 48px;
-      font-weight: 900;
-      color: #111827;
-      line-height: 1.1;
-      margin-bottom: 20px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 38px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 24px;
     }
 
-    .slide-subtitle {
-      font-size: 22px;
-      font-weight: 600;
-      color: #4B5563;
-      line-height: 1.5;
-      margin-bottom: 24px;
+    /* section block */
+    .section { margin-bottom: 20px; }
+
+    .section-heading {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 6px;
+    }
+
+    .section-text {
+      font-size: 15px;
+      color: #374151;
+      line-height: 1.65;
+      font-weight: 400;
     }
 
     .bullet-list {
       list-style: none;
       padding: 0;
-      margin: 0;
+      margin: 4px 0 0 0;
     }
-
     .bullet-list li {
-      font-size: 20px;
+      font-size: 15px;
       color: #374151;
       line-height: 1.6;
-      padding: 10px 0;
-      padding-left: 32px;
+      padding: 5px 0 5px 26px;
       position: relative;
     }
-
     .bullet-list li::before {
-      content: '✓';
+      content: '›';
       position: absolute;
       left: 0;
-      color: #10B981;
-      font-weight: bold;
-      font-size: 22px;
-    }
-
-    /* Seções expandidas */
-    .section {
-      margin-bottom: 24px;
-    }
-
-    .section-heading {
+      color: var(--red);
       font-size: 20px;
-      font-weight: 800;
-      color: #DC2626;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .section-text {
-      font-size: 18px;
-      color: #374151;
-      line-height: 1.6;
-      margin-bottom: 12px;
-      font-weight: 500;
-    }
-
-    .section .bullet-list {
-      margin-top: 8px;
-    }
-
-    /* Footer */
-    .slide-footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      padding: 20px 40px;
-      background: white;
-      border-top: 2px solid #E5E7EB;
-      gap: 40px;
-    }
-
-    .footer-left {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .location {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111827;
-    }
-
-    .date {
-      font-size: 16px;
-      font-weight: 500;
-      color: #6B7280;
-    }
-
-    .footer-center {
-      text-align: center;
-    }
-
-    .time {
-      font-size: 52px;
-      font-weight: 700;
-      color: #111827;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.02em;
-    }
-
-    .footer-right {
-      display: flex;
-      gap: 24px;
-      justify-content: flex-end;
-    }
-
-    .weather-item {
-      text-align: center;
-      min-width: 70px;
-    }
-
-    .weather-label {
-      font-size: 14px;
+      line-height: 1.3;
       font-weight: 600;
-      color: #6B7280;
-      margin-bottom: 4px;
     }
 
-    .weather-temp {
-      font-size: 28px;
+    /* ── FOOTER ── */
+    .footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--footer-h);
+      display: flex;
+      align-items: center;
+      padding: 0 36px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      z-index: 200;
+    }
+
+    /* Three equal columns */
+    .footer-col {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    .footer-col.center { justify-content: center; }
+    .footer-col.right  { justify-content: flex-end; }
+
+    /* Location block */
+    .f-location { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .f-date     { font-size: 15px; font-weight: 400; color: var(--muted); margin-left: 12px; }
+
+    /* Time */
+    .f-time {
+      font-size: 40px;
       font-weight: 700;
-      color: #111827;
-      margin-bottom: 4px;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1px;
     }
 
-    .weather-icon {
-      font-size: 28px;
-      line-height: 1;
-    }
+    /* Weather */
+    .weather-group { display: flex; gap: 20px; }
+    .weather-item  { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .w-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .w-temp  { font-size: 22px; font-weight: 700; color: var(--ink); }
+    .w-icon  { font-size: 22px; line-height: 1; }
 
-    @media (max-width: 1400px) {
-      .slide-title {
-        font-size: 40px;
-      }
-
-      .slide-subtitle {
-        font-size: 20px;
-      }
-
-      .bullet-list li {
-        font-size: 18px;
-      }
-
-      .slide-content {
-        padding: 40px;
-      }
-    }
-
-    @media (max-width: 1024px) {
-      .slide.active {
-        grid-template-columns: 1fr;
-        grid-template-rows: 300px 1fr;
-      }
-
-      .slide-image {
-        grid-row: 1;
-      }
-
-      .slide-content {
-        grid-row: 2;
-        padding: 40px;
-      }
-
-      .time {
-        font-size: 42px;
-      }
-
-      .weather-item {
-        min-width: 60px;
-      }
-
-      .weather-temp {
-        font-size: 24px;
-      }
-
-      .weather-icon {
-        font-size: 24px;
-      }
+    /* dividers in footer */
+    .f-divider {
+      width: 1px; height: 48px;
+      background: var(--border);
+      margin: 0 24px;
+      flex-shrink: 0;
     }
   </style>
 </head>
 <body>
+
   <div class="header">
-    <button class="back-btn" onclick="window.location.href='index.html'">
-      ← Voltar
-    </button>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Voltar</button>
     <div class="brand">
       <div class="mark"></div>
       <div class="brandtxt" id="brandName">BiOOH</div>
@@ -358,11 +260,45 @@
   <div class="screen" id="screen">
     <div class="loading-indicator" id="initialLoading">
       <div class="loading-spinner"></div>
-      <div class="loading-text">Carregando conteúdo...</div>
+      <div class="loading-text">Carregando conteúdo…</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-col">
+      <span class="f-location" id="fLocation">São Paulo</span>
+      <span class="f-date" id="fDate">—</span>
+    </div>
+    <div class="f-divider"></div>
+    <div class="footer-col center">
+      <div class="f-time" id="fTime">--:--</div>
+    </div>
+    <div class="f-divider"></div>
+    <div class="footer-col right">
+      <div class="weather-group" id="weatherGroup">
+        <div class="weather-item"><div class="w-label">Hoje</div><div class="w-temp">23°</div><div class="w-icon">⛅</div></div>
+        <div class="weather-item"><div class="w-label">Terça</div><div class="w-temp">25°</div><div class="w-icon">☀️</div></div>
+        <div class="weather-item"><div class="w-label">Quarta</div><div class="w-temp">22°</div><div class="w-icon">🌧️</div></div>
+      </div>
     </div>
   </div>
 
   <script src="assets/player.js"></script>
+  <script>
+    // Live clock + date
+    var DAYS   = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    var MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    function tick() {
+      var d = new Date();
+      var timeEl = document.getElementById('fTime');
+      var dateEl = document.getElementById('fDate');
+      if (timeEl) timeEl.textContent = d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+      if (dateEl) dateEl.textContent = DAYS[d.getDay()].toUpperCase() + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
 </body>
 </html>
+
 
