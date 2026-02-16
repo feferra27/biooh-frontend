@@ -1,588 +1,299 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>BiOOH Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --red:     #C8102E;
-      --red-d:   #A50E26;
-      --red-bg:  #FFF0F2;
-      --red-br:  #FECDD3;
-      --ink:     #0F172A;
-      --sub:     #475569;
-      --muted:   #94A3B8;
-      --border:  #E2E8F0;
-      --bg:      #F8FAFC;
-      --white:   #FFFFFF;
-      --green:   #10B981;
-      --green-bg:#ECFDF5;
-      --amber:   #F59E0B;
-      --sidebar: 340px;
-      --header:  58px;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; overflow: hidden; }
-    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BiOOH Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#C8102E; --red-d:#A50E26; --red-bg:#FFF0F2; --red-br:#FECDD3;
+  --ink:#0F172A; --sub:#475569; --muted:#94A3B8;
+  --border:#E2E8F0; --bg:#F8FAFC; --white:#fff;
+  --green:#10B981; --green-bg:#ECFDF5; --amber:#F59E0B;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);}
 
-    /* ══ LOGIN SCREEN ══════════════════════════════════════════════════════ */
-    #loginScreen {
-      position: fixed; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--ink);
-      z-index: 9999;
-      transition: opacity .2s;
-    }
-    #loginScreen.hidden { display: none !important; }
+/* LOGIN */
+#loginScreen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:#0F172A;z-index:9999;
+}
+#loginScreen.hidden{display:none!important;}
+.lcard{background:#fff;border-radius:16px;padding:40px;width:340px;box-shadow:0 24px 64px rgba(0,0,0,.4);}
+.llogo{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
+.lmark{width:34px;height:34px;border-radius:8px;background:var(--red);flex-shrink:0;}
+.lbrand{font-weight:700;font-size:18px;}
+.ltag{font-size:12px;color:var(--muted);}
+.lcard h2{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;margin-bottom:4px;}
+.lcard p{font-size:13px;color:var(--sub);margin-bottom:24px;}
+.lfield{margin-bottom:16px;}
+.lfield label{display:block;font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px;}
+.lfield input{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font:400 14px 'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.lfield input:focus{border-color:#93C5FD;}
+.lerr{font-size:13px;color:var(--red);min-height:18px;margin-bottom:12px;}
+.lbtn{width:100%;padding:11px;background:var(--red);border:none;border-radius:9px;font:600 14px 'DM Sans',sans-serif;color:#fff;cursor:pointer;transition:background .15s;}
+.lbtn:hover{background:var(--red-d);}
 
-    .login-card {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 40px;
-      width: 360px;
-      box-shadow: 0 24px 64px rgba(0,0,0,.3);
-    }
-    .login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
-    .login-mark { width: 36px; height: 36px; border-radius: 9px; background: var(--red); }
-    .login-brand { font-weight: 700; font-size: 20px; color: var(--ink); }
-    .login-tag { font-size: 13px; color: var(--muted); }
+/* APP */
+#app{display:flex;flex-direction:column;height:100%;}
+#app.hidden{display:none!important;}
 
-    .login-card h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 24px; font-weight: 400;
-      color: var(--ink); margin-bottom: 6px;
-    }
-    .login-card p { font-size: 14px; color: var(--sub); margin-bottom: 28px; }
+/* HEADER */
+.hdr{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;}
+.hdr-l{display:flex;align-items:center;gap:12px;}
+.hdr-brand{display:flex;align-items:center;gap:8px;}
+.hdr-mark{width:28px;height:28px;border-radius:7px;background:var(--red);}
+.hdr-name{font-weight:700;font-size:15px;}
+.hdr-sep{width:1px;height:20px;background:var(--border);}
+.hdr-title{font-size:13px;color:var(--sub);font-weight:500;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.pill{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;}
+.pill-ok{background:var(--green-bg);color:var(--green);}
+.pill-pending{background:#FEF3C7;color:var(--amber);}
+.pill-err{background:var(--red-bg);color:var(--red);}
+.gbtn{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:#fff;font:500 13px 'DM Sans',sans-serif;color:var(--sub);cursor:pointer;transition:all .15s;}
+.gbtn:hover{background:var(--bg);color:var(--ink);}
+.rbtn{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;background:var(--red);border:none;font:600 13px 'DM Sans',sans-serif;color:#fff;cursor:pointer;transition:background .15s;}
+.rbtn:hover{background:var(--red-d);}
+.rbtn:disabled{opacity:.5;cursor:not-allowed;}
+.rdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);transition:background .2s;}
+.rdot.dirty{background:#FCD34D;}
 
-    .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 6px; }
-    .field input {
-      width: 100%; padding: 10px 14px;
-      border: 1px solid var(--border); border-radius: 9px;
-      font: 400 14px 'DM Sans', sans-serif; color: var(--ink);
-      background: var(--bg); outline: none; transition: border-color .15s;
-    }
-    .field input:focus { border-color: #93C5FD; background: var(--white); }
+/* LAYOUT */
+.layout{flex:1;display:flex;overflow:hidden;}
 
-    .login-err {
-      font-size: 13px; color: var(--red);
-      margin-bottom: 14px; min-height: 18px;
-    }
+/* SIDEBAR */
+.sbar{width:300px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sbar-top{padding:13px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.sbar-top h3{font-size:13px;font-weight:700;}
+.scount{font-size:11px;color:var(--muted);}
+.addbtn{display:flex;align-items:center;gap:4px;padding:6px 11px;border-radius:7px;background:var(--red-bg);border:1px solid var(--red-br);font:600 12px 'DM Sans',sans-serif;color:var(--red);cursor:pointer;transition:all .15s;}
+.addbtn:hover{background:var(--red-br);}
+.slist{flex:1;overflow-y:auto;padding:8px;}
+.slist::-webkit-scrollbar{width:3px;}
+.slist::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 
-    .btn-primary {
-      width: 100%; padding: 11px;
-      background: var(--red); border: none; border-radius: 9px;
-      font: 600 14px 'DM Sans', sans-serif; color: white;
-      cursor: pointer; transition: background .15s;
-    }
-    .btn-primary:hover { background: var(--red-d); }
+/* SLIDE ITEM */
+.sitem{border:1px solid var(--border);border-radius:10px;padding:9px 11px;margin-bottom:5px;background:#fff;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:9px;user-select:none;}
+.sitem:hover{border-color:#CBD5E1;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.sitem.active{border-color:var(--red);background:var(--red-bg);}
+.sitem.dragover{border-color:var(--red);border-style:dashed;}
+.sitem.dragging{opacity:.3;}
+.shandle{cursor:grab;color:var(--muted);font-size:13px;flex-shrink:0;}
+.sthumb{width:50px;height:33px;border-radius:5px;background:var(--bg);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.sthumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.smeta{flex:1;min-width:0;}
+.smeta-title{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.sitem.active .smeta-title{color:var(--red);}
+.smeta-dur{font-size:11px;color:var(--muted);}
+.sdel{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:none;background:none;cursor:pointer;border-radius:5px;color:var(--muted);font-size:13px;flex-shrink:0;transition:all .15s;}
+.sdel:hover{background:var(--red-bg);color:var(--red);}
 
-    /* ══ APP SHELL ════════════════════════════════════════════════════════ */
-    #app { display: flex; flex-direction: column; height: 100%; }
-    #app.app-hidden { display: none !important; }
+/* EDITOR */
+.ecol{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.etabs{display:flex;padding:0 20px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;}
+.etab{padding:14px 16px;font:500 13px 'DM Sans',sans-serif;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.etab:hover{color:var(--ink);}
+.etab.active{color:var(--red);border-bottom-color:var(--red);font-weight:600;}
+.tcontent{display:none;flex:1;overflow:hidden;}
+.tcontent.active{display:flex;}
 
-    /* HEADER */
-    .header {
-      height: var(--header);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px;
-      background: var(--white); border-bottom: 1px solid var(--border);
-      flex-shrink: 0; z-index: 100;
-    }
-    .h-left { display: flex; align-items: center; gap: 14px; }
-    .h-brand { display: flex; align-items: center; gap: 9px; }
-    .h-mark  { width: 28px; height: 28px; border-radius: 7px; background: var(--red); }
-    .h-name  { font-weight: 700; font-size: 15px; color: var(--ink); }
-    .h-sep   { width: 1px; height: 20px; background: var(--border); }
-    .h-title { font-size: 13px; color: var(--sub); font-weight: 500; }
+/* EMPTY STATE */
+.eempty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);}
+.eempty-ico{font-size:44px;opacity:.35;}
+.eempty-txt{font-size:14px;font-weight:500;}
 
-    .h-right { display: flex; align-items: center; gap: 8px; }
+/* FORM */
+.eform{flex:1;overflow-y:auto;padding:22px;}
+.eform::-webkit-scrollbar{width:3px;}
+.eform::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.frow{margin-bottom:18px;}
+.frow label{display:block;font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px;}
+.finput,.ftextarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font:400 14px 'DM Sans',sans-serif;color:var(--ink);background:#fff;outline:none;transition:border-color .15s;}
+.finput:focus,.ftextarea:focus{border-color:#93C5FD;}
+.ftextarea{resize:vertical;min-height:72px;line-height:1.6;}
+.fhint{font-size:11px;color:var(--muted);margin-top:4px;}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.imgrow{display:flex;gap:9px;align-items:flex-start;}
+.imgrow .finput{flex:1;}
+.ithumb{width:70px;height:46px;border-radius:7px;border:1px solid var(--border);object-fit:cover;flex-shrink:0;background:var(--bg);}
 
-    .save-btn {
-      display: flex; align-items: center; gap: 7px;
-      padding: 8px 18px; border-radius: 8px;
-      background: var(--red); border: none;
-      font: 600 13px 'DM Sans', sans-serif; color: white;
-      cursor: pointer; transition: background .15s;
-    }
-    .save-btn:hover { background: var(--red-d); }
-    .save-btn:disabled { opacity: .5; cursor: not-allowed; }
+/* SECTIONS */
+.sec-block{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;background:var(--bg);}
+.sec-block-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sec-block-top span{font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;}
+.sec-del{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:#fff;font:500 12px 'DM Sans',sans-serif;color:var(--sub);cursor:pointer;transition:all .15s;}
+.sec-del:hover{background:var(--red-bg);color:var(--red);border-color:var(--red-br);}
+.brow{display:flex;gap:7px;align-items:center;margin-bottom:6px;}
+.brow input{flex:1;padding:8px 11px;border:1px solid var(--border);border-radius:7px;font:400 13px 'DM Sans',sans-serif;color:var(--ink);outline:none;transition:border-color .15s;}
+.brow input:focus{border-color:#93C5FD;}
+.bdel{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:7px;background:none;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;}
+.bdel:hover{background:var(--red-bg);color:var(--red);border-color:var(--red-br);}
+.badd{display:flex;align-items:center;gap:5px;font:500 12px 'DM Sans',sans-serif;color:var(--sub);background:none;border:1px dashed var(--border);padding:7px 12px;border-radius:7px;cursor:pointer;transition:all .15s;width:100%;margin-top:4px;}
+.badd:hover{border-color:var(--red);color:var(--red);}
+.sadd{margin-top:6px;}
 
-    .save-btn .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(255,255,255,.5);
-      transition: background .2s;
-    }
-    .save-btn.dirty .dot { background: #FCD34D; }
+/* PREVIEW */
+.pvwrap{flex:1;background:#1E293B;display:flex;align-items:center;justify-content:center;padding:28px;}
+.pvscreen{width:100%;max-width:880px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5);position:relative;display:grid;grid-template-columns:46% 54%;background:#fff;}
+.pvphoto{position:relative;background:#E2E8F0;overflow:hidden;}
+.pvphoto img{width:100%;height:100%;object-fit:cover;display:block;}
+.pvphoto::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,transparent 50%,#fff 100%);pointer-events:none;}
+.pvnoimg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;background:#F1F5F9;}
+.pvbody{display:flex;align-items:center;padding:20px 28px 72px 20px;background:#fff;overflow:hidden;}
+.pvinner{width:100%;}
+.pvtitle{font-family:'DM Serif Display',serif;font-size:clamp(13px,2.2vw,21px);line-height:1.2;color:#0F172A;margin-bottom:10px;}
+.pvsh{font-size:clamp(7px,.85vw,9px);font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#C8102E;margin-bottom:3px;margin-top:9px;}
+.pvst{font-size:clamp(8px,1vw,11px);color:#374151;line-height:1.5;}
+.pvbul{list-style:none;}
+.pvbul li{font-size:clamp(8px,1vw,11px);color:#374151;padding:2px 0 2px 13px;position:relative;line-height:1.4;}
+.pvbul li::before{content:'>';position:absolute;left:0;color:#C8102E;font-weight:700;}
+.pvfooter{position:absolute;bottom:0;left:0;right:0;height:50px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 14px;background:#fff;border-top:1px solid #E2E8F0;}
+.pvfl{display:flex;align-items:baseline;gap:6px;}
+.pvfl-city{font-size:9px;font-weight:700;}
+.pvfl-date{font-size:9px;color:#94A3B8;}
+.pvfm{display:flex;align-items:center;gap:8px;}
+.pvdiv{width:1px;height:22px;background:#E2E8F0;}
+.pvtime{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-1px;}
+.pvfr{display:flex;justify-content:flex-end;gap:12px;}
+.pvwx{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.pvwx-l{font-size:7px;font-weight:600;color:#94A3B8;}
+.pvwx-t{font-size:12px;font-weight:700;}
+.pvwx-i{font-size:11px;}
 
-    .ghost-btn {
-      padding: 8px 14px; border-radius: 8px;
-      border: 1px solid var(--border); background: var(--white);
-      font: 500 13px 'DM Sans', sans-serif; color: var(--sub);
-      cursor: pointer; transition: all .15s;
-    }
-    .ghost-btn:hover { background: var(--bg); color: var(--ink); }
-
-    .status-pill {
-      padding: 4px 10px; border-radius: 999px;
-      font-size: 11px; font-weight: 600;
-    }
-    .status-pill.saved   { background: var(--green-bg); color: var(--green); }
-    .status-pill.saving  { background: #FEF3C7; color: var(--amber); }
-    .status-pill.err     { background: var(--red-bg); color: var(--red); }
-
-    /* ══ LAYOUT ═══════════════════════════════════════════════════════════ */
-    .layout { flex: 1; display: flex; overflow: hidden; }
-
-    /* ══ SLIDE LIST ═══════════════════════════════════════════════════════ */
-    .slide-list-col {
-      width: var(--sidebar);
-      flex-shrink: 0;
-      background: var(--white);
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column;
-      overflow: hidden;
-    }
-
-    .sl-top {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .sl-top h3 { font-size: 13px; font-weight: 700; color: var(--ink); }
-    .sl-count  { font-size: 11px; color: var(--muted); font-weight: 500; }
-
-    .add-slide-btn {
-      display: flex; align-items: center; gap: 5px;
-      padding: 6px 12px; border-radius: 7px;
-      background: var(--red-bg); border: 1px solid var(--red-br);
-      font: 600 12px 'DM Sans', sans-serif; color: var(--red);
-      cursor: pointer; transition: all .15s;
-    }
-    .add-slide-btn:hover { background: var(--red-br); }
-
-    .sl-list {
-      flex: 1; overflow-y: auto; padding: 10px;
-    }
-    .sl-list::-webkit-scrollbar { width: 4px; }
-    .sl-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    .slide-item {
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 10px 12px; margin-bottom: 6px;
-      background: var(--white); cursor: pointer;
-      transition: all .15s;
-      display: flex; align-items: center; gap: 10px;
-      user-select: none;
-    }
-    .slide-item:hover { border-color: #CBD5E1; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
-    .slide-item.active { border-color: var(--red); background: var(--red-bg); }
-    .slide-item.dragging { opacity: .4; }
-    .slide-item.drag-over { border-color: var(--red); border-style: dashed; }
-
-    .drag-handle {
-      cursor: grab; color: var(--muted); font-size: 14px;
-      flex-shrink: 0; padding: 2px 0;
-    }
-    .drag-handle:active { cursor: grabbing; }
-
-    .slide-thumb {
-      width: 52px; height: 34px; border-radius: 5px;
-      background: #E2E8F0; overflow: hidden; flex-shrink: 0;
-      position: relative;
-    }
-    .slide-thumb img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-    }
-    .slide-thumb-no-img {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; background: var(--bg);
-    }
-
-    .slide-meta { flex: 1; min-width: 0; }
-    .slide-meta-title {
-      font-size: 12px; font-weight: 600; color: var(--ink);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      margin-bottom: 2px;
-    }
-    .slide-meta-dur {
-      font-size: 11px; color: var(--muted);
-    }
-    .slide-item.active .slide-meta-title { color: var(--red); }
-
-    .slide-del {
-      width: 24px; height: 24px;
-      display: flex; align-items: center; justify-content: center;
-      border: none; background: none; cursor: pointer;
-      border-radius: 5px; color: var(--muted); font-size: 14px;
-      transition: all .15s; flex-shrink: 0;
-    }
-    .slide-del:hover { background: var(--red-bg); color: var(--red); }
-
-    /* ══ EDITOR ════════════════════════════════════════════════════════════ */
-    .editor-col {
-      flex: 1; display: flex; flex-direction: column; overflow: hidden;
-    }
-
-    .editor-tabs {
-      display: flex; align-items: center;
-      padding: 0 20px;
-      background: var(--white); border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .tab-btn {
-      padding: 14px 16px; font: 500 13px 'DM Sans', sans-serif;
-      color: var(--muted); border: none; background: none;
-      cursor: pointer; border-bottom: 2px solid transparent;
-      margin-bottom: -1px; transition: all .15s;
-    }
-    .tab-btn:hover { color: var(--ink); }
-    .tab-btn.active { color: var(--red); border-bottom-color: var(--red); font-weight: 600; }
-
-    .tab-content { display: none; flex: 1; overflow: hidden; }
-    .tab-content.active { display: flex; }
-
-    /* EDIT TAB */
-    .edit-form {
-      flex: 1; overflow-y: auto; padding: 24px;
-    }
-    .edit-form::-webkit-scrollbar { width: 4px; }
-    .edit-form::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    .form-row { margin-bottom: 20px; }
-    .form-row label {
-      display: block; font-size: 11px; font-weight: 700;
-      color: var(--sub); letter-spacing: .6px; text-transform: uppercase;
-      margin-bottom: 7px;
-    }
-    .form-input, .form-textarea, .form-select {
-      width: 100%; padding: 9px 12px;
-      border: 1px solid var(--border); border-radius: 8px;
-      font: 400 14px 'DM Sans', sans-serif; color: var(--ink);
-      background: var(--white); outline: none; transition: border-color .15s;
-    }
-    .form-input:focus, .form-textarea:focus, .form-select:focus {
-      border-color: #93C5FD;
-    }
-    .form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-    .form-hint { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
-
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-    /* image url + preview */
-    .img-row { display: flex; gap: 10px; align-items: flex-start; }
-    .img-row .form-input { flex: 1; }
-    .img-preview-thumb {
-      width: 72px; height: 48px; border-radius: 7px;
-      border: 1px solid var(--border); background: var(--bg);
-      object-fit: cover; flex-shrink: 0;
-    }
-
-    /* bullets editor */
-    .bullets-list { margin-bottom: 8px; }
-    .bullet-row {
-      display: flex; gap: 7px; align-items: center; margin-bottom: 6px;
-    }
-    .bullet-row input {
-      flex: 1; padding: 8px 11px;
-      border: 1px solid var(--border); border-radius: 7px;
-      font: 400 13px 'DM Sans', sans-serif; color: var(--ink);
-      outline: none; transition: border-color .15s;
-    }
-    .bullet-row input:focus { border-color: #93C5FD; }
-    .bullet-del-btn {
-      width: 28px; height: 28px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border); border-radius: 7px;
-      background: none; cursor: pointer; font-size: 13px; color: var(--muted);
-      transition: all .15s;
-    }
-    .bullet-del-btn:hover { background: var(--red-bg); color: var(--red); border-color: var(--red-br); }
-    .add-bullet-btn {
-      display: flex; align-items: center; gap: 5px;
-      font: 500 12px 'DM Sans', sans-serif; color: var(--sub);
-      background: none; border: 1px dashed var(--border);
-      padding: 7px 12px; border-radius: 7px; cursor: pointer;
-      transition: all .15s; width: 100%;
-    }
-    .add-bullet-btn:hover { border-color: var(--red); color: var(--red); }
-
-    /* SECTIONS editor */
-    .section-block {
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 14px; margin-bottom: 10px; background: var(--bg);
-    }
-    .section-block-top {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .section-block-top span {
-      font-size: 11px; font-weight: 700; color: var(--sub);
-      text-transform: uppercase; letter-spacing: .6px;
-    }
-
-    /* PREVIEW TAB */
-    .preview-wrap {
-      flex: 1; background: #1E293B;
-      display: flex; align-items: center; justify-content: center;
-      padding: 32px;
-    }
-
-    .preview-screen {
-      width: 100%; max-width: 900px;
-      aspect-ratio: 16/9;
-      border-radius: 10px; overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0,0,0,.5);
-      position: relative;
-      display: grid; grid-template-columns: 46% 54%;
-      background: var(--white);
-    }
-
-    .preview-photo {
-      position: relative; background: #E2E8F0; overflow: hidden;
-    }
-    .preview-photo img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-    }
-    .preview-photo::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to right, transparent 50%, #fff 100%);
-    }
-    .preview-no-img {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 48px; background: #F1F5F9;
-    }
-
-    .preview-body {
-      display: flex; align-items: center;
-      padding: 20px 28px 80px 20px;
-      background: var(--white);
-      overflow: hidden;
-    }
-    .preview-inner { width: 100%; }
-
-    .preview-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(14px, 2.4vw, 22px);
-      line-height: 1.2; color: var(--ink); margin-bottom: 10px;
-    }
-    .preview-sec-head {
-      font-size: clamp(8px, .9vw, 10px); font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1px;
-      color: #C8102E; margin-bottom: 4px; margin-top: 10px;
-    }
-    .preview-sec-text {
-      font-size: clamp(9px, 1.1vw, 12px); color: #374151; line-height: 1.5;
-    }
-    .preview-bul { list-style: none; }
-    .preview-bul li {
-      font-size: clamp(9px, 1.1vw, 12px); color: #374151;
-      padding: 2px 0 2px 14px; position: relative; line-height: 1.4;
-    }
-    .preview-bul li::before {
-      content: '›'; position: absolute; left: 0;
-      color: #C8102E; font-size: 14px; line-height: 1.2; font-weight: 700;
-    }
-
-    .preview-footer {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 52px;
-      display: grid; grid-template-columns: 1fr auto 1fr;
-      align-items: center; padding: 0 16px; gap: 0;
-      background: var(--white); border-top: 1px solid var(--border);
-    }
-    .pf-left  { display: flex; align-items: baseline; gap: 6px; }
-    .pf-city  { font-size: 9px; font-weight: 700; }
-    .pf-date  { font-size: 9px; color: var(--muted); }
-    .pf-mid   { display: flex; align-items: center; gap: 8px; }
-    .pf-div   { width: 1px; height: 24px; background: var(--border); }
-    .pf-time  { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -1px; }
-    .pf-right { display: flex; justify-content: flex-end; gap: 12px; }
-    .pf-wx    { display: flex; flex-direction: column; align-items: center; gap: 1px; }
-    .pf-wlbl  { font-size: 7px; font-weight: 600; color: var(--muted); }
-    .pf-wtmp  { font-size: 12px; font-weight: 700; }
-    .pf-wico  { font-size: 12px; }
-
-    /* ── empty state ── */
-    .editor-empty {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 12px; color: var(--muted);
-    }
-    .editor-empty-icon { font-size: 48px; opacity: .4; }
-    .editor-empty-text { font-size: 14px; font-weight: 500; }
-
-    /* toast */
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: var(--ink); color: white;
-      padding: 10px 20px; border-radius: 9px;
-      font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 24px rgba(0,0,0,.3);
-      opacity: 0; transition: opacity .2s;
-      pointer-events: none; z-index: 9000; white-space: nowrap;
-    }
-    .toast.show { opacity: 1; }
-  </style>
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:opacity .2s;pointer-events:none;z-index:8000;white-space:nowrap;}
+.toast.show{opacity:1;}
+</style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══════════════════════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="login-mark"></div>
-      <div>
-        <div class="login-brand">BiOOH</div>
-        <div class="login-tag">Admin Panel</div>
-      </div>
+  <div class="lcard">
+    <div class="llogo">
+      <div class="lmark"></div>
+      <div><div class="lbrand">BiOOH</div><div class="ltag">Admin Panel</div></div>
     </div>
     <h2>Entrar</h2>
-    <p>Digite a senha de acesso ao painel</p>
-    <div class="field">
+    <p>Acesso restrito ao painel de administracao</p>
+    <div class="lfield">
       <label>Senha</label>
-      <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"
-             onkeydown="if(event.key==='Enter') doLogin()" autofocus>
+      <input type="password" id="loginPass" placeholder="Digite a senha" autofocus
+             onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <div class="login-err" id="loginErr"></div>
-    <button class="btn-primary" onclick="doLogin()">Entrar →</button>
+    <div class="lerr" id="loginErr"></div>
+    <button class="lbtn" onclick="doLogin()">Entrar</button>
   </div>
 </div>
 
-<!-- ══ APP ════════════════════════════════════════════════════════════════ -->
-<div id="app" class="app-hidden">
+<!-- APP -->
+<div id="app" class="hidden">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="h-left">
-      <div class="h-brand">
-        <div class="h-mark"></div>
-        <span class="h-name">BiOOH</span>
-      </div>
-      <div class="h-sep"></div>
-      <span class="h-title">Admin — Slides</span>
+  <div class="hdr">
+    <div class="hdr-l">
+      <div class="hdr-brand"><div class="hdr-mark"></div><span class="hdr-name">BiOOH</span></div>
+      <div class="hdr-sep"></div>
+      <span class="hdr-title">Admin — Slides</span>
     </div>
-    <div class="h-right">
-      <span class="status-pill saved" id="statusPill">Salvo</span>
-      <button class="ghost-btn" onclick="doLogout()">Sair</button>
-      <button class="save-btn" id="saveBtn" onclick="savePlaylist()">
-        <span class="dot"></span> Publicar alterações
+    <div class="hdr-r">
+      <span class="pill pill-ok" id="statusPill">Pronto</span>
+      <button class="gbtn" onclick="doLogout()">Sair</button>
+      <button class="rbtn" id="saveBtn" onclick="savePlaylist()">
+        <span class="rdot" id="rdot"></span> Publicar
       </button>
     </div>
   </div>
 
-  <!-- LAYOUT -->
   <div class="layout">
 
-    <!-- SLIDE LIST -->
-    <div class="slide-list-col">
-      <div class="sl-top">
-        <div>
-          <h3>Slides</h3>
-          <div class="sl-count" id="slideCount">0 slides</div>
-        </div>
-        <button class="add-slide-btn" onclick="addSlide()">＋ Novo slide</button>
+    <!-- SIDEBAR -->
+    <div class="sbar">
+      <div class="sbar-top">
+        <div><h3>Slides</h3><div class="scount" id="scount">0 slides</div></div>
+        <button class="addbtn" onclick="addSlide()">+ Novo</button>
       </div>
-      <div class="sl-list" id="slideList"></div>
+      <div class="slist" id="slideList"></div>
     </div>
 
     <!-- EDITOR -->
-    <div class="editor-col" id="editorCol">
-
-      <!-- empty state -->
-      <div class="editor-empty" id="editorEmpty">
-        <div class="editor-empty-icon">📋</div>
-        <div class="editor-empty-text">Selecione um slide para editar</div>
+    <div class="ecol">
+      <div class="eempty" id="eempty">
+        <div class="eempty-ico">&#128203;</div>
+        <div class="eempty-txt">Selecione um slide para editar</div>
       </div>
 
-      <!-- tabs + form (hidden until slide selected) -->
-      <div id="editorMain" style="display:none; flex-direction:column; flex:1; overflow:hidden">
-
-        <div class="editor-tabs">
-          <button class="tab-btn active" onclick="switchTab('edit',this)">✏️ Editar</button>
-          <button class="tab-btn" onclick="switchTab('preview',this)">👁️ Preview</button>
+      <div id="emain" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+        <div class="etabs">
+          <button class="etab active" onclick="switchTab('edit',this)">Editar</button>
+          <button class="etab" onclick="switchTab('preview',this)">Preview TV</button>
         </div>
 
-        <!-- EDIT TAB -->
-        <div class="tab-content active" id="tab-edit">
-          <div class="edit-form" id="editForm">
+        <!-- EDIT -->
+        <div class="tcontent active" id="tab-edit">
+          <div class="eform">
 
-            <div class="form-row">
-              <label>Título principal</label>
-              <input class="form-input" id="fTitle" type="text" placeholder="Ex: Hipertensão: o inimigo silencioso" oninput="onFieldChange()">
+            <div class="frow">
+              <label>Titulo</label>
+              <input class="finput" id="fTitle" type="text" placeholder="Titulo do slide" oninput="onChange()">
             </div>
 
-            <div class="form-row">
+            <div class="frow">
               <label>Imagem (URL)</label>
-              <div class="img-row">
-                <input class="form-input" id="fImage" type="url"
-                       placeholder="https://images.unsplash.com/photo-…?w=1200&q=80"
-                       oninput="onImageChange()">
-                <img id="imgThumb" class="img-preview-thumb" src="" alt="" style="display:none">
+              <div class="imgrow">
+                <input class="finput" id="fImage" type="url" placeholder="https://images.unsplash.com/..." oninput="onImgChange()">
+                <img id="ithumb" class="ithumb" style="display:none" alt="">
               </div>
-              <div class="form-hint">Cole uma URL de imagem. Sugestão: <a href="https://unsplash.com" target="_blank" style="color:var(--red)">unsplash.com</a> (gratuito)</div>
+              <div class="fhint">Sugestao: unsplash.com (gratuito) — copie o link da imagem</div>
             </div>
 
-            <div class="form-row-2">
-              <div class="form-row" style="margin-bottom:0">
-                <label>Duração (segundos)</label>
-                <input class="form-input" id="fDuration" type="number" min="5" max="60" value="20" oninput="onFieldChange()">
+            <div class="frow2">
+              <div class="frow" style="margin-bottom:0">
+                <label>Duracao (segundos)</label>
+                <input class="finput" id="fDur" type="number" min="5" max="60" value="20" oninput="onChange()">
               </div>
-              <div class="form-row" style="margin-bottom:0">
-                <label>Badge / etiqueta</label>
-                <input class="form-input" id="fBadge" type="text" placeholder="Ex: URGENTE, Prevenção, Exame" oninput="onFieldChange()">
+              <div class="frow" style="margin-bottom:0">
+                <label>Etiqueta / Badge</label>
+                <input class="finput" id="fBadge" type="text" placeholder="Ex: Prevencao, Urgente" oninput="onChange()">
               </div>
             </div>
 
-            <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border)">
-              <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">
-                Seções de conteúdo
-              </div>
-              <div id="sectionsContainer"></div>
-              <button class="add-bullet-btn" onclick="addSection()" style="margin-top:6px">
-                ＋ Adicionar seção
-              </button>
+            <div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--border)">
+              <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">Secoes de conteudo</div>
+              <div id="secsContainer"></div>
+              <button class="badd sadd" onclick="addSection()">+ Adicionar secao</button>
             </div>
 
           </div>
         </div>
 
-        <!-- PREVIEW TAB -->
-        <div class="tab-content" id="tab-preview">
-          <div class="preview-wrap">
-            <div class="preview-screen" id="previewScreen">
-              <div class="preview-photo" id="previewPhoto">
-                <div class="preview-no-img" id="previewNoImg">🖼️</div>
-                <img id="previewImg" src="" alt="" style="display:none">
+        <!-- PREVIEW -->
+        <div class="tcontent" id="tab-preview">
+          <div class="pvwrap">
+            <div class="pvscreen">
+              <div class="pvphoto" id="pvphoto">
+                <div class="pvnoimg" id="pvnoimg">&#128444;</div>
+                <img id="pvimg" src="" alt="" style="display:none">
               </div>
-              <div class="preview-body">
-                <div class="preview-inner" id="previewInner"></div>
+              <div class="pvbody">
+                <div class="pvinner" id="pvinner"></div>
               </div>
-              <div class="preview-footer">
-                <div class="pf-left">
-                  <span class="pf-city">São Paulo</span>
-                  <span class="pf-date" id="pDate">SEG, 16 Fev</span>
-                </div>
-                <div class="pf-mid">
-                  <div class="pf-div"></div>
-                  <div class="pf-time" id="pTime">--:--</div>
-                  <div class="pf-div"></div>
-                </div>
-                <div class="pf-right">
-                  <div class="pf-wx"><div class="pf-wlbl">Hoje</div><div class="pf-wtmp">23°</div><div class="pf-wico">⛅</div></div>
-                  <div class="pf-wx"><div class="pf-wlbl">Terça</div><div class="pf-wtmp">25°</div><div class="pf-wico">☀️</div></div>
-                  <div class="pf-wx"><div class="pf-wlbl">Quarta</div><div class="pf-wtmp">22°</div><div class="pf-wico">🌧️</div></div>
+              <div class="pvfooter">
+                <div class="pvfl"><span class="pvfl-city">Sao Paulo</span><span class="pvfl-date" id="pvdate"></span></div>
+                <div class="pvfm"><div class="pvdiv"></div><div class="pvtime" id="pvtime">--:--</div><div class="pvdiv"></div></div>
+                <div class="pvfr">
+                  <div class="pvwx"><div class="pvwx-l">Hoje</div><div class="pvwx-t">23</div><div class="pvwx-i">&#9925;</div></div>
+                  <div class="pvwx"><div class="pvwx-l">Terca</div><div class="pvwx-t">25</div><div class="pvwx-i">&#9728;</div></div>
+                  <div class="pvwx"><div class="pvwx-l">Quarta</div><div class="pvwx-t">22</div><div class="pvwx-i">&#127783;</div></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -591,439 +302,416 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── CONFIG ──────────────────────────────────────────────────────────────────
-var API_BASE = (function(){
-  var p = new URLSearchParams(location.search);
-  return p.get('api') || 'https://biooh-backend-1.onrender.com';
-})();
-var CLINIC = (function(){
-  var p = new URLSearchParams(location.search);
-  return p.get('clinic') || 'default';
-})();
-var ADMIN_PASS = 'biooh2024';
+var API_BASE = (function(){var p=new URLSearchParams(location.search);return p.get('api')||'https://biooh-backend-1.onrender.com';})();
+var CLINIC   = (function(){var p=new URLSearchParams(location.search);return p.get('clinic')||'default';})();
+var PASS     = 'biooh2024';
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
-var slides   = [];
-var selIdx   = -1;
-var isDirty  = false;
+var slides = [];
+var sel    = -1;
+var dirty  = false;
+var dragSrc = -1;
 
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
-function doLogin(){
+// ── LOGIN ──────────────────────────────────────────────────────────────────
+function doLogin() {
   var p = document.getElementById('loginPass').value;
-  if(p === ADMIN_PASS){
+  var err = document.getElementById('loginErr');
+  if (p === PASS) {
+    err.textContent = '';
     document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('app').classList.remove('app-hidden');
+    document.getElementById('app').classList.remove('hidden');
     loadPlaylist();
   } else {
-    document.getElementById('loginErr').textContent = 'Senha incorreta. Tente novamente.';
+    err.textContent = 'Senha incorreta.';
     document.getElementById('loginPass').value = '';
     document.getElementById('loginPass').focus();
   }
 }
 
-function doLogout(){
+function doLogout() {
   document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('app').classList.add('app-hidden');
+  document.getElementById('app').classList.add('hidden');
   document.getElementById('loginPass').value = '';
   document.getElementById('loginErr').textContent = '';
 }
 
-// ─── LOAD PLAYLIST ───────────────────────────────────────────────────────────
-function loadPlaylist(){
-  var url = API_BASE + '/api/playlist?clinic=' + encodeURIComponent(CLINIC);
-  setStatus('saving','Carregando…');
-  fetch(url)
-    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function(data){
-      slides = (data && data.items) ? JSON.parse(JSON.stringify(data.items)) : getDefaultSlides();
-      selIdx = -1;
+// ── LOAD / SAVE ────────────────────────────────────────────────────────────
+function loadPlaylist() {
+  setStatus('pending', 'Carregando...');
+  fetch(API_BASE + '/api/playlist?clinic=' + encodeURIComponent(CLINIC))
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+    .then(function(d){
+      slides = (d && d.items && d.items.length) ? d.items : defaultSlides();
+      sel = -1;
       renderList();
-      setStatus('saved','Carregado');
-      showToast('Playlist carregada do servidor');
+      setStatus('ok', 'Carregado');
+      toast('Playlist carregada');
     })
     .catch(function(){
-      slides = getDefaultSlides();
+      slides = defaultSlides();
       renderList();
-      setStatus('saved','Modo offline');
-      showToast('Servidor indisponível — usando conteúdo local');
+      setStatus('ok', 'Modo offline');
+      toast('Servidor indisponivel - conteudo padrao carregado');
     });
 }
 
-// ─── SAVE ────────────────────────────────────────────────────────────────────
-function savePlaylist(){
-  setStatus('saving','Publicando…');
+function savePlaylist() {
+  setStatus('pending', 'Publicando...');
   document.getElementById('saveBtn').disabled = true;
-
-  var payload = { items: slides };
-  var url = API_BASE + '/api/playlist?clinic=' + encodeURIComponent(CLINIC);
-
-  fetch(url, {
+  fetch(API_BASE + '/api/playlist?clinic=' + encodeURIComponent(CLINIC), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({items: slides})
   })
-    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function(){
-      isDirty = false;
-      markClean();
-      setStatus('saved','Publicado ✓');
-      showToast('Slides publicados com sucesso!');
-    })
-    .catch(function(e){
-      setStatus('err','Erro ao salvar');
-      showToast('Erro ao publicar — verifique a conexão');
-    })
-    .finally(function(){
-      document.getElementById('saveBtn').disabled = false;
-    });
+  .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+  .then(function(){
+    dirty = false;
+    document.getElementById('rdot').classList.remove('dirty');
+    setStatus('ok', 'Publicado');
+    toast('Slides publicados com sucesso!');
+  })
+  .catch(function(){
+    setStatus('err', 'Erro ao salvar');
+    toast('Erro ao publicar - verifique conexao');
+  })
+  .finally(function(){
+    document.getElementById('saveBtn').disabled = false;
+  });
 }
 
-function markDirty(){
-  isDirty = true;
-  document.getElementById('saveBtn').classList.add('dirty');
-  setStatus('saving','Alterações não salvas');
-}
-function markClean(){
-  isDirty = false;
-  document.getElementById('saveBtn').classList.remove('dirty');
-}
-
-function setStatus(type, txt){
+function setStatus(type, txt) {
   var el = document.getElementById('statusPill');
-  el.className = 'status-pill ' + type;
+  el.className = 'pill ' + (type === 'ok' ? 'pill-ok' : type === 'pending' ? 'pill-pending' : 'pill-err');
   el.textContent = txt;
 }
 
-// ─── RENDER LIST ──────────────────────────────────────────────────────────────
-function renderList(){
-  var list = document.getElementById('slideList');
-  var count = document.getElementById('slideCount');
-  count.textContent = slides.length + ' slide' + (slides.length !== 1 ? 's' : '');
+function markDirty() {
+  dirty = true;
+  document.getElementById('rdot').classList.add('dirty');
+  setStatus('pending', 'Nao salvo');
+}
 
-  if(!slides.length){
-    list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhum slide.<br>Clique em + Novo slide.</div>';
+// ── RENDER LIST ────────────────────────────────────────────────────────────
+function renderList() {
+  var list = document.getElementById('slideList');
+  document.getElementById('scount').textContent = slides.length + ' slide' + (slides.length !== 1 ? 's' : '');
+  if (!slides.length) {
+    list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhum slide. Clique em + Novo.</div>';
     return;
   }
-
-  list.innerHTML = slides.map(function(s, i){
-    var active = i === selIdx ? 'active' : '';
+  var html = '';
+  for (var i = 0; i < slides.length; i++) {
+    var s = slides[i];
+    var active = i === sel ? 'active' : '';
     var dur = Math.round((s.duration || s.dur || 20000) / 1000);
-    var thumb = s.image || s.img || '';
-    var thumbHtml = thumb
-      ? '<img src="'+esc(thumb)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
-      : '<div class="slide-thumb-no-img">📄</div>';
-
-    return '<div class="slide-item '+active+'" data-idx="'+i+'"'+
-      ' draggable="true"'+
-      ' onclick="selectSlide('+i+')"'+
-      ' ondragstart="dragStart(event,'+i+')"'+
-      ' ondragover="dragOver(event,'+i+')"'+
-      ' ondragleave="dragLeave(event)"'+
-      ' ondrop="dragDrop(event,'+i+')"'+
-      ' ondragend="dragEnd()"'+
-    '>'+
-      '<span class="drag-handle" title="Arrastar para reordenar">⠿</span>'+
-      '<div class="slide-thumb">'+thumbHtml+'</div>'+
-      '<div class="slide-meta">'+
-        '<div class="slide-meta-title">'+esc(s.title || '(Sem título)')+'</div>'+
-        '<div class="slide-meta-dur">'+dur+'s</div>'+
-      '</div>'+
-      '<button class="slide-del" onclick="deleteSlide(event,'+i+')" title="Remover">✕</button>'+
-    '</div>';
-  }).join('');
+    var img = s.image || s.img || '';
+    var thumbHtml = img
+      ? '<img src="' + img + '" alt="" onerror="this.style.display=\'none\'">'
+      : '&#128196;';
+    html += '<div class="sitem ' + active + '" data-i="' + i + '"'
+      + ' draggable="true"'
+      + ' onclick="selectSlide(' + i + ')"'
+      + ' ondragstart="onDragStart(event,' + i + ')"'
+      + ' ondragover="onDragOver(event,' + i + ')"'
+      + ' ondragleave="onDragLeave(event)"'
+      + ' ondrop="onDrop(event,' + i + ')"'
+      + ' ondragend="onDragEnd()"'
+      + '>'
+      + '<span class="shandle">&#8942;</span>'
+      + '<div class="sthumb">' + thumbHtml + '</div>'
+      + '<div class="smeta">'
+      + '<div class="smeta-title">' + esc(s.title || '(Sem titulo)') + '</div>'
+      + '<div class="smeta-dur">' + dur + 's</div>'
+      + '</div>'
+      + '<button class="sdel" onclick="delSlide(event,' + i + ')">&#10005;</button>'
+      + '</div>';
+  }
+  list.innerHTML = html;
 }
 
-// ─── SELECT SLIDE ─────────────────────────────────────────────────────────────
-function selectSlide(idx){
-  selIdx = idx;
+// ── SELECT ─────────────────────────────────────────────────────────────────
+function selectSlide(i) {
+  sel = i;
   renderList();
-  loadEditor(slides[idx]);
-  document.getElementById('editorEmpty').style.display = 'none';
-  var em = document.getElementById('editorMain');
+  loadEditor(slides[i]);
+  document.getElementById('eempty').style.display = 'none';
+  var em = document.getElementById('emain');
   em.style.display = 'flex';
+  em.style.flexDirection = 'column';
 }
 
-function loadEditor(s){
-  document.getElementById('fTitle').value    = s.title || s.t || '';
-  document.getElementById('fImage').value    = s.image || s.img || '';
-  document.getElementById('fDuration').value = Math.round((s.duration || s.dur || 20000)/1000);
-  document.getElementById('fBadge').value    = s.badge || '';
-
-  onImageChange();
-  renderSections(s.sections || s.secs || []);
+function loadEditor(s) {
+  document.getElementById('fTitle').value = s.title || '';
+  document.getElementById('fImage').value = s.image || s.img || '';
+  document.getElementById('fDur').value   = Math.round((s.duration || s.dur || 20000) / 1000);
+  document.getElementById('fBadge').value = s.badge || '';
+  onImgChange();
+  renderSecs(s.sections || s.secs || []);
   updatePreview();
 }
 
-// ─── FIELD CHANGES ───────────────────────────────────────────────────────────
-function onFieldChange(){
-  if(selIdx < 0) return;
-  flushToSlide();
+// ── FIELD CHANGES ──────────────────────────────────────────────────────────
+function onChange() {
+  if (sel < 0) return;
+  flush();
   renderList();
   updatePreview();
   markDirty();
 }
 
-function onImageChange(){
+function onImgChange() {
   var url = document.getElementById('fImage').value.trim();
-  var thumb = document.getElementById('imgThumb');
-  if(url){ thumb.src = url; thumb.style.display = 'block'; }
-  else    { thumb.style.display = 'none'; }
-  onFieldChange();
+  var th = document.getElementById('ithumb');
+  if (url) { th.src = url; th.style.display = 'block'; }
+  else      { th.style.display = 'none'; }
+  onChange();
 }
 
-function flushToSlide(){
-  if(selIdx < 0) return;
-  var s = slides[selIdx];
+function flush() {
+  if (sel < 0) return;
+  var s = slides[sel];
   s.title    = document.getElementById('fTitle').value.trim();
   s.image    = document.getElementById('fImage').value.trim();
   s.img      = s.image;
-  s.duration = parseInt(document.getElementById('fDuration').value) * 1000 || 20000;
+  s.duration = (parseInt(document.getElementById('fDur').value) || 20) * 1000;
   s.dur      = s.duration;
   s.badge    = document.getElementById('fBadge').value.trim();
-  s.sections = readSections();
+  s.sections = readSecs();
   s.secs     = s.sections;
 }
 
-// ─── SECTIONS ─────────────────────────────────────────────────────────────────
-function renderSections(secs){
-  var container = document.getElementById('sectionsContainer');
-  container.innerHTML = '';
-  (secs||[]).forEach(function(sec, si){
-    container.appendChild(buildSectionBlock(sec, si));
-  });
+// ── SECTIONS ───────────────────────────────────────────────────────────────
+function renderSecs(secs) {
+  var c = document.getElementById('secsContainer');
+  c.innerHTML = '';
+  for (var i = 0; i < secs.length; i++) {
+    c.appendChild(buildSecBlock(secs[i], i));
+  }
 }
 
-function buildSectionBlock(sec, si){
-  var div = document.createElement('div');
-  div.className = 'section-block';
-  div.dataset.si = si;
+function buildSecBlock(sec, si) {
+  var d = document.createElement('div');
+  d.className = 'sec-block';
+  d.dataset.si = si;
 
-  var bulletsHtml = (sec.b||sec.bullets||[]).map(function(b, bi){
-    return '<div class="bullet-row">'+
-      '<input type="text" value="'+esc(b)+'" placeholder="Ponto '+（bi+1)+'…" oninput="onFieldChange()">'+
-      '<button class="bullet-del-btn" onclick="removeBullet('+si+','+bi+')" title="Remover">✕</button>'+
-    '</div>';
-  }).join('');
+  var bullets = sec.b || sec.bullets || [];
+  var bHtml = '';
+  for (var bi = 0; bi < bullets.length; bi++) {
+    bHtml += '<div class="brow">'
+      + '<input type="text" value="' + esc(bullets[bi]) + '" placeholder="Bullet ' + (bi + 1) + '" oninput="onChange()">'
+      + '<button class="bdel" onclick="removeBullet(' + si + ',' + bi + ')">&#10005;</button>'
+      + '</div>';
+  }
 
-  div.innerHTML =
-    '<div class="section-block-top">'+
-      '<span>Seção '+(si+1)+'</span>'+
-      '<button class="bullet-del-btn" onclick="removeSection('+si+')" title="Remover seção">✕ Remover seção</button>'+
-    '</div>'+
-    '<div class="form-row" style="margin-bottom:10px">'+
-      '<label>Título da seção</label>'+
-      '<input class="form-input" type="text" data-sh="1" value="'+esc(sec.h||sec.heading||'')+'" placeholder="Ex: Sintomas, O que é?, Prevenção…" oninput="onFieldChange()">'+
-    '</div>'+
-    '<div class="form-row" style="margin-bottom:10px">'+
-      '<label>Texto introdutório (opcional)</label>'+
-      '<textarea class="form-textarea" data-st="1" placeholder="Explicação de 1-3 linhas…" oninput="onFieldChange()">'+esc(sec.t||sec.text||'')+'</textarea>'+
-    '</div>'+
-    '<div class="form-row" style="margin-bottom:6px"><label>Bullets</label></div>'+
-    '<div class="bullets-list" data-bl="1">'+bulletsHtml+'</div>'+
-    '<button class="add-bullet-btn" onclick="addBullet('+si+')">＋ Adicionar bullet</button>';
+  d.innerHTML = '<div class="sec-block-top">'
+    + '<span>Secao ' + (si + 1) + '</span>'
+    + '<button class="sec-del" onclick="removeSec(' + si + ')">Remover secao</button>'
+    + '</div>'
+    + '<div class="frow" style="margin-bottom:10px">'
+    + '<label>Titulo da secao</label>'
+    + '<input class="finput" type="text" data-sh="1" value="' + esc(sec.h || sec.heading || '') + '" placeholder="Ex: O que e?, Sintomas, Prevencao" oninput="onChange()">'
+    + '</div>'
+    + '<div class="frow" style="margin-bottom:10px">'
+    + '<label>Texto introdutorio (opcional)</label>'
+    + '<textarea class="ftextarea" data-st="1" placeholder="Explicacao breve..." oninput="onChange()">' + esc(sec.t || sec.text || '') + '</textarea>'
+    + '</div>'
+    + '<div class="frow" style="margin-bottom:6px"><label>Bullets</label></div>'
+    + '<div data-bl="1">' + bHtml + '</div>'
+    + '<button class="badd" onclick="addBullet(' + si + ')">+ Adicionar bullet</button>';
 
-  return div;
+  return d;
 }
 
-function readSections(){
+function readSecs() {
   var secs = [];
-  var blocks = document.querySelectorAll('.section-block');
-  blocks.forEach(function(block){
-    var h  = block.querySelector('[data-sh]').value.trim();
-    var t  = block.querySelector('[data-st]').value.trim();
-    var bl = block.querySelectorAll('[data-bl] input');
-    var b  = [];
-    bl.forEach(function(inp){ if(inp.value.trim()) b.push(inp.value.trim()); });
-    secs.push({ h:h, t:t, b:b, heading:h, text:t, bullets:b });
-  });
+  var blocks = document.querySelectorAll('.sec-block');
+  for (var i = 0; i < blocks.length; i++) {
+    var block = blocks[i];
+    var h = block.querySelector('[data-sh]').value.trim();
+    var t = block.querySelector('[data-st]').value.trim();
+    var inputs = block.querySelectorAll('[data-bl] input');
+    var b = [];
+    for (var j = 0; j < inputs.length; j++) {
+      if (inputs[j].value.trim()) b.push(inputs[j].value.trim());
+    }
+    secs.push({h:h, t:t, b:b, heading:h, text:t, bullets:b});
+  }
   return secs;
 }
 
-function addSection(){
-  if(selIdx < 0) return;
-  flushToSlide();
-  var s = slides[selIdx];
-  s.sections = s.sections || [];
-  s.sections.push({ h:'', t:'', b:[] });
+function addSection() {
+  if (sel < 0) return;
+  flush();
+  slides[sel].sections = slides[sel].sections || [];
+  slides[sel].sections.push({h:'', t:'', b:[]});
+  slides[sel].secs = slides[sel].sections;
+  renderSecs(slides[sel].sections);
+  markDirty();
+}
+
+function removeSec(si) {
+  if (sel < 0) return;
+  flush();
+  slides[sel].sections.splice(si, 1);
+  slides[sel].secs = slides[sel].sections;
+  renderSecs(slides[sel].sections);
+  updatePreview();
+  markDirty();
+}
+
+function addBullet(si) {
+  if (sel < 0) return;
+  flush();
+  if (!slides[sel].sections[si].b) slides[sel].sections[si].b = [];
+  slides[sel].sections[si].b.push('');
+  slides[sel].sections[si].bullets = slides[sel].sections[si].b;
+  slides[sel].secs = slides[sel].sections;
+  renderSecs(slides[sel].sections);
+  markDirty();
+}
+
+function removeBullet(si, bi) {
+  if (sel < 0) return;
+  flush();
+  slides[sel].sections[si].b.splice(bi, 1);
+  slides[sel].sections[si].bullets = slides[sel].sections[si].b;
+  slides[sel].secs = slides[sel].sections;
+  renderSecs(slides[sel].sections);
+  updatePreview();
+  markDirty();
+}
+
+// ── ADD / DELETE ───────────────────────────────────────────────────────────
+function addSlide() {
+  var s = {title:'Novo slide', image:'', img:'', duration:20000, dur:20000, badge:'',
+    sections:[{h:'O que e?', t:'', b:[]}]};
   s.secs = s.sections;
-  renderSections(s.sections);
-  markDirty();
-}
-
-function removeSection(si){
-  if(selIdx < 0) return;
-  flushToSlide();
-  slides[selIdx].sections.splice(si, 1);
-  slides[selIdx].secs = slides[selIdx].sections;
-  renderSections(slides[selIdx].sections);
-  updatePreview();
-  markDirty();
-}
-
-function addBullet(si){
-  if(selIdx < 0) return;
-  flushToSlide();
-  slides[selIdx].sections[si].b.push('');
-  slides[selIdx].sections[si].bullets = slides[selIdx].sections[si].b;
-  slides[selIdx].secs = slides[selIdx].sections;
-  renderSections(slides[selIdx].sections);
-  markDirty();
-}
-
-function removeBullet(si, bi){
-  if(selIdx < 0) return;
-  flushToSlide();
-  slides[selIdx].sections[si].b.splice(bi,1);
-  slides[selIdx].sections[si].bullets = slides[selIdx].sections[si].b;
-  slides[selIdx].secs = slides[selIdx].sections;
-  renderSections(slides[selIdx].sections);
-  updatePreview();
-  markDirty();
-}
-
-// ─── ADD / DELETE ─────────────────────────────────────────────────────────────
-function addSlide(){
-  var newSlide = {
-    title: 'Novo slide',
-    image: '', img: '',
-    duration: 20000, dur: 20000,
-    badge: '',
-    sections: [{ h:'O que é?', t:'', b:[] }],
-    secs:     [{ h:'O que é?', t:'', b:[] }]
-  };
-  slides.push(newSlide);
+  slides.push(s);
   selectSlide(slides.length - 1);
   markDirty();
 }
 
-function deleteSlide(e, idx){
+function delSlide(e, i) {
   e.stopPropagation();
-  if(!confirm('Remover este slide?')) return;
-  slides.splice(idx, 1);
-  if(selIdx >= slides.length) selIdx = slides.length - 1;
-  if(selIdx >= 0) selectSlide(selIdx);
+  if (!confirm('Remover este slide?')) return;
+  slides.splice(i, 1);
+  if (sel >= slides.length) sel = slides.length - 1;
+  if (sel >= 0) selectSlide(sel);
   else {
-    selIdx = -1;
-    document.getElementById('editorEmpty').style.display = 'flex';
-    document.getElementById('editorMain').style.display = 'none';
+    sel = -1;
+    document.getElementById('eempty').style.display = 'flex';
+    document.getElementById('emain').style.display = 'none';
   }
   renderList();
   markDirty();
 }
 
-// ─── DRAG & DROP REORDER ──────────────────────────────────────────────────────
-var dragSrc = -1;
-function dragStart(e, idx){ dragSrc = idx; e.currentTarget.classList.add('dragging'); }
-function dragOver(e, idx){
+// ── DRAG & DROP ────────────────────────────────────────────────────────────
+function onDragStart(e, i) { dragSrc = i; e.currentTarget.classList.add('dragging'); }
+function onDragOver(e, i)  {
   e.preventDefault();
-  document.querySelectorAll('.slide-item').forEach(function(el){ el.classList.remove('drag-over'); });
-  if(idx !== dragSrc) e.currentTarget.classList.add('drag-over');
+  document.querySelectorAll('.sitem').forEach(function(el){ el.classList.remove('dragover'); });
+  if (i !== dragSrc) e.currentTarget.classList.add('dragover');
 }
-function dragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
-function dragEnd(){
-  document.querySelectorAll('.slide-item').forEach(function(el){
-    el.classList.remove('dragging','drag-over');
-  });
-}
-function dragDrop(e, idx){
+function onDragLeave(e)    { e.currentTarget.classList.remove('dragover'); }
+function onDragEnd()       { document.querySelectorAll('.sitem').forEach(function(el){ el.classList.remove('dragging','dragover'); }); }
+function onDrop(e, i) {
   e.preventDefault();
-  if(dragSrc < 0 || dragSrc === idx) return;
+  if (dragSrc < 0 || dragSrc === i) return;
   var moved = slides.splice(dragSrc, 1)[0];
-  slides.splice(idx, 0, moved);
-  selIdx = idx;
-  dragSrc = -1;
+  slides.splice(i, 0, moved);
+  sel = i; dragSrc = -1;
   renderList();
   markDirty();
-  showToast('Slides reordenados');
+  toast('Slides reordenados');
 }
 
-// ─── PREVIEW ─────────────────────────────────────────────────────────────────
-function updatePreview(){
-  if(selIdx < 0) return;
-  flushToSlide();
-  var s = slides[selIdx];
-
-  // image
+// ── PREVIEW ────────────────────────────────────────────────────────────────
+function updatePreview() {
+  if (sel < 0) return;
+  flush();
+  var s = slides[sel];
   var img = s.image || s.img || '';
-  var pImg = document.getElementById('previewImg');
-  var pNoImg = document.getElementById('previewNoImg');
-  if(img){ pImg.src = img; pImg.style.display = 'block'; pNoImg.style.display = 'none'; }
-  else   { pImg.style.display = 'none'; pNoImg.style.display = 'flex'; }
+  var pi = document.getElementById('pvimg');
+  var pn = document.getElementById('pvnoimg');
+  if (img) { pi.src = img; pi.style.display = 'block'; pn.style.display = 'none'; }
+  else      { pi.style.display = 'none'; pn.style.display = 'flex'; }
 
-  // text
-  var inner = document.getElementById('previewInner');
-  var secs  = s.sections || s.secs || [];
-  var secsHtml = secs.map(function(sec){
-    var bHtml = (sec.b||sec.bullets||[]).map(function(b){
-      return '<li>'+esc(b)+'</li>';
-    }).join('');
-    return (sec.h ? '<div class="preview-sec-head">'+esc(sec.h)+'</div>' : '')+
-           (sec.t ? '<p class="preview-sec-text">'+esc(sec.t)+'</p>' : '')+
-           (bHtml ? '<ul class="preview-bul">'+bHtml+'</ul>' : '');
-  }).join('');
-
-  inner.innerHTML =
-    '<div class="preview-title">'+esc(s.title||'')+'</div>'+secsHtml;
+  var secs = s.sections || s.secs || [];
+  var sh = '';
+  for (var i = 0; i < secs.length; i++) {
+    var sec = secs[i];
+    if (sec.h) sh += '<div class="pvsh">' + esc(sec.h) + '</div>';
+    if (sec.t) sh += '<p class="pvst">' + esc(sec.t) + '</p>';
+    var b = sec.b || sec.bullets || [];
+    if (b.length) {
+      sh += '<ul class="pvbul">';
+      for (var j = 0; j < b.length; j++) sh += '<li>' + esc(b[j]) + '</li>';
+      sh += '</ul>';
+    }
+  }
+  document.getElementById('pvinner').innerHTML = '<div class="pvtitle">' + esc(s.title || '') + '</div>' + sh;
 }
 
-// ─── TABS ─────────────────────────────────────────────────────────────────────
-function switchTab(name, btn){
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+// ── TABS ───────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.etab').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tcontent').forEach(function(t){ t.classList.remove('active'); });
   btn.classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
-  if(name === 'preview') updatePreview();
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'preview') updatePreview();
 }
 
-// ─── CLOCK ────────────────────────────────────────────────────────────────────
-var DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-var MONS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-function tick(){
+// ── CLOCK ──────────────────────────────────────────────────────────────────
+var DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+var MONS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function tick() {
   var d = new Date();
-  var t = document.getElementById('pTime');
-  var dt = document.getElementById('pDate');
-  if(t)  t.textContent  = d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  if(dt) dt.textContent = DAYS[d.getDay()]+', '+d.getDate()+' '+MONS[d.getMonth()];
+  var t  = document.getElementById('pvtime');
+  var dt = document.getElementById('pvdate');
+  if (t)  t.textContent  = d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  if (dt) dt.textContent = DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONS[d.getMonth()];
 }
-tick(); setInterval(tick,1000);
+tick(); setInterval(tick, 1000);
 
-// ─── TOAST ────────────────────────────────────────────────────────────────────
-function showToast(msg){
+// ── TOAST ──────────────────────────────────────────────────────────────────
+function toast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(function(){ t.classList.remove('show'); }, 2800);
 }
 
-// ─── UTILS ────────────────────────────────────────────────────────────────────
-function esc(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function getDefaultSlides(){
+function defaultSlides() {
   return [
-    { title:'Cuidar do coração começa no dia a dia', image:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&q=75', duration:20000, dur:20000, badge:'Prevenção',
-      sections:[
-        { h:'O que é?', t:'Doenças cardiovasculares afetam coração e vasos sanguíneos. Segundo a OMS, são a principal causa de mortes no mundo — e até 80% dos casos são evitáveis.', b:[] },
-        { h:'Hábitos que protegem', b:['Movimente-se pelo menos 30 minutos por dia','Prefira alimentos naturais e variados','Consulte seu médico regularmente'] }
-      ]
+    {title:'Cuidar do coracao comeca no dia a dia',
+     image:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&q=75',
+     duration:20000, dur:20000, badge:'Prevencao',
+     sections:[
+       {h:'O que sao doencas cardiovasculares?', t:'Afetam o coracao e vasos sanguineos. Segundo a OMS, sao a principal causa de mortes no mundo - e ate 80% dos casos sao evitaveis com mudancas de habito.', b:[], heading:'O que sao doencas cardiovasculares?', text:'', bullets:[]},
+       {h:'Habitos que protegem', t:'', b:['Movimente-se pelo menos 30 minutos por dia','Prefira alimentos naturais','Consulte seu medico regularmente'], heading:'Habitos que protegem', text:'', bullets:['Movimente-se pelo menos 30 minutos por dia','Prefira alimentos naturais','Consulte seu medico regularmente']}
+     ]
     },
-    { title:'Hipertensão: o inimigo que age em silêncio', image:'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1200&q=75', duration:22000, dur:22000, badge:'Atenção',
-      sections:[
-        { h:'O que é?', t:'A pressão arterial elevada acima de 140/90 mmHg sobrecarrega o coração e danifica os vasos ao longo do tempo — muitas vezes sem qualquer sintoma.', b:[] },
-        { h:'Sintomas possíveis', b:['Dor de cabeça pela manhã','Tontura','Visão turva','Maioria não tem sintomas'] },
-        { h:'Como cuidar', b:['Reduza o sal','Pratique exercícios','Meça a pressão regularmente'] }
-      ]
+    {title:'Hipertensao: o inimigo silencioso',
+     image:'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1200&q=75',
+     duration:22000, dur:22000, badge:'Atencao',
+     sections:[
+       {h:'O que e?', t:'A pressao arterial elevada acima de 140/90 mmHg sobrecarrega o coracao e danifica os vasos - muitas vezes sem qualquer sintoma.', b:[], heading:'O que e?', text:'', bullets:[]},
+       {h:'Como cuidar', t:'', b:['Reduza o sal','Pratique exercicios regularmente','Meca a pressao com frequencia'], heading:'Como cuidar', text:'', bullets:['Reduza o sal','Pratique exercicios regularmente','Meca a pressao com frequencia']}
+     ]
     }
   ];
 }
 
-// keyboard shortcut: Ctrl+S saves
+// Ctrl+S para salvar
 document.addEventListener('keydown', function(e){
-  if((e.ctrlKey||e.metaKey) && e.key === 's'){ e.preventDefault(); savePlaylist(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); savePlaylist(); }
 });
 </script>
 </body>
 </html>
-
 
