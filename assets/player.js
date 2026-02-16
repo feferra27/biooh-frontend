@@ -19,155 +19,220 @@
   var API = params.api || 'http://localhost:4000';
   var state = { playlist: [], idx: -1, timer: null, brand: 'BiOOH' };
 
-  // 15 SLIDES ESTILO PATIENTPOINT
+  // 15 SLIDES COM CONTEÚDO COMPLETO
   var DEFAULT_CONTENT = [
-    // SLIDE 1: Prevenção
+    // SLIDE 1
     {
-      type: 'fullImage',
       title: 'Cuidar do coração é mais fácil do que parece',
-      subtitle: 'Pequenas mudanças diárias reduzem até 80% o risco cardiovascular',
-      image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920&q=80',
-      textOverlay: 'Movimente-se • Coma bem • Controle estresse • Pare de fumar • Faça exames',
-      duration: 18000
-    },
-
-    // SLIDE 2: Colesterol
-    {
-      type: 'fullImage',
-      title: 'Entenda o Colesterol',
-      subtitle: 'LDL (ruim) acumula nas artérias • HDL (bom) limpa as artérias',
-      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1920&q=80',
-      textOverlay: 'Cheque seu perfil lipídico ao menos 1 vez ao ano',
-      duration: 20000
-    },
-
-    // SLIDE 3: Hipertensão
-    {
-      type: 'fullImage',
-      title: 'A pressão alta não dá sinais',
-      subtitle: '1 em cada 3 adultos tem hipertensão',
-      image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1920&q=80',
-      textOverlay: 'Pode causar infarto e AVC • Medir regularmente é a melhor defesa',
-      duration: 18000
-    },
-
-    // SLIDE 4: Exercício
-    {
-      type: 'fullImage',
-      title: 'Quanto exercício é suficiente?',
-      subtitle: '150 minutos por semana de caminhada OU 75 minutos de corrida',
-      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1920&q=80',
-      textOverlay: 'Inclua fortalecimento muscular 2x por semana',
-      duration: 20000
-    },
-
-    // SLIDE 5: Prato Saudável
-    {
-      type: 'fullImage',
-      title: 'Seu prato influencia seu coração',
-      subtitle: '50% vegetais • 25% proteína magra • 25% carboidratos integrais',
-      image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80',
-      textOverlay: 'Evite: excesso de sal, frituras e ultraprocessados',
-      duration: 20000
-    },
-
-    // SLIDE 6: Sal
-    {
-      type: 'fullImage',
-      title: 'Menos sódio, mais vida',
-      subtitle: 'Prove alimentos antes de adicionar sal',
-      image: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?w=1920&q=80',
-      textOverlay: 'Use ervas, limão e especiarias • Evite temperos prontos e embutidos',
-      duration: 18000
-    },
-
-    // SLIDE 7: Estresse
-    {
-      type: 'fullImage',
-      title: 'Cuide da mente para proteger o coração',
-      subtitle: 'Estresse crônico aumenta pressão e inflamação',
-      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1920&q=80',
-      textOverlay: 'Respiração 4-7-8 • Pausas no dia • Sono regular • Atividades relaxantes',
-      duration: 18000
-    },
-
-    // SLIDE 8: Sono
-    {
-      type: 'fullImage',
-      title: 'Dormir bem faz diferença',
-      subtitle: '7-9 horas por noite protegem seu coração',
-      image: 'https://images.unsplash.com/photo-1541480551145-2370a440d585?w=1920&q=80',
-      textOverlay: 'Controla pressão • Regula hormônios • Reduz diabetes • Evite telas 1h antes',
-      duration: 18000
-    },
-
-    // SLIDE 9: Fumo
-    {
-      type: 'fullImage',
-      title: 'Por que parar de fumar é urgente',
-      subtitle: 'Aumenta pressão, frequência cardíaca e formação de placas',
-      image: 'https://images.unsplash.com/photo-1605973029521-8154da591cc7?w=1920&q=80',
-      textOverlay: 'Parar reduz risco de infarto em poucas semanas',
-      duration: 18000
-    },
-
-    // SLIDE 10: Peso
-    {
-      type: 'fullImage',
-      title: 'Controle de peso = proteção',
-      subtitle: 'Pequenas perdas (5-10% do peso) já reduzem muito o risco',
+      subtitle: 'Pequenas mudanças diárias podem reduzir em até 80% o risco de doenças cardiovasculares',
+      bullets: [
+        'Movimente-se mais',
+        'Coma de forma equilibrada',
+        'Controle estresse',
+        'Pare de fumar',
+        'Faça exames regularmente'
+      ],
       image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&q=80',
-      textOverlay: 'Excesso aumenta: pressão • colesterol • resistência à insulina',
       duration: 18000
     },
 
-    // SLIDE 11: Exames
+    // SLIDE 2
     {
-      type: 'fullImage',
+      title: 'Entenda o colesterol',
+      subtitle: 'Colesterol não é vilão — o excesso é',
+      bullets: [
+        'LDL (ruim) acumula nas artérias',
+        'HDL (bom) ajuda a limpar as artérias',
+        'Alimentação e hábitos saudáveis mantêm o equilíbrio',
+        'Cheque seu perfil lipídico ao menos 1 vez ao ano'
+      ],
+      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1920&q=80',
+      duration: 20000
+    },
+
+    // SLIDE 3
+    {
+      title: 'A pressão alta não dá sinais',
+      subtitle: 'Hipertensão: o inimigo silencioso',
+      bullets: [
+        '1 em cada 3 adultos tem hipertensão',
+        'Muitas vezes não apresenta sintomas',
+        'Pode causar infarto e AVC',
+        'Medir regularmente é a melhor defesa',
+        'Anote suas medições para acompanhar tendências'
+      ],
+      image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1920&q=80',
+      duration: 18000
+    },
+
+    // SLIDE 4
+    {
+      title: 'Quanto exercício é suficiente?',
+      subtitle: 'Para prevenir doenças cardiovasculares',
+      bullets: [
+        '150 minutos/semana de atividade moderada (caminhada)',
+        'OU',
+        '75 minutos/semana de atividade intensa (corrida leve)',
+        'Inclua fortalecimento muscular 2x por semana'
+      ],
+      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1920&q=80',
+      duration: 20000
+    },
+
+    // SLIDE 5
+    {
+      title: 'Seu prato influencia seu coração',
+      subtitle: 'Como montar um prato cardioprotetor',
+      bullets: [
+        '50% verduras e legumes',
+        '25% proteína magra (frango, peixe, leguminosas)',
+        '25% carboidratos integrais',
+        'Evite: excesso de sal, frituras e ultraprocessados'
+      ],
+      image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80',
+      duration: 20000
+    },
+
+    // SLIDE 6
+    {
+      title: 'Menos sódio, mais vida',
+      subtitle: 'Reduzindo o sal sem perder o sabor',
+      bullets: [
+        'Prove alimentos antes de adicionar sal',
+        'Use ervas, limão e especiarias',
+        'Evite temperos prontos e embutidos',
+        'Reduza refrigerantes e snacks industrializados'
+      ],
+      image: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?w=1920&q=80',
+      duration: 18000
+    },
+
+    // SLIDE 7
+    {
+      title: 'Cuide da mente para proteger o coração',
+      subtitle: 'Estresse crônico aumenta pressão e inflamação. Para reduzir:',
+      bullets: [
+        'Respiração profunda (4-7-8)',
+        'Pausas durante o dia',
+        'Sono regular',
+        'Atividades relaxantes'
+      ],
+      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1920&q=80',
+      duration: 18000
+    },
+
+    // SLIDE 8
+    {
+      title: 'Dormir bem faz diferença',
+      subtitle: 'Dormir 7-9 horas por noite ajuda a:',
+      bullets: [
+        'Controlar pressão arterial',
+        'Regular hormônios',
+        'Reduzir risco de diabetes',
+        'Manter peso saudável',
+        'Evite telas 1h antes de dormir'
+      ],
+      image: 'https://images.unsplash.com/photo-1541480551145-2370a440d585?w=1920&q=80',
+      duration: 18000
+    },
+
+    // SLIDE 9
+    {
+      title: 'Por que parar de fumar é urgente',
+      subtitle: 'Fumar aumenta:',
+      bullets: [
+        'Pressão arterial',
+        'Frequência cardíaca',
+        'Formação de placas nas artérias',
+        'Parar reduz risco de infarto em poucas semanas'
+      ],
+      image: 'https://images.unsplash.com/photo-1605973029521-8154da591cc7?w=1920&q=80',
+      duration: 18000
+    },
+
+    // SLIDE 10
+    {
+      title: 'Controle de peso = proteção',
+      subtitle: 'Excesso de peso aumenta:',
+      bullets: [
+        'Pressão arterial',
+        'Colesterol',
+        'Resistência à insulina',
+        'Pequenas perdas (5-10% do peso) já reduzem muito o risco'
+      ],
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&q=80',
+      duration: 18000
+    },
+
+    // SLIDE 11
+    {
       title: 'O check-up é seu aliado',
-      subtitle: 'Exames que salvam vidas',
+      subtitle: 'Exames recomendados que salvam vidas:',
+      bullets: [
+        'Pressão arterial',
+        'Perfil lipídico (colesterol)',
+        'Glicemia',
+        'ECG',
+        'Ecocardiograma (conforme indicação)',
+        'Prevenção é sempre o melhor tratamento'
+      ],
       image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1920&q=80',
-      textOverlay: 'Pressão arterial • Colesterol • Glicemia • ECG • Ecocardiograma',
       duration: 22000
     },
 
-    // SLIDE 12: Respiração
+    // SLIDE 12
     {
-      type: 'fullImage',
-      title: 'Respire melhor, viva melhor',
-      subtitle: 'Técnica 4-7-8 reduz ansiedade e pressão',
+      title: 'A técnica 4-7-8',
+      subtitle: 'Respire melhor, viva melhor',
+      bullets: [
+        'Inspire por 4 segundos',
+        'Segure por 7 segundos',
+        'Expire por 8 segundos',
+        'Essa prática reduz ansiedade e pressão arterial'
+      ],
       image: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=1920&q=80',
-      textOverlay: 'Inspire 4s • Segure 7s • Expire 8s • Repita 3-4 vezes',
       duration: 18000
     },
 
-    // SLIDE 13: Anti-inflamatórios
+    // SLIDE 13
     {
-      type: 'fullImage',
-      title: 'Alimentos que reduzem inflamação',
-      subtitle: 'Inflamação crônica acelera doenças cardíacas',
+      title: 'Inflamação e coração',
+      subtitle: 'A inflamação crônica acelera doenças cardíacas. Consuma mais:',
+      bullets: [
+        'Azeite extra virgem',
+        'Peixes gordos',
+        'Frutas vermelhas',
+        'Nozes',
+        'Cúrcuma e gengibre'
+      ],
       image: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=1920&q=80',
-      textOverlay: 'Azeite • Peixes gordos • Frutas vermelhas • Nozes • Cúrcuma',
       duration: 18000
     },
 
-    // SLIDE 14: Arritmias
+    // SLIDE 14
     {
-      type: 'fullImage',
       title: 'Quando o coração foge do ritmo',
-      subtitle: 'Reconhecendo arritmias',
+      subtitle: 'Sintomas comuns de arritmias:',
+      bullets: [
+        'Palpitações',
+        'Tontura',
+        'Falta de ar',
+        'Cansaço',
+        'Se sentir episódios repetidos, procure avaliação'
+      ],
       image: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1920&q=80',
-      textOverlay: 'Palpitações • Tontura • Falta de ar • Cansaço • Procure avaliação',
       duration: 18000
     },
 
-    // SLIDE 15: Hidratação
+    // SLIDE 15
     {
-      type: 'fullImage',
       title: 'Água também protege',
-      subtitle: 'Boa hidratação controla pressão e frequência cardíaca',
+      subtitle: 'Boa hidratação ajuda a controlar pressão e frequência cardíaca',
+      bullets: [
+        'Objetivo: 1.5 a 2 litros por dia',
+        'Ajustar conforme recomendação médica'
+      ],
       image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=1920&q=80',
-      textOverlay: 'Objetivo: 1.5 a 2 litros por dia',
       duration: 15000
     }
   ];
@@ -231,33 +296,44 @@
     if (!item) return;
 
     var s = document.createElement('div');
-    s.className = 'slide active slide-fullscreen';
+    s.className = 'slide active';
+    
+    var bulletsHtml = '';
+    if (item.bullets && item.bullets.length) {
+      var lis = [];
+      for(var i=0; i<item.bullets.length; i++) {
+        lis.push('<li>'+escapeHtml(item.bullets[i])+'</li>');
+      }
+      bulletsHtml = '<ul class="bullet-list">'+lis.join('')+'</ul>';
+    }
     
     var bgStyle = item.image 
       ? 'background-image:url('+escapeHtml(item.image)+');background-size:cover;background-position:center'
       : 'background:linear-gradient(135deg,#667eea,#764ba2)';
     
     s.innerHTML =
-      '<div class="fullscreen-bg" style="'+bgStyle+'">'+
-        '<div class="overlay"></div>'+
-        '<div class="content-box">'+
-          '<h1 class="main-title">'+ escapeHtml(item.title||'') +'</h1>'+
-          (item.subtitle ? '<p class="subtitle">'+ escapeHtml(item.subtitle) +'</p>' : '')+
-          (item.textOverlay ? '<p class="text-overlay">'+ escapeHtml(item.textOverlay) +'</p>' : '')+
+      '<div class="slide-image" style="'+bgStyle+'">'+
+        '<div class="image-overlay"></div>'+
+      '</div>'+
+      '<div class="slide-content">'+
+        '<div class="text-box">'+
+          '<h1 class="slide-title">'+ escapeHtml(item.title||'') +'</h1>'+
+          (item.subtitle ? '<p class="slide-subtitle">'+ escapeHtml(item.subtitle) +'</p>' : '')+
+          bulletsHtml+
         '</div>'+
       '</div>'+
-      '<div class="info-footer">'+
-        '<div class="location-time">'+
-          '<div class="location">'+
-            '<span style="font-weight:700">São Paulo</span>'+
-            '<span style="opacity:0.7;margin-left:8px">SEGUNDA, Fevereiro 15</span>'+
-          '</div>'+
+      '<div class="slide-footer">'+
+        '<div class="footer-left">'+
+          '<div class="location">São Paulo</div>'+
+          '<div class="date">SEGUNDA, Fevereiro 15</div>'+
+        '</div>'+
+        '<div class="footer-center">'+
           '<div class="time" id="slideTime">--:--</div>'+
         '</div>'+
-        '<div class="weather">'+
-          '<div class="today"><div class="label">Hoje</div><div class="temp">23°</div><div class="icon">⛅</div></div>'+
-          '<div class="forecast"><div class="label">Terça</div><div class="temp">25°<span class="low">18°</span></div><div class="icon">☀️</div></div>'+
-          '<div class="forecast"><div class="label">Quarta</div><div class="temp">22°<span class="low">16°</span></div><div class="icon">🌧️</div></div>'+
+        '<div class="footer-right">'+
+          '<div class="weather-item"><div class="weather-label">Hoje</div><div class="weather-temp">23°</div><div class="weather-icon">⛅</div></div>'+
+          '<div class="weather-item"><div class="weather-label">Terça</div><div class="weather-temp">25°</div><div class="weather-icon">☀️</div></div>'+
+          '<div class="weather-item"><div class="weather-label">Quarta</div><div class="weather-temp">22°</div><div class="weather-icon">🌧️</div></div>'+
         '</div>'+
       '</div>';
 
@@ -286,11 +362,6 @@
   }
 
   function updateClock() {
-    var el = $('clock');
-    if (el) {
-      var d = new Date();
-      el.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
     updateSlideTime();
   }
   setInterval(updateClock, 1000);
@@ -302,4 +373,5 @@
     load();
   }
 })();
+
 
