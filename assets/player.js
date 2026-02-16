@@ -19,221 +19,487 @@
   var API = params.api || 'http://localhost:4000';
   var state = { playlist: [], idx: -1, timer: null, brand: 'BiOOH' };
 
-  // 15 SLIDES COM CONTEÚDO COMPLETO
+  // 15 SLIDES EXPANDIDOS: DEFINIÇÃO + SINTOMAS + PREVENÇÃO
   var DEFAULT_CONTENT = [
-    // SLIDE 1
+    // SLIDE 1: Prevenção Geral
     {
       title: 'Cuidar do coração é mais fácil do que parece',
-      subtitle: 'Pequenas mudanças diárias podem reduzir em até 80% o risco de doenças cardiovasculares',
-      bullets: [
-        'Movimente-se mais',
-        'Coma de forma equilibrada',
-        'Controle estresse',
-        'Pare de fumar',
-        'Faça exames regularmente'
+      sections: [
+        {
+          heading: 'O que são doenças cardiovasculares?',
+          text: 'Condições que afetam coração e vasos sanguíneos, incluindo infarto, AVC e hipertensão.'
+        },
+        {
+          heading: 'Prevenção (reduz até 80% do risco):',
+          bullets: [
+            'Movimente-se 30 min/dia',
+            'Alimentação equilibrada',
+            'Controle o estresse',
+            'Não fume',
+            'Exames regulares'
+          ]
+        }
       ],
       image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&q=80',
-      duration: 18000
-    },
-
-    // SLIDE 2
-    {
-      title: 'Entenda o colesterol',
-      subtitle: 'Colesterol não é vilão — o excesso é',
-      bullets: [
-        'LDL (ruim) acumula nas artérias',
-        'HDL (bom) ajuda a limpar as artérias',
-        'Alimentação e hábitos saudáveis mantêm o equilíbrio',
-        'Cheque seu perfil lipídico ao menos 1 vez ao ano'
-      ],
-      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1920&q=80',
-      duration: 20000
-    },
-
-    // SLIDE 3
-    {
-      title: 'A pressão alta não dá sinais',
-      subtitle: 'Hipertensão: o inimigo silencioso',
-      bullets: [
-        '1 em cada 3 adultos tem hipertensão',
-        'Muitas vezes não apresenta sintomas',
-        'Pode causar infarto e AVC',
-        'Medir regularmente é a melhor defesa',
-        'Anote suas medições para acompanhar tendências'
-      ],
-      image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1920&q=80',
-      duration: 18000
-    },
-
-    // SLIDE 4
-    {
-      title: 'Quanto exercício é suficiente?',
-      subtitle: 'Para prevenir doenças cardiovasculares',
-      bullets: [
-        '150 minutos/semana de atividade moderada (caminhada)',
-        'OU',
-        '75 minutos/semana de atividade intensa (corrida leve)',
-        'Inclua fortalecimento muscular 2x por semana'
-      ],
-      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1920&q=80',
-      duration: 20000
-    },
-
-    // SLIDE 5
-    {
-      title: 'Seu prato influencia seu coração',
-      subtitle: 'Como montar um prato cardioprotetor',
-      bullets: [
-        '50% verduras e legumes',
-        '25% proteína magra (frango, peixe, leguminosas)',
-        '25% carboidratos integrais',
-        'Evite: excesso de sal, frituras e ultraprocessados'
-      ],
-      image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80',
-      duration: 20000
-    },
-
-    // SLIDE 6
-    {
-      title: 'Menos sódio, mais vida',
-      subtitle: 'Reduzindo o sal sem perder o sabor',
-      bullets: [
-        'Prove alimentos antes de adicionar sal',
-        'Use ervas, limão e especiarias',
-        'Evite temperos prontos e embutidos',
-        'Reduza refrigerantes e snacks industrializados'
-      ],
-      image: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?w=1920&q=80',
-      duration: 18000
-    },
-
-    // SLIDE 7
-    {
-      title: 'Cuide da mente para proteger o coração',
-      subtitle: 'Estresse crônico aumenta pressão e inflamação. Para reduzir:',
-      bullets: [
-        'Respiração profunda (4-7-8)',
-        'Pausas durante o dia',
-        'Sono regular',
-        'Atividades relaxantes'
-      ],
-      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1920&q=80',
-      duration: 18000
-    },
-
-    // SLIDE 8
-    {
-      title: 'Dormir bem faz diferença',
-      subtitle: 'Dormir 7-9 horas por noite ajuda a:',
-      bullets: [
-        'Controlar pressão arterial',
-        'Regular hormônios',
-        'Reduzir risco de diabetes',
-        'Manter peso saudável',
-        'Evite telas 1h antes de dormir'
-      ],
-      image: 'https://images.unsplash.com/photo-1541480551145-2370a440d585?w=1920&q=80',
-      duration: 18000
-    },
-
-    // SLIDE 9
-    {
-      title: 'Por que parar de fumar é urgente',
-      subtitle: 'Fumar aumenta:',
-      bullets: [
-        'Pressão arterial',
-        'Frequência cardíaca',
-        'Formação de placas nas artérias',
-        'Parar reduz risco de infarto em poucas semanas'
-      ],
-      image: 'https://images.unsplash.com/photo-1605973029521-8154da591cc7?w=1920&q=80',
-      duration: 18000
-    },
-
-    // SLIDE 10
-    {
-      title: 'Controle de peso = proteção',
-      subtitle: 'Excesso de peso aumenta:',
-      bullets: [
-        'Pressão arterial',
-        'Colesterol',
-        'Resistência à insulina',
-        'Pequenas perdas (5-10% do peso) já reduzem muito o risco'
-      ],
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&q=80',
-      duration: 18000
-    },
-
-    // SLIDE 11
-    {
-      title: 'O check-up é seu aliado',
-      subtitle: 'Exames recomendados que salvam vidas:',
-      bullets: [
-        'Pressão arterial',
-        'Perfil lipídico (colesterol)',
-        'Glicemia',
-        'ECG',
-        'Ecocardiograma (conforme indicação)',
-        'Prevenção é sempre o melhor tratamento'
-      ],
-      image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1920&q=80',
       duration: 22000
     },
 
-    // SLIDE 12
+    // SLIDE 2: Colesterol Alto
     {
-      title: 'A técnica 4-7-8',
-      subtitle: 'Respire melhor, viva melhor',
-      bullets: [
-        'Inspire por 4 segundos',
-        'Segure por 7 segundos',
-        'Expire por 8 segundos',
-        'Essa prática reduz ansiedade e pressão arterial'
+      title: 'Colesterol Alto',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Excesso de gordura no sangue. LDL (ruim) entope artérias. HDL (bom) as limpa.'
+        },
+        {
+          heading: 'Sintomas:',
+          bullets: [
+            'Geralmente não há sintomas visíveis',
+            'Descoberto apenas por exames de sangue'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Evite frituras e gorduras trans',
+            'Coma mais fibras (aveia, frutas)',
+            'Pratique exercícios regularmente',
+            'Cheque perfil lipídico 1x/ano'
+          ]
+        }
       ],
-      image: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=1920&q=80',
-      duration: 18000
+      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1920&q=80',
+      duration: 24000
     },
 
-    // SLIDE 13
+    // SLIDE 3: Hipertensão
     {
-      title: 'Inflamação e coração',
-      subtitle: 'A inflamação crônica acelera doenças cardíacas. Consuma mais:',
-      bullets: [
-        'Azeite extra virgem',
-        'Peixes gordos',
-        'Frutas vermelhas',
-        'Nozes',
-        'Cúrcuma e gengibre'
+      title: 'Hipertensão (Pressão Alta)',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Pressão do sangue nas artérias acima de 140/90 mmHg. Força o coração a trabalhar mais.'
+        },
+        {
+          heading: 'Sintomas (geralmente silenciosa):',
+          bullets: [
+            'Dor de cabeça persistente',
+            'Visão embaçada',
+            'Tontura',
+            'Falta de ar',
+            'Maioria não tem sintomas'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Reduza sal (< 5g/dia)',
+            'Mantenha peso saudável',
+            'Exercícios 150 min/semana',
+            'Limite álcool',
+            'Meça pressão regularmente'
+          ]
+        }
       ],
-      image: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=1920&q=80',
-      duration: 18000
+      image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1920&q=80',
+      duration: 26000
     },
 
-    // SLIDE 14
+    // SLIDE 4: Infarto
     {
-      title: 'Quando o coração foge do ritmo',
-      subtitle: 'Sintomas comuns de arritmias:',
-      bullets: [
-        'Palpitações',
-        'Tontura',
-        'Falta de ar',
-        'Cansaço',
-        'Se sentir episódios repetidos, procure avaliação'
+      title: 'Infarto do Miocárdio',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Bloqueio de artéria coronária impede sangue chegar ao músculo cardíaco.'
+        },
+        {
+          heading: 'Sintomas (LIGUE 192):',
+          bullets: [
+            'Dor forte no peito (aperto)',
+            'Dor no braço esquerdo/mandíbula',
+            'Suor frio intenso',
+            'Náusea e falta de ar',
+            'Sensação de morte iminente'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Controle colesterol e pressão',
+            'Não fume',
+            'Exercícios regulares',
+            'Dieta saudável',
+            'Gerencie estresse'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1920&q=80',
+      duration: 26000
+    },
+
+    // SLIDE 5: AVC (Derrame)
+    {
+      title: 'AVC (Derrame Cerebral)',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Interrupção do fluxo sanguíneo no cérebro, matando células nervosas.'
+        },
+        {
+          heading: 'Sintomas (SAMU imediato):',
+          bullets: [
+            'Paralisia facial (sorriso torto)',
+            'Fraqueza em braço/perna',
+            'Dificuldade para falar',
+            'Perda de visão súbita',
+            'Tontura e desequilíbrio'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Controle hipertensão',
+            'Trate diabetes',
+            'Não fume',
+            'Reduza álcool',
+            'Atividade física regular'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1920&q=80',
+      duration: 26000
+    },
+
+    // SLIDE 6: Arritmia
+    {
+      title: 'Arritmia Cardíaca',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Batimentos cardíacos irregulares - muito rápidos, lentos ou descompassados.'
+        },
+        {
+          heading: 'Sintomas:',
+          bullets: [
+            'Palpitações (coração acelerado)',
+            'Sensação de "falha" no peito',
+            'Tontura ou desmaio',
+            'Falta de ar',
+            'Cansaço excessivo'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Evite cafeína em excesso',
+            'Não use drogas estimulantes',
+            'Controle estresse e ansiedade',
+            'Durma bem (7-9h)',
+            'Trate problemas cardíacos'
+          ]
+        }
       ],
       image: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1920&q=80',
-      duration: 18000
+      duration: 24000
     },
 
-    // SLIDE 15
+    // SLIDE 7: Insuficiência Cardíaca
     {
-      title: 'Água também protege',
-      subtitle: 'Boa hidratação ajuda a controlar pressão e frequência cardíaca',
-      bullets: [
-        'Objetivo: 1.5 a 2 litros por dia',
-        'Ajustar conforme recomendação médica'
+      title: 'Insuficiência Cardíaca',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Coração não consegue bombear sangue suficiente para o corpo.'
+        },
+        {
+          heading: 'Sintomas:',
+          bullets: [
+            'Falta de ar (piora deitado)',
+            'Inchaço nas pernas e pés',
+            'Cansaço extremo',
+            'Tosse persistente',
+            'Ganho de peso rápido'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Trate hipertensão e diabetes',
+            'Evite álcool em excesso',
+            'Reduza sal drasticamente',
+            'Exercícios supervisionados',
+            'Tome medicações corretamente'
+          ]
+        }
       ],
-      image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=1920&q=80',
-      duration: 15000
+      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1920&q=80',
+      duration: 24000
+    },
+
+    // SLIDE 8: Aterosclerose
+    {
+      title: 'Aterosclerose',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Acúmulo de placas de gordura nas paredes das artérias, estreitando-as.'
+        },
+        {
+          heading: 'Sintomas (aparecem tarde):',
+          bullets: [
+            'Dor no peito ao esforço',
+            'Dor nas pernas ao caminhar',
+            'Fraqueza em um lado do corpo',
+            'Confusão mental',
+            'Pode ser assintomática'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Dieta rica em vegetais',
+            'Reduza gorduras saturadas',
+            'Exercícios aeróbicos',
+            'Não fume',
+            'Controle colesterol e pressão'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1920&q=80',
+      duration: 24000
+    },
+
+    // SLIDE 9: Angina
+    {
+      title: 'Angina (Dor no Peito)',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Dor torácica causada por redução temporária do fluxo sanguíneo ao coração.'
+        },
+        {
+          heading: 'Sintomas:',
+          bullets: [
+            'Dor/pressão no peito',
+            'Desconforto em braços/pescoço',
+            'Falta de ar',
+            'Fadiga',
+            'Piora com esforço, melhora com repouso'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Evite esforços intensos súbitos',
+            'Controle fatores de risco',
+            'Medicação preventiva (se prescrita)',
+            'Reduza estresse',
+            'Faça exames cardiológicos'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=1920&q=80',
+      duration: 24000
+    },
+
+    // SLIDE 10: Diabetes e Coração
+    {
+      title: 'Diabetes e Coração',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Açúcar alto no sangue danifica vasos sanguíneos e nervos do coração.'
+        },
+        {
+          heading: 'Sintomas cardiovasculares:',
+          bullets: [
+            'Cansaço excessivo',
+            'Falta de ar',
+            'Dor no peito atípica',
+            'Inchaço nas pernas',
+            'Infarto pode ser silencioso'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Mantenha glicemia controlada',
+            'HbA1c < 7%',
+            'Dieta com baixo índice glicêmico',
+            'Exercícios 150 min/semana',
+            'Monitore pressão e colesterol'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1920&q=80',
+      duration: 26000
+    },
+
+    // SLIDE 11: Obesidade e Coração
+    {
+      title: 'Obesidade e Risco Cardíaco',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'IMC > 30. Excesso de peso sobrecarrega coração e aumenta pressão arterial.'
+        },
+        {
+          heading: 'Complicações:',
+          bullets: [
+            'Hipertensão',
+            'Diabetes tipo 2',
+            'Colesterol alto',
+            'Apneia do sono',
+            'Inflamação crônica'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Perca 5-10% do peso (grande impacto)',
+            'Dieta balanceada',
+            'Exercícios diários',
+            'Acompanhamento nutricional',
+            'Trate causas emocionais'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&q=80',
+      duration: 24000
+    },
+
+    // SLIDE 12: Tabagismo
+    {
+      title: 'Tabagismo e Coração',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Fumar libera substâncias que danificam artérias e aumentam coagulação do sangue.'
+        },
+        {
+          heading: 'Efeitos no coração:',
+          bullets: [
+            'Aumenta frequência cardíaca',
+            'Eleva pressão arterial',
+            'Reduz oxigênio no sangue',
+            'Acelera aterosclerose',
+            'Triplica risco de infarto'
+          ]
+        },
+        {
+          heading: 'Benefícios de parar:',
+          bullets: [
+            '24h: pressão e pulso normalizam',
+            '1 ano: risco de infarto cai 50%',
+            '5 anos: risco igual a não fumante',
+            'Procure apoio médico',
+            'Use terapias de reposição se necessário'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1605973029521-8154da591cc7?w=1920&q=80',
+      duration: 26000
+    },
+
+    // SLIDE 13: Sedentarismo
+    {
+      title: 'Sedentarismo Mata',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Falta de atividade física regular. Músculos e coração enfraquecem.'
+        },
+        {
+          heading: 'Consequências:',
+          bullets: [
+            'Ganho de peso',
+            'Perda de massa muscular',
+            'Pressão alta',
+            'Colesterol elevado',
+            'Maior risco de diabetes'
+          ]
+        },
+        {
+          heading: 'Como reverter:',
+          bullets: [
+            'Comece com 10 min/dia',
+            'Caminhe sempre que possível',
+            '150 min/semana (moderado)',
+            'Inclua musculação 2x/semana',
+            'Consulte médico antes de iniciar'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1920&q=80',
+      duration: 24000
+    },
+
+    // SLIDE 14: Estresse Crônico
+    {
+      title: 'Estresse Crônico',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Tensão prolongada libera cortisol, aumentando pressão e inflamação.'
+        },
+        {
+          heading: 'Sintomas físicos:',
+          bullets: [
+            'Dor de cabeça constante',
+            'Tensão muscular',
+            'Palpitações',
+            'Fadiga extrema',
+            'Problemas digestivos'
+          ]
+        },
+        {
+          heading: 'Como controlar:',
+          bullets: [
+            'Técnica 4-7-8 (respiração)',
+            'Meditação diária (10 min)',
+            'Exercícios físicos',
+            'Sono regular (7-9h)',
+            'Psicoterapia se necessário'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1920&q=80',
+      duration: 24000
+    },
+
+    // SLIDE 15: Síndrome Metabólica
+    {
+      title: 'Síndrome Metabólica',
+      sections: [
+        {
+          heading: 'O que é?',
+          text: 'Combinação de: obesidade abdominal, pressão alta, glicose e colesterol elevados.'
+        },
+        {
+          heading: 'Critérios (3 ou + confirma):',
+          bullets: [
+            'Cintura > 94cm (H) ou 80cm (M)',
+            'Pressão ≥ 130/85',
+            'Glicemia ≥ 100 mg/dL',
+            'Triglicerídeos ≥ 150',
+            'HDL baixo'
+          ]
+        },
+        {
+          heading: 'Prevenção:',
+          bullets: [
+            'Perca peso (foco na cintura)',
+            'Dieta mediterrânea',
+            'Exercícios 200 min/semana',
+            'Evite açúcar e refinados',
+            'Check-ups anuais completos'
+          ]
+        }
+      ],
+      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1920&q=80',
+      duration: 26000
     }
   ];
 
@@ -298,13 +564,26 @@
     var s = document.createElement('div');
     s.className = 'slide active';
     
-    var bulletsHtml = '';
-    if (item.bullets && item.bullets.length) {
-      var lis = [];
-      for(var i=0; i<item.bullets.length; i++) {
-        lis.push('<li>'+escapeHtml(item.bullets[i])+'</li>');
+    var sectionsHtml = '';
+    if (item.sections && item.sections.length) {
+      for(var i=0; i<item.sections.length; i++) {
+        var sec = item.sections[i];
+        sectionsHtml += '<div class="section">';
+        if (sec.heading) {
+          sectionsHtml += '<h3 class="section-heading">'+escapeHtml(sec.heading)+'</h3>';
+        }
+        if (sec.text) {
+          sectionsHtml += '<p class="section-text">'+escapeHtml(sec.text)+'</p>';
+        }
+        if (sec.bullets && sec.bullets.length) {
+          sectionsHtml += '<ul class="bullet-list">';
+          for(var j=0; j<sec.bullets.length; j++) {
+            sectionsHtml += '<li>'+escapeHtml(sec.bullets[j])+'</li>';
+          }
+          sectionsHtml += '</ul>';
+        }
+        sectionsHtml += '</div>';
       }
-      bulletsHtml = '<ul class="bullet-list">'+lis.join('')+'</ul>';
     }
     
     var bgStyle = item.image 
@@ -318,8 +597,7 @@
       '<div class="slide-content">'+
         '<div class="text-box">'+
           '<h1 class="slide-title">'+ escapeHtml(item.title||'') +'</h1>'+
-          (item.subtitle ? '<p class="slide-subtitle">'+ escapeHtml(item.subtitle) +'</p>' : '')+
-          bulletsHtml+
+          sectionsHtml+
         '</div>'+
       '</div>'+
       '<div class="slide-footer">'+
@@ -357,7 +635,7 @@
     
     mountSlide(item);
 
-    var dur = item.duration || 18000;
+    var dur = item.duration || 24000;
     state.timer = setTimeout(nextSlide, dur);
   }
 
