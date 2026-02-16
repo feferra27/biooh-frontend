@@ -3,115 +3,68 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>BiOOH • Sala de Espera Cardiologia</title>
-  <link rel="stylesheet" href="assets/styles.css"/>
+  <title>BiOOH • Sala de Espera</title>
   <style>
-    :root {
-      --bg: #F7FAFC;
-      --panel: #FFFFFF;
-      --ink: #1F2937;
-      --mut: #5B677A;
-      --line: #E5EAF0;
-      --brand: #1F6FEB;
-      --ok: #10B981;
-      --warn: #F59E0B;
-      --danger: #EF4444;
-      --calm: #EEF6FF;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
     body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #000;
+      color: white;
     }
 
-    /* Header */
+    /* Header minimalista */
     .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
-      background: white;
-      position: sticky;
-      top: 0;
+      padding: 16px 24px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
       z-index: 100;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .back-btn {
-      background: none;
-      border: 1px solid var(--line);
-      padding: 8px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--ink);
-      transition: all 0.2s;
-    }
-
-    .back-btn:hover {
-      background: var(--calm);
-      border-color: var(--brand);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
     }
 
     .mark {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 8px;
       background: linear-gradient(135deg, #EF4444, #DC2626);
     }
 
     .brandtxt {
       font-weight: 900;
-      color: #991B1B;
-      font-size: 18px;
+      font-size: 20px;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .clock {
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: white;
       font-weight: 600;
-      color: var(--mut);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .reload-btn {
-      background: none;
-      border: 1px solid var(--line);
-      padding: 8px 12px;
-      border-radius: 10px;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
-    /* Stage */
-    .stage {
-      height: calc(100vh - 120px);
-      margin: 10px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: white;
-      position: relative;
-      overflow: hidden;
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateX(-4px);
     }
 
+    /* Screen fullscreen */
     .screen {
       position: absolute;
       inset: 0;
@@ -129,13 +82,14 @@
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
+      z-index: 10;
     }
 
     .loading-spinner {
       width: 48px;
       height: 48px;
-      border: 4px solid #FEE2E2;
-      border-top-color: #DC2626;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top-color: white;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 0 auto 16px;
@@ -146,479 +100,245 @@
     }
 
     .loading-text {
-      color: var(--mut);
+      color: white;
       font-weight: 600;
+      font-size: 18px;
     }
 
-    /* Slides */
+    /* Slide fullscreen */
     .slide {
       position: absolute;
       inset: 0;
-      padding: 40px;
       opacity: 0;
       display: none;
     }
 
     .slide.active {
       display: block;
-      animation: fadeIn 0.6s forwards;
+      animation: fadeIn 0.8s forwards;
     }
 
     @keyframes fadeIn {
       to { opacity: 1; }
     }
 
-    .two {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 40px;
-      height: 100%;
-      align-items: center;
-    }
-
-    .center {
-      display: grid;
-      place-content: center;
-      height: 100%;
-      text-align: center;
-    }
-
-    /* Typography */
-    .title-xl {
-      font-size: 42px;
-      line-height: 1.1;
-      font-weight: 900;
-      color: #991B1B;
-      margin-bottom: 16px;
-    }
-
-    .lead {
-      font-size: 20px;
-      color: var(--mut);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .bul {
-      list-style: none;
-      padding: 0;
-      margin: 20px 0;
-    }
-
-    .bul li {
-      padding: 10px 0;
-      padding-left: 28px;
-      position: relative;
-      color: var(--ink);
-      font-size: 18px;
-      line-height: 1.6;
-    }
-
-    .bul li::before {
-      content: '✓';
+    .slide-fullscreen .fullscreen-bg {
       position: absolute;
-      left: 0;
-      color: var(--ok);
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: #FEE2E2;
-      color: #991B1B;
-      font-weight: 700;
-      font-size: 14px;
-      margin-top: 16px;
-    }
-
-    /* Hero Image */
-    .hero {
-      height: 100%;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
-      overflow: hidden;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.12);
     }
 
-    .hero img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.3) 0%,
+        rgba(0,0,0,0.5) 50%,
+        rgba(0,0,0,0.8) 100%
+      );
     }
 
-    .hero.loading {
-      background: linear-gradient(90deg, #FEF2F2 25%, #FEE2E2 50%, #FEF2F2 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .hero.error {
-      background: #FEE2E2;
-      color: #991B1B;
-      font-size: 16px;
-      padding: 24px;
-      font-weight: 600;
-    }
-
-    /* FACT SLIDE */
-    .fact-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-    }
-
-    .fact-box {
-      background: linear-gradient(135deg, #FEE2E2, #FEF2F2);
-      padding: 24px;
-      border-radius: 16px;
-      margin: 24px 0;
-      border-left: 4px solid #DC2626;
-    }
-
-    .fact-main {
-      font-size: 24px;
-      font-weight: 800;
-      color: #991B1B;
-      line-height: 1.3;
-      margin-bottom: 8px;
-    }
-
-    .fact-sub {
-      font-size: 18px;
-      color: var(--mut);
-      font-weight: 500;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 24px;
-    }
-
-    .stat {
-      text-align: center;
-      padding: 16px;
-      background: white;
-      border-radius: 12px;
-      border: 2px solid #FEE2E2;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 900;
-      color: #DC2626;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 13px;
-      color: var(--mut);
-      font-weight: 600;
-    }
-
-    /* ALERT SLIDE */
-    .alert-title {
-      color: #DC2626;
-    }
-
-    .alert-lead {
-      color: #991B1B;
-      font-weight: 600;
-    }
-
-    .alerts {
-      margin: 24px 0;
-    }
-
-    .alert-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px;
-      background: #FEF2F2;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border-left: 4px solid #DC2626;
-    }
-
-    .alert-icon {
-      font-size: 32px;
-      flex-shrink: 0;
-    }
-
-    .alert-text {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
-    .alert-footer {
-      background: #DC2626;
-      color: white;
-      padding: 16px 24px;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: 900;
-      font-size: 16px;
-      margin-top: 24px;
-      letter-spacing: 0.5px;
-    }
-
-    /* EXAM SLIDE */
-    .exam-icon {
-      font-size: 56px;
-      margin-bottom: 12px;
-    }
-
-    .exam-subtitle {
-      font-size: 18px;
-      color: var(--brand);
-      font-weight: 700;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* LIFESTYLE SLIDE */
-    .lifestyle-icon {
-      font-size: 56px;
-      margin-bottom: 12px;
-    }
-
-    .highlight-box {
-      background: linear-gradient(135deg, #DBEAFE, #EFF6FF);
-      padding: 20px;
-      border-radius: 12px;
-      font-size: 20px;
-      font-weight: 700;
-      color: #1E40AF;
-      margin: 20px 0;
-      border-left: 4px solid var(--brand);
-    }
-
-    .benefit-text {
-      background: #ECFDF5;
-      padding: 16px;
-      border-radius: 12px;
-      font-size: 17px;
-      font-weight: 600;
-      color: #065F46;
-      margin: 16px 0;
-    }
-
-    .risk-text {
-      background: #FEF2F2;
-      padding: 16px;
-      border-radius: 12px;
-      font-size: 17px;
-      font-weight: 600;
-      color: #991B1B;
-      margin: 16px 0;
-    }
-
-    .tips {
-      list-style: none;
-      padding: 0;
-      margin: 20px 0;
-    }
-
-    .tips li {
-      padding: 10px 0 10px 28px;
+    .content-box {
       position: relative;
-      font-size: 17px;
-      color: var(--ink);
+      z-index: 2;
+      text-align: center;
+      max-width: 1200px;
+      padding: 0 60px;
+      margin-bottom: 100px;
+    }
+
+    .main-title {
+      font-size: clamp(48px, 6vw, 72px);
+      font-weight: 900;
+      margin-bottom: 24px;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 600;
+      margin-bottom: 20px;
+      opacity: 0.95;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      line-height: 1.4;
+    }
+
+    .text-overlay {
+      font-size: clamp(18px, 2.2vw, 28px);
+      font-weight: 500;
+      opacity: 0.9;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      max-width: 900px;
+      margin: 0 auto;
       line-height: 1.5;
     }
 
-    .tips li::before {
-      content: '→';
+    /* Footer com info */
+    .info-footer {
       position: absolute;
+      bottom: 0;
       left: 0;
-      color: var(--brand);
-      font-weight: bold;
+      right: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      z-index: 10;
     }
 
-    /* NUTRITION SLIDE */
-    .nutrition-icon {
-      font-size: 56px;
-      margin-bottom: 12px;
+    .location-time {
+      display: flex;
+      align-items: center;
+      gap: 40px;
     }
 
-    .foods-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin: 24px 0;
-    }
-
-    .food-item {
-      background: #F9FAFB;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      border: 2px solid #E5E7EB;
-      transition: all 0.2s;
-    }
-
-    .food-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .food-emoji {
-      font-size: 48px;
-      margin-bottom: 8px;
-    }
-
-    .food-name {
+    .location {
       font-size: 16px;
+      color: white;
+    }
+
+    .time {
+      font-size: 42px;
       font-weight: 700;
-      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      color: white;
+    }
+
+    .weather {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .today {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .today .label {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .today .temp {
+      font-size: 36px;
+      font-weight: 900;
+      margin: 4px 0;
+    }
+
+    .today .icon {
+      font-size: 32px;
+    }
+
+    .forecast {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0.8;
+    }
+
+    .forecast .label {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .forecast .temp {
+      font-size: 22px;
+      font-weight: 700;
       margin-bottom: 4px;
     }
 
-    .food-benefit {
-      font-size: 13px;
-      color: var(--ok);
-      font-weight: 600;
-    }
-
-    .nutrition-footer {
-      background: #F0FDF4;
-      padding: 16px;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: 600;
-      color: #065F46;
-      margin-top: 20px;
-    }
-
-    /* WELLNESS SLIDE */
-    .wellness-icon {
-      font-size: 56px;
-      margin-bottom: 12px;
-    }
-
-    .technique-name {
-      background: #EFF6FF;
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      color: #1E40AF;
-      margin: 16px 0;
-    }
-
-    .breathing-steps {
-      display: grid;
-      gap: 12px;
-      margin: 24px 0;
-    }
-
-    .breath-step {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px;
-      background: #F0FDFA;
-      border-radius: 12px;
-      border-left: 4px solid #14B8A6;
-    }
-
-    .breath-num {
-      font-size: 32px;
-      font-weight: 900;
-      color: #14B8A6;
-      min-width: 50px;
-    }
-
-    .breath-text {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
-    /* Ticker */
-    .ticker {
-      height: 60px;
-      border-top: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      background: white;
-      overflow: hidden;
-    }
-
-    .flow {
-      white-space: nowrap;
-      color: var(--mut);
+    .forecast .low {
       font-size: 16px;
+      opacity: 0.6;
+      margin-left: 4px;
       font-weight: 500;
     }
 
-    .flow span {
-      display: inline-block;
-      margin-right: 40px;
+    .forecast .icon {
+      font-size: 24px;
     }
 
-    /* Responsive */
-    @media (max-width: 968px) {
-      .two {
-        grid-template-columns: 1fr;
+    @media (max-width: 1024px) {
+      .content-box {
+        padding: 0 40px;
       }
-      .hero {
-        max-height: 300px;
+
+      .info-footer {
+        padding: 16px 24px;
       }
-      .title-xl {
+
+      .weather {
+        gap: 20px;
+      }
+
+      .today {
+        padding: 8px 16px;
+      }
+
+      .forecast {
+        display: none;
+      }
+
+      .forecast:first-of-type {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-title {
+        font-size: 36px;
+      }
+
+      .subtitle {
+        font-size: 20px;
+      }
+
+      .text-overlay {
+        font-size: 16px;
+      }
+
+      .time {
         font-size: 32px;
       }
-      .foods-grid {
-        grid-template-columns: 1fr;
+
+      .location-time {
+        gap: 20px;
       }
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <div class="header-left">
-      <button class="back-btn" onclick="window.location.href='index.html'">
-        ← Voltar
-      </button>
-      <div class="brand">
-        <div class="mark"></div>
-        <div class="brandtxt" id="brandName">BiOOH Cardiologia</div>
-      </div>
-    </div>
-    <div class="header-right">
-      <div class="clock" id="clock">--:--</div>
-      <button class="reload-btn" onclick="location.reload()">🔄</button>
+    <button class="back-btn" onclick="window.location.href='index.html'">
+      ← Voltar
+    </button>
+    <div class="brand">
+      <div class="mark"></div>
+      <div class="brandtxt" id="brandName">BiOOH</div>
     </div>
   </div>
 
-  <div class="stage">
+  <div class="screen" id="screen">
     <div class="loading-indicator" id="initialLoading">
       <div class="loading-spinner"></div>
-      <div class="loading-text">Preparando conteúdo cardiológico...</div>
-    </div>
-    <div class="screen" id="screen"></div>
-  </div>
-
-  <div class="ticker">
-    <div class="flow" id="tickerFlow">
-      <span>Cardiologia de excelência</span>
-      <span>Prevenção salva vidas</span>
-      <span>Cuide do seu coração</span>
+      <div class="loading-text">Carregando...</div>
     </div>
   </div>
 
