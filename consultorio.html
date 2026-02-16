@@ -3,563 +3,746 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>BiOOH • Consultório — Visualizador 3D</title>
-  <link rel="stylesheet" href="assets/styles.css"/>
+  <title>BiOOH • Consultório 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
-    /* Estilos específicos do consultório */
-    .consultorio-container {
-      display: flex;
-      min-height: 100vh;
+    :root {
+      --red:    #C8102E;
+      --ink:    #0F172A;
+      --sub:    #475569;
+      --muted:  #94A3B8;
+      --border: #E2E8F0;
+      --bg:     #F8FAFC;
+      --white:  #FFFFFF;
+      --sidebar:280px;
+      --header: 60px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
       background: var(--bg);
-    }
-
-    .sidebar {
-      width: 320px;
-      border-right: 1px solid var(--line);
-      background: #FAFBFD;
-      padding: 14px;
-      overflow-y: auto;
-      height: 100vh;
-      position: sticky;
-      top: 0;
-    }
-
-    .sidebar h3 {
-      font-size: 14px;
-      color: #1F3A8A;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      margin: 16px 0 10px;
-    }
-
-    .model-card {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
-      background: #fff;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 10px;
-    }
-
-    .model-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(31, 99, 179, 0.08);
-    }
-
-    .model-card.active {
-      outline: 2px solid rgba(31, 111, 235, 0.4);
-      background: #F3F8FF;
-    }
-
-    .model-card strong {
-      display: block;
-      margin-bottom: 4px;
       color: var(--ink);
-    }
-
-    .model-card .desc {
-      font-size: 13px;
-      color: var(--mut);
-    }
-
-    .viewer-container {
-      flex: 1;
-      position: relative;
       display: flex;
       flex-direction: column;
     }
 
-    .viewer-header {
+    /* ══ HEADER ══════════════════════════════════════════════════════════════ */
+    .header {
+      height: var(--header);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(6px);
-      position: sticky;
-      top: 0;
+      padding: 0 20px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
       z-index: 100;
     }
 
+    .header-left { display: flex; align-items: center; gap: 14px; }
+
     .back-btn {
-      background: none;
-      border: 1px solid var(--line);
-      padding: 8px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--ink);
-      transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+      border: 1px solid var(--border); background: var(--white);
+      padding: 7px 14px; border-radius: 8px;
+      font: 600 13px 'DM Sans', sans-serif; color: var(--sub);
+      cursor: pointer; transition: all .15s;
+      text-decoration: none;
+    }
+    .back-btn:hover { background: var(--bg); border-color: #CBD5E1; color: var(--ink); }
+
+    .brand { display: flex; align-items: center; gap: 9px; }
+    .mark  { width: 30px; height: 30px; border-radius: 7px; background: var(--red); }
+    .brandtxt { font-weight: 700; font-size: 16px; letter-spacing: -.3px; color: var(--ink); }
+
+    .header-title {
+      font-size: 14px; font-weight: 600; color: var(--sub);
+      padding-left: 14px; border-left: 1px solid var(--border);
     }
 
-    .back-btn:hover {
-      background: var(--calm);
-      border-color: var(--brand);
-    }
+    .header-right { display: flex; align-items: center; gap: 10px; }
 
-    .viewer-main {
+    .btn-icon {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--white); cursor: pointer; font-size: 16px;
+      transition: all .15s; color: var(--sub);
+    }
+    .btn-icon:hover { background: var(--bg); border-color: #CBD5E1; color: var(--ink); }
+
+    /* ══ LAYOUT ══════════════════════════════════════════════════════════════ */
+    .layout {
       flex: 1;
-      position: relative;
-      background: #f9fafb;
+      display: flex;
+      overflow: hidden;
     }
 
-    #biodigital-iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: none;
-    }
-
-    .loading-overlay {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-content: center;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.95);
-      z-index: 50;
-    }
-
-    .loading-overlay.hidden {
-      display: none;
-    }
-
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid #E5EAF0;
-      border-top-color: #1F6FEB;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      text-align: center;
-      color: var(--mut);
-      font-weight: 600;
-    }
-
-    .controls-panel {
-      position: absolute;
-      right: 16px;
-      top: 16px;
+    /* ══ SIDEBAR ══════════════════════════════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar);
+      flex-shrink: 0;
+      background: var(--white);
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      z-index: 10;
+      overflow: hidden;
     }
 
-    .ctrl-btn {
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid var(--line);
-      padding: 10px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: all 0.2s;
-      white-space: nowrap;
+    .sidebar-top {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border);
     }
 
-    .ctrl-btn:hover {
-      background: #fff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    .search-wrap {
+      position: relative;
+    }
+    .search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      font-size: 14px; color: var(--muted); pointer-events: none;
+    }
+    .search-input {
+      width: 100%; padding: 8px 10px 8px 32px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font: 400 13px 'DM Sans', sans-serif; color: var(--ink);
+      background: var(--bg); outline: none; transition: border-color .15s;
+    }
+    .search-input:focus { border-color: #93C5FD; background: var(--white); }
+    .search-input::placeholder { color: var(--muted); }
+
+    .sidebar-list {
+      flex: 1; overflow-y: auto; padding: 10px 12px;
+    }
+    .sidebar-list::-webkit-scrollbar { width: 4px; }
+    .sidebar-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .cat-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.1px;
+      text-transform: uppercase; color: var(--muted);
+      margin: 14px 4px 6px; display: block;
     }
 
+    .model-btn {
+      width: 100%; text-align: left;
+      padding: 10px 12px;
+      border: 1px solid transparent; border-radius: 10px;
+      background: transparent; cursor: pointer;
+      transition: all .15s; margin-bottom: 2px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .model-btn:hover { background: var(--bg); border-color: var(--border); }
+    .model-btn.active {
+      background: #FFF0F2; border-color: #FECDD3;
+    }
+
+    .model-emoji { font-size: 22px; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+
+    .model-info { flex: 1; min-width: 0; }
+    .model-name {
+      font-size: 13px; font-weight: 600; color: var(--ink);
+      line-height: 1.3; margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .model-desc {
+      font-size: 11.5px; color: var(--sub); line-height: 1.4;
+    }
+
+    .model-btn.active .model-name { color: var(--red); }
+
+    /* ══ MAIN: VIEWER ════════════════════════════════════════════════════════ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* info bar above viewer */
+    .viewer-bar {
+      padding: 12px 20px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .viewer-bar-left {}
+    .viewer-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 20px; font-weight: 400; color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .viewer-subtitle { font-size: 13px; color: var(--sub); }
+
+    .viewer-actions { display: flex; gap: 8px; }
+
+    .action-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--white);
+      font: 500 12px 'DM Sans', sans-serif; color: var(--sub);
+      cursor: pointer; transition: all .15s;
+    }
+    .action-btn:hover { background: var(--bg); border-color: #CBD5E1; color: var(--ink); }
+    .action-btn.primary {
+      background: var(--red); border-color: var(--red); color: white;
+    }
+    .action-btn.primary:hover { background: #A50E26; }
+
+    /* iframe container */
+    .viewer-wrap {
+      flex: 1; position: relative; background: #0F1923;
+    }
+
+    .viewer-frame {
+      width: 100%; height: 100%;
+      border: none; display: block;
+    }
+
+    /* loading overlay */
+    .viewer-loading {
+      position: absolute; inset: 0;
+      background: #0F1923;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; z-index: 10;
+    }
+    .viewer-loading.hidden { display: none; }
+
+    .loading-ring {
+      width: 48px; height: 48px;
+      border: 3px solid rgba(255,255,255,.1);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-label {
+      color: rgba(255,255,255,.6); font-size: 14px; font-weight: 500;
+    }
+
+    /* empty state */
+    .viewer-empty {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; background: #0F1923;
+    }
+    .viewer-empty.hidden { display: none; }
+    .empty-icon { font-size: 64px; opacity: .4; }
+    .empty-text { color: rgba(255,255,255,.4); font-size: 15px; font-weight: 500; }
+
+    /* ══ INFO PANEL (bottom drawer) ══════════════════════════════════════════ */
     .info-panel {
-      border-top: 1px solid var(--line);
-      background: #fff;
-      padding: 14px 16px;
-      color: var(--mut);
-      line-height: 1.6;
-      max-height: 120px;
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      transform: translateY(100%);
+      transition: transform .3s ease;
+      z-index: 20;
+      max-height: 55%;
       overflow-y: auto;
     }
+    .info-panel.open { transform: translateY(0); }
 
-    .info-panel.hidden {
-      display: none;
+    .info-panel-header {
+      padding: 16px 20px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--white);
+    }
+    .info-panel-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px; color: var(--ink);
+    }
+    .close-btn {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: none; cursor: pointer; font-size: 16px; color: var(--sub);
+    }
+    .close-btn:hover { background: var(--bg); }
+
+    .info-body { padding: 16px 20px 24px; }
+
+    .info-section { margin-bottom: 20px; }
+    .info-section h4 {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--red); margin-bottom: 8px;
+    }
+    .info-section p {
+      font-size: 14px; color: var(--sub); line-height: 1.7;
+    }
+    .info-section ul {
+      list-style: none; padding: 0;
+    }
+    .info-section ul li {
+      font-size: 14px; color: var(--sub); line-height: 1.6;
+      padding: 4px 0 4px 18px; position: relative;
+    }
+    .info-section ul li::before {
+      content: '›'; position: absolute; left: 0;
+      color: var(--red); font-size: 17px; line-height: 1.3; font-weight: 700;
     }
 
-    .search-box {
-      margin-bottom: 12px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      font-size: 14px;
-      background: #fff;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
-    }
-
-    .category {
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .consultorio-container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .controls-panel {
-        flex-direction: row;
-        right: auto;
-        left: 16px;
-        right: 16px;
-        bottom: 16px;
-        top: auto;
-      }
+    /* tag chips */
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag {
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 600;
+      background: #FFF0F2; color: var(--red); border: 1px solid #FECDD3;
     }
   </style>
 </head>
 <body>
-  <div class="consultorio-container">
-    <!-- Sidebar com lista de modelos -->
-    <aside class="sidebar">
-      <div class="brand" style="margin-bottom: 20px;">
-        <div class="mark"></div>
-        <div class="brandtxt" style="font-size: 18px; font-weight: 900; color: #1F3A8A;">Consultório</div>
-      </div>
 
-      <div class="search-box">
-        <input 
-          type="text" 
-          id="searchInput" 
-          class="search-input" 
-          placeholder="Buscar modelos..."
-          oninput="filterModels()"
-        />
-      </div>
+<!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-left">
+    <a class="back-btn" href="index.html">← Voltar</a>
+    <div class="brand">
+      <div class="mark"></div>
+      <span class="brandtxt">BiOOH</span>
+    </div>
+    <span class="header-title">Visualizador 3D — Consultório</span>
+  </div>
+  <div class="header-right">
+    <button class="btn-icon" title="Tela cheia" onclick="toggleFullscreen()">⛶</button>
+  </div>
+</header>
 
-      <div id="modelsContainer">
-        <!-- Categoria: Diabetes e Metabolismo -->
-        <div class="category">
-          <h3>🩸 Diabetes & Metabolismo</h3>
-          <div class="model-card active" onclick="loadModel('production/maleAdult/diabetes_mellitus_type_2', this)" data-keywords="diabetes tipo2 insulina glicose">
-            <strong>Diabetes Tipo 2</strong>
-            <div class="desc">Resistência à insulina e metabolismo</div>
-          </div>
-          <div class="model-card" onclick="loadModel('production/maleAdult/pancreas', this)" data-keywords="pancreas insulina hormonio">
-            <strong>Pâncreas</strong>
-            <div class="desc">Órgão produtor de insulina</div>
-          </div>
-        </div>
+<!-- ── LAYOUT ─────────────────────────────────────────────────────────────── -->
+<div class="layout">
 
-        <!-- Categoria: Sistema Cardiovascular -->
-        <div class="category">
-          <h3>❤️ Cardiovascular</h3>
-          <div class="model-card" onclick="loadModel('cardiovascular_system', this)" data-keywords="coracao circulacao sangue">
-            <strong>Sistema Cardiovascular</strong>
-            <div class="desc">Coração e circulação sanguínea</div>
-          </div>
-          <div class="model-card" onclick="loadModel('production/maleAdult/heart', this)" data-keywords="coracao batimento cardiaco">
-            <strong>Coração</strong>
-            <div class="desc">Anatomia cardíaca detalhada</div>
-          </div>
-          <div class="model-card" onclick="loadModel('production/maleAdult/hypertension', this)" data-keywords="hipertensao pressao arterial">
-            <strong>Hipertensão</strong>
-            <div class="desc">Pressão arterial elevada</div>
-          </div>
-        </div>
-
-        <!-- Categoria: Sistema Respiratório -->
-        <div class="category">
-          <h3>🫁 Respiratório</h3>
-          <div class="model-card" onclick="loadModel('respiratory_system', this)" data-keywords="pulmao respiracao ar">
-            <strong>Sistema Respiratório</strong>
-            <div class="desc">Pulmões e vias aéreas</div>
-          </div>
-          <div class="model-card" onclick="loadModel('production/maleAdult/asthma', this)" data-keywords="asma bronquite">
-            <strong>Asma</strong>
-            <div class="desc">Inflamação das vias aéreas</div>
-          </div>
-        </div>
-
-        <!-- Categoria: Sistema Digestivo -->
-        <div class="category">
-          <h3>🍴 Digestivo</h3>
-          <div class="model-card" onclick="loadModel('digestive_system', this)" data-keywords="estomago intestino digestao">
-            <strong>Sistema Digestivo</strong>
-            <div class="desc">Órgãos da digestão</div>
-          </div>
-          <div class="model-card" onclick="loadModel('production/maleAdult/liver', this)" data-keywords="figado hepatico">
-            <strong>Fígado</strong>
-            <div class="desc">Função hepática</div>
-          </div>
-        </div>
-
-        <!-- Categoria: Sistema Esquelético -->
-        <div class="category">
-          <h3>🦴 Esquelético</h3>
-          <div class="model-card" onclick="loadModel('skeletal_system', this)" data-keywords="ossos esqueleto">
-            <strong>Sistema Esquelético</strong>
-            <div class="desc">Estrutura óssea completa</div>
-          </div>
-          <div class="model-card" onclick="loadModel('production/maleAdult/osteoarthritis', this)" data-keywords="artrite articulacao">
-            <strong>Osteoartrite</strong>
-            <div class="desc">Desgaste articular</div>
-          </div>
-        </div>
-
-        <!-- Categoria: Sistema Nervoso -->
-        <div class="category">
-          <h3>🧠 Nervoso</h3>
-          <div class="model-card" onclick="loadModel('nervous_system', this)" data-keywords="cerebro nervos">
-            <strong>Sistema Nervoso</strong>
-            <div class="desc">Cérebro e nervos</div>
-          </div>
-          <div class="model-card" onclick="loadModel('production/maleAdult/brain', this)" data-keywords="cerebro cortex">
-            <strong>Cérebro</strong>
-            <div class="desc">Anatomia cerebral</div>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Viewer principal -->
-    <div class="viewer-container">
-      <div class="viewer-header">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <button class="back-btn" onclick="goBack()">← Voltar</button>
-          <div style="color: var(--mut); font-weight: 600;" id="currentModelName">Diabetes Tipo 2</div>
-        </div>
-        <div style="color: var(--mut); font-size: 14px;">
-          <span id="viewerStatus">🟢 Ativo</span>
-        </div>
-      </div>
-
-      <div class="viewer-main">
-        <div class="loading-overlay" id="loadingOverlay">
-          <div class="spinner"></div>
-          <div class="loading-text">Carregando modelo 3D...</div>
-        </div>
-
-        <iframe 
-          id="biodigital-iframe" 
-          title="BioDigital Human Viewer"
-          allow="fullscreen"
-        ></iframe>
-
-        <div class="controls-panel">
-          <button class="ctrl-btn" onclick="reloadModel()" title="Recarregar modelo">
-            🔄 Recarregar
-          </button>
-          <button class="ctrl-btn" onclick="toggleFullscreen()" title="Tela cheia">
-            ⛶ Tela Cheia
-          </button>
-          <button class="ctrl-btn" onclick="toggleInfo()" title="Informações">
-            ℹ️ Informações
-          </button>
-          <button class="ctrl-btn" onclick="resetCamera()" title="Resetar câmera">
-            📷 Resetar
-          </button>
-        </div>
-      </div>
-
-      <div class="info-panel" id="infoPanel">
-        <div id="modelInfo">
-          🩸 <strong>Diabetes Tipo 2:</strong> Condição crônica que afeta a forma como o corpo processa glicose. 
-          A resistência à insulina e a diminuição da produção pancreática levam a níveis elevados de açúcar no sangue. 
-          O controle glicêmico, alimentação saudável e atividade física são fundamentais para o tratamento.
-        </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="searchInput" class="search-input" type="text"
+               placeholder="Buscar modelo…" oninput="filterModels(this.value)">
       </div>
     </div>
+    <div class="sidebar-list" id="modelList">
+      <!-- populated by JS -->
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main" id="main">
+
+    <!-- bar above viewer -->
+    <div class="viewer-bar" id="viewerBar">
+      <div class="viewer-bar-left">
+        <div class="viewer-title" id="viewerTitle">Selecione um modelo</div>
+        <div class="viewer-subtitle" id="viewerSub">Escolha uma estrutura anatômica na lista à esquerda</div>
+      </div>
+      <div class="viewer-actions">
+        <button class="action-btn" onclick="reloadModel()" id="btnReload" style="display:none">↺ Recarregar</button>
+        <button class="action-btn" onclick="toggleInfo()" id="btnInfo" style="display:none">ℹ Info clínica</button>
+      </div>
+    </div>
+
+    <!-- viewer -->
+    <div class="viewer-wrap" id="viewerWrap">
+
+      <div class="viewer-empty" id="viewerEmpty">
+        <div class="empty-icon">🫀</div>
+        <div class="empty-text">Selecione um modelo para visualizar</div>
+      </div>
+
+      <div class="viewer-loading hidden" id="viewerLoading">
+        <div class="loading-ring"></div>
+        <div class="loading-label" id="loadingLabel">Carregando modelo 3D…</div>
+      </div>
+
+      <iframe id="viewerFrame" class="viewer-frame"
+              style="display:none"
+              allowfullscreen
+              title="Visualizador 3D BioDigital Human"></iframe>
+    </div>
+
+    <!-- info panel -->
+    <div class="info-panel" id="infoPanel">
+      <div class="info-panel-header">
+        <div class="info-panel-title" id="infoPanelTitle">—</div>
+        <button class="close-btn" onclick="toggleInfo()">✕</button>
+      </div>
+      <div class="info-body" id="infoPanelBody"></div>
+    </div>
+
   </div>
+</div>
 
-  <script>
-    // Configuração e estado
-    let currentModelId = 'production/maleAdult/diabetes_mellitus_type_2';
-    let currentModelElement = null;
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+// BioDigital embed format: https://human.biodigital.com/viewer/?id=XXXX&lang=pt
+// IDs de modelos públicos/gratuitos
+var MODELS = [
+  // ── CORAÇÃO ──────────────────────────────────────────────────────────────
+  {
+    id: 'heart_chambers',
+    biodigital: 'production/maleAdult/heart',
+    emoji: '❤️',
+    name: 'Coração — Anatomia Geral',
+    desc: 'Câmaras, válvulas e grandes vasos',
+    cat: '🫀 Cardiologia',
+    tags: ['anatomia', 'câmaras', 'válvulas'],
+    what: 'O coração é um órgão muscular do tamanho de um punho fechado, responsável por bombear o sangue por todo o corpo. Possui quatro câmaras: dois átrios e dois ventrículos, separados por válvulas que garantem o fluxo unidirecional do sangue.',
+    clinical: [
+      'Peso médio: 300g em adultos',
+      'Frequência em repouso: 60–100 bpm',
+      'Débito cardíaco: ~5 L/min em repouso',
+      'Avaliado por ECG, ecocardiograma e cineangiocoronariografia'
+    ],
+    relevance: 'Base para compreender infartos, valvopatias e cardiomiopatias'
+  },
+  {
+    id: 'coronary_arteries',
+    biodigital: 'production/maleAdult/coronary_arteries',
+    emoji: '🩸',
+    name: 'Artérias Coronárias',
+    desc: 'Irrigação do músculo cardíaco',
+    cat: '🫀 Cardiologia',
+    tags: ['coronárias', 'infarto', 'aterosclerose'],
+    what: 'As artérias coronárias são os vasos que nutrem o próprio músculo cardíaco. A coronária esquerda divide-se em descendente anterior e circunflexa; a direita irriga a parede posterior. O bloqueio dessas artérias causa infarto.',
+    clinical: [
+      'DA anterior: irriga 40–50% do miocárdio',
+      'Obstrução > 70% indica revascularização',
+      'Avaliada por coronariografia ou angiotomografia',
+      'Principal alvo da angioplastia e do stent'
+    ],
+    relevance: 'Essencial para explicar infarto, angina e revascularização miocárdica'
+  },
+  {
+    id: 'heart_failure',
+    biodigital: 'production/maleAdult/heart_disease',
+    emoji: '💔',
+    name: 'Insuficiência Cardíaca',
+    desc: 'Coração com capacidade reduzida',
+    cat: '🫀 Cardiologia',
+    tags: ['insuficiência', 'fração ejeção', 'remodelamento'],
+    what: 'Na insuficiência cardíaca, o coração não consegue bombear sangue suficiente para as demandas do organismo. Pode ser sistólica (fração de ejeção reduzida) ou diastólica (enchimento prejudicado).',
+    clinical: [
+      'FE normal: ≥ 55% — FE reduzida: < 40%',
+      'Sintomas: dispneia, edema, ortopneia',
+      'Classificação NYHA I a IV',
+      'Tratamento: IECA/BRA, betabloqueadores, diuréticos'
+    ],
+    relevance: 'Explicar ao paciente a fisiopatologia e a importância da adesão ao tratamento'
+  },
 
-    // Informações dos modelos
-    const modelInfo = {
-      'production/maleAdult/diabetes_mellitus_type_2': {
-        name: 'Diabetes Tipo 2',
-        info: '🩸 <strong>Diabetes Tipo 2:</strong> Condição crônica que afeta a forma como o corpo processa glicose. A resistência à insulina e a diminuição da produção pancreática levam a níveis elevados de açúcar no sangue. O controle glicêmico, alimentação saudável e atividade física são fundamentais para o tratamento.'
-      },
-      'production/maleAdult/pancreas': {
-        name: 'Pâncreas',
-        info: '🫀 <strong>Pâncreas:</strong> Órgão vital que produz insulina e glucagon, hormônios essenciais para regular o açúcar no sangue. Também secreta enzimas digestivas importantes.'
-      },
-      'cardiovascular_system': {
-        name: 'Sistema Cardiovascular',
-        info: '❤️ <strong>Sistema Cardiovascular:</strong> Rede complexa de coração, vasos sanguíneos e sangue que transporta oxigênio e nutrientes por todo o corpo. O coração bombeia cerca de 5 litros de sangue por minuto em repouso.'
-      },
-      'production/maleAdult/heart': {
-        name: 'Coração',
-        info: '❤️ <strong>Coração:</strong> Músculo que bombeia sangue continuamente. Dividido em quatro câmaras (dois átrios e dois ventrículos), trabalha incansavelmente batendo aproximadamente 100.000 vezes por dia.'
-      },
-      'production/maleAdult/hypertension': {
-        name: 'Hipertensão',
-        info: '📈 <strong>Hipertensão:</strong> Pressão arterial elevada que força o coração a trabalhar mais. Pode danificar artérias e aumentar risco de doenças cardíacas, AVC e problemas renais.'
-      },
-      'respiratory_system': {
-        name: 'Sistema Respiratório',
-        info: '🫁 <strong>Sistema Respiratório:</strong> Responsável pela troca de gases, levando oxigênio aos tecidos e removendo dióxido de carbono. Inclui pulmões, brônquios e vias aéreas.'
-      },
-      'production/maleAdult/asthma': {
-        name: 'Asma',
-        info: '🌬️ <strong>Asma:</strong> Inflamação crônica das vias aéreas que causa estreitamento, produção de muco e dificuldade respiratória. Gatilhos incluem alérgenos, exercício e irritantes.'
-      },
-      'digestive_system': {
-        name: 'Sistema Digestivo',
-        info: '🍴 <strong>Sistema Digestivo:</strong> Processa alimentos, extrai nutrientes e elimina resíduos. Inclui boca, esôfago, estômago, intestinos, fígado e pâncreas.'
-      },
-      'production/maleAdult/liver': {
-        name: 'Fígado',
-        info: '🫀 <strong>Fígado:</strong> Maior órgão interno, realiza mais de 500 funções vitais incluindo desintoxicação, produção de bile, armazenamento de nutrientes e metabolismo.'
-      },
-      'skeletal_system': {
-        name: 'Sistema Esquelético',
-        info: '🦴 <strong>Sistema Esquelético:</strong> 206 ossos que fornecem estrutura, protegem órgãos, produzem células sanguíneas e armazenam minerais. Trabalha com músculos para permitir movimento.'
-      },
-      'production/maleAdult/osteoarthritis': {
-        name: 'Osteoartrite',
-        info: '🦴 <strong>Osteoartrite:</strong> Desgaste da cartilagem articular causando dor, rigidez e redução da mobilidade. Mais comum em joelhos, quadris, mãos e coluna.'
-      },
-      'nervous_system': {
-        name: 'Sistema Nervoso',
-        info: '🧠 <strong>Sistema Nervoso:</strong> Rede de controle do corpo, processa informações sensoriais e coordena ações voluntárias e involuntárias. Dividido em central (cérebro e medula) e periférico.'
-      },
-      'production/maleAdult/brain': {
-        name: 'Cérebro',
-        info: '🧠 <strong>Cérebro:</strong> Centro de comando com aproximadamente 86 bilhões de neurônios. Controla pensamento, memória, emoções, movimento e todas as funções corporais.'
-      }
-    };
+  // ── VASCULAR ─────────────────────────────────────────────────────────────
+  {
+    id: 'atherosclerosis',
+    biodigital: 'production/maleAdult/atherosclerosis',
+    emoji: '🧱',
+    name: 'Aterosclerose',
+    desc: 'Formação de placas nas artérias',
+    cat: '🩸 Vascular',
+    tags: ['placa', 'artéria', 'colesterol', 'LDL'],
+    what: 'A aterosclerose é o acúmulo progressivo de lipídios, células inflamatórias e tecido fibroso na parede das artérias, formando placas que reduzem o lúmen vascular. A ruptura de uma placa instável pode causar infarto ou AVC.',
+    clinical: [
+      'Processo inicia-se ainda na infância',
+      'LDL elevado é o principal fator modificável',
+      'Meta de LDL em alto risco: < 50 mg/dL',
+      'Visualizada por angiotomografia ou ultrassom vascular'
+    ],
+    relevance: 'Base de toda a doença cardiovascular aterosclerótica — infarto, AVC, arteriopatia periférica'
+  },
+  {
+    id: 'hypertension_vessels',
+    biodigital: 'production/maleAdult/cardiovascular_system',
+    emoji: '📈',
+    name: 'Hipertensão Arterial',
+    desc: 'Impacto nos vasos e órgãos-alvo',
+    cat: '🩸 Vascular',
+    tags: ['pressão', 'hipertensão', 'rim', 'coração'],
+    what: 'A hipertensão arterial sistêmica causa espessamento e rigidez das paredes arteriais, sobrecarregando o coração, rins, cérebro e retina. É o principal fator de risco modificável para AVC e insuficiência renal.',
+    clinical: [
+      'Diagnóstico: PA ≥ 140/90 em duas aferições',
+      'Hipertensão estágio 3: ≥ 180/110',
+      'Lesões de órgão-alvo: HVE, proteinúria, retinopatia',
+      'Meta terapêutica geral: < 130/80 mmHg'
+    ],
+    relevance: 'Ajuda o paciente a entender por que controlar a pressão protege múltiplos órgãos'
+  },
 
-    // Carregar modelo no iframe
-    function loadModel(modelId, element) {
-      currentModelId = modelId;
-      currentModelElement = element;
+  // ── CÉREBRO / AVC ─────────────────────────────────────────────────────────
+  {
+    id: 'brain_stroke',
+    biodigital: 'production/maleAdult/brain',
+    emoji: '🧠',
+    name: 'Cérebro e AVC',
+    desc: 'Territórios vasculares cerebrais',
+    cat: '🧠 Neurologia',
+    tags: ['AVC', 'derrame', 'artéria cerebral', 'isquemia'],
+    what: 'O cérebro recebe sangue por quatro artérias principais. O AVC isquêmico ocorre quando uma delas é bloqueada; o hemorrágico, quando se rompe. Cada território irrigado corresponde a funções específicas — o que explica os diferentes déficits neurológicos.',
+    clinical: [
+      'Janela para trombólise IV: até 4,5h do início',
+      'Trombectomia mecânica: até 24h em selecionados',
+      'Escala NIHSS avalia gravidade clínica',
+      'Prevenção secundária: antiagregantes ou anticoagulantes'
+    ],
+    relevance: 'Mostrar ao paciente os territórios e por que a rapidez no atendimento é decisiva'
+  },
 
-      // Atualizar UI
-      document.querySelectorAll('.model-card').forEach(card => card.classList.remove('active'));
-      if (element) element.classList.add('active');
+  // ── METABOLISMO ───────────────────────────────────────────────────────────
+  {
+    id: 'pancreas_diabetes',
+    biodigital: 'production/maleAdult/endocrine_system',
+    emoji: '🍬',
+    name: 'Diabetes e Pâncreas',
+    desc: 'Produção de insulina e glicemia',
+    cat: '⚗️ Metabolismo',
+    tags: ['diabetes', 'insulina', 'pâncreas', 'glicemia'],
+    what: 'As células beta do pâncreas produzem insulina, hormônio que permite a entrada de glicose nas células. No DM tipo 1 há destruição autoimune dessas células; no DM tipo 2 há resistência periférica e falência progressiva da secreção.',
+    clinical: [
+      'Diagnóstico: glicemia jejum ≥ 126 ou HbA1c ≥ 6,5%',
+      'Meta de HbA1c: < 7% (individualizar)',
+      'DM tipo 2: metformina como primeira linha',
+      'Complicações: nefropatia, retinopatia, neuropatia, cardiopatia'
+    ],
+    relevance: 'Explica ao paciente diabético por que a glicemia elevada danifica vasos e nervos'
+  },
+  {
+    id: 'obesity_metabolism',
+    biodigital: 'production/maleAdult/adipose_tissue',
+    emoji: '⚖️',
+    name: 'Obesidade e Metabolismo',
+    desc: 'Gordura visceral e síndrome metabólica',
+    cat: '⚗️ Metabolismo',
+    tags: ['obesidade', 'gordura visceral', 'IMC', 'síndrome metabólica'],
+    what: 'A gordura visceral (abdominal) é metabolicamente ativa — libera citocinas inflamatórias, ácidos graxos livres e hormônios que contribuem para resistência à insulina, dislipidemia e hipertensão, compondo a síndrome metabólica.',
+    clinical: [
+      'Circunferência abdominal de risco: > 94 cm (H), > 80 cm (M)',
+      'IMC > 30 kg/m² = obesidade grau I',
+      'Perda de 5–10% reduz significativamente risco cardiovascular',
+      'Tratamento: dieta, exercício, medicamentos, cirurgia bariátrica'
+    ],
+    relevance: 'Motivar o paciente mostrando visualmente o impacto da gordura visceral'
+  },
 
-      // Mostrar loading
-      const loading = document.getElementById('loadingOverlay');
-      const iframe = document.getElementById('biodigital-iframe');
-      loading.classList.remove('hidden');
-      iframe.style.display = 'none';
+  // ── RESPIRATÓRIO ──────────────────────────────────────────────────────────
+  {
+    id: 'lungs_anatomy',
+    biodigital: 'production/maleAdult/respiratory_system',
+    emoji: '🫁',
+    name: 'Pulmões e Sistema Respiratório',
+    desc: 'Troca gasosa e oxigenação do sangue',
+    cat: '🫁 Respiratório',
+    tags: ['pulmão', 'respiração', 'oxigênio', 'dispneia'],
+    what: 'Os pulmões são responsáveis pela hematose — a troca de CO₂ por O₂ no sangue. Sua função está intimamente ligada ao coração: disfunção pulmonar sobrecarrega o ventrículo direito e vice-versa, explicando a dispneia na IC.',
+    clinical: [
+      'Capacidade vital média: 4,5–5 L',
+      'SpO₂ normal: 95–100%',
+      'Edema pulmonar: consequência da IC descompensada',
+      'Avaliação: espirometria, radiografia, TC de tórax'
+    ],
+    relevance: 'Fundamental para explicar dispneia, edema pulmonar e relação coração-pulmão'
+  },
 
-      // Atualizar nome e info
-      const modelData = modelInfo[modelId] || { name: 'Modelo 3D', info: 'Carregando informações...' };
-      document.getElementById('currentModelName').textContent = modelData.name;
-      document.getElementById('modelInfo').innerHTML = modelData.info;
+  // ── MUSCULOESQUELÉTICO ────────────────────────────────────────────────────
+  {
+    id: 'muscular_system',
+    biodigital: 'production/maleAdult/muscular_system',
+    emoji: '💪',
+    name: 'Sistema Muscular',
+    desc: 'Massa magra e saúde cardiovascular',
+    cat: '🦴 Musculoesquelético',
+    tags: ['músculo', 'sarcopenia', 'exercício', 'força'],
+    what: 'A massa muscular esquelética é um órgão endócrino: libera miocinas durante o exercício que melhoram sensibilidade à insulina, reduzem inflamação e protegem o sistema cardiovascular. Sarcopenia está associada a maior mortalidade.',
+    clinical: [
+      'Sarcopenia: perda de massa + força muscular',
+      'Exercício resistido 2x/semana é recomendação cardiológica',
+      'Cada kg de músculo consume mais glicose em repouso',
+      'Avaliação: dinamometria, DEXA, circunferência da panturrilha'
+    ],
+    relevance: 'Motivar paciente sedentário mostrando o papel do músculo na saúde cardíaca'
+  }
+];
 
-      // Carregar iframe
-      iframe.src = `https://human.biodigital.com/view?id=${modelId}&lang=pt`;
+// ─── STATE ────────────────────────────────────────────────────────────────────
+var current = null;
+var infoPanelOpen = false;
 
-      // Esconder loading quando carregar
-      iframe.onload = function() {
-        setTimeout(() => {
-          loading.classList.add('hidden');
-          iframe.style.display = 'block';
-          document.getElementById('viewerStatus').textContent = '🟢 Ativo';
-        }, 500);
-      };
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+(function init(){
+  renderSidebar(MODELS);
+})();
 
-      iframe.onerror = function() {
-        loading.classList.add('hidden');
-        document.getElementById('viewerStatus').textContent = '🔴 Erro';
-        alert('Erro ao carregar modelo. Verifique sua conexão ou tente outro modelo.');
-      };
-    }
+// ─── SIDEBAR ──────────────────────────────────────────────────────────────────
+function renderSidebar(models){
+  var list = document.getElementById('modelList');
+  if(!list) return;
 
-    // Recarregar modelo atual
-    function reloadModel() {
-      if (currentModelElement) {
-        loadModel(currentModelId, currentModelElement);
-      }
-    }
+  // group by category
+  var cats = {};
+  models.forEach(function(m){
+    if(!cats[m.cat]) cats[m.cat] = [];
+    cats[m.cat].push(m);
+  });
 
-    // Resetar câmera (recarrega o iframe)
-    function resetCamera() {
-      reloadModel();
-    }
-
-    // Toggle fullscreen
-    function toggleFullscreen() {
-      const viewer = document.querySelector('.viewer-main');
-      if (!document.fullscreenElement) {
-        viewer.requestFullscreen().catch(err => {
-          alert('Erro ao entrar em tela cheia: ' + err.message);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    }
-
-    // Toggle painel de informações
-    function toggleInfo() {
-      const panel = document.getElementById('infoPanel');
-      panel.classList.toggle('hidden');
-    }
-
-    // Filtrar modelos por busca
-    function filterModels() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const cards = document.querySelectorAll('.model-card');
-
-      cards.forEach(card => {
-        const keywords = card.getAttribute('data-keywords') || '';
-        const text = card.textContent.toLowerCase();
-        const matches = text.includes(search) || keywords.includes(search);
-        card.style.display = matches ? 'block' : 'none';
-      });
-
-      // Esconder categorias vazias
-      document.querySelectorAll('.category').forEach(category => {
-        const visibleCards = category.querySelectorAll('.model-card[style*="display: block"], .model-card:not([style*="display: none"])');
-        category.style.display = visibleCards.length > 0 ? 'block' : 'none';
-      });
-    }
-
-    // Voltar para página anterior
-    function goBack() {
-      // Detectar de onde veio
-      if (document.referrer && document.referrer.includes('waiting-room')) {
-        window.location.href = 'waiting-room.html';
-      } else if (document.referrer && document.referrer.includes('admin')) {
-        window.location.href = 'admin/index.html';
-      } else {
-        // Criar landing page ou voltar para home
-        window.location.href = 'index.html';
-      }
-    }
-
-    // Inicializar no carregamento
-    window.addEventListener('load', function() {
-      // Carregar primeiro modelo
-      const firstCard = document.querySelector('.model-card.active');
-      if (firstCard) {
-        loadModel(currentModelId, firstCard);
-      }
+  var html = '';
+  Object.keys(cats).forEach(function(cat){
+    html += '<span class="cat-label">'+cat+'</span>';
+    cats[cat].forEach(function(m){
+      var active = current && current.id === m.id ? 'active' : '';
+      html +=
+        '<button class="model-btn '+active+'" onclick="selectModel(\''+m.id+'\')">'+
+          '<span class="model-emoji">'+m.emoji+'</span>'+
+          '<div class="model-info">'+
+            '<div class="model-name">'+esc(m.name)+'</div>'+
+            '<div class="model-desc">'+esc(m.desc)+'</div>'+
+          '</div>'+
+        '</button>';
     });
-  </script>
+  });
+
+  if(!html) html = '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhum modelo encontrado</div>';
+  list.innerHTML = html;
+}
+
+function filterModels(q){
+  q = q.toLowerCase().trim();
+  if(!q){ renderSidebar(MODELS); return; }
+  var filtered = MODELS.filter(function(m){
+    return m.name.toLowerCase().includes(q)
+        || m.desc.toLowerCase().includes(q)
+        || m.tags.some(function(t){ return t.includes(q); })
+        || m.cat.toLowerCase().includes(q);
+  });
+  renderSidebar(filtered);
+}
+
+// ─── SELECT / LOAD ────────────────────────────────────────────────────────────
+function selectModel(id){
+  var model = MODELS.find(function(m){ return m.id === id; });
+  if(!model) return;
+
+  current = model;
+  renderSidebar(MODELS); // re-render to update active state
+
+  // update bar
+  document.getElementById('viewerTitle').textContent = model.emoji + ' ' + model.name;
+  document.getElementById('viewerSub').textContent = model.desc;
+  document.getElementById('btnReload').style.display = '';
+  document.getElementById('btnInfo').style.display = '';
+
+  // close info panel if open
+  if(infoPanelOpen) closeInfo();
+
+  // show loader, hide frame and empty
+  document.getElementById('viewerEmpty').classList.add('hidden');
+  document.getElementById('viewerLoading').classList.remove('hidden');
+  document.getElementById('loadingLabel').textContent = 'Carregando ' + model.name + '…';
+  document.getElementById('viewerFrame').style.display = 'none';
+
+  // build BioDigital URL
+  var url = 'https://human.biodigital.com/viewer/?id='
+    + encodeURIComponent(model.biodigital)
+    + '&lang=pt&ui-anatomy-descriptions=true&ui-panel=false';
+
+  var frame = document.getElementById('viewerFrame');
+  frame.onload = function(){
+    document.getElementById('viewerLoading').classList.add('hidden');
+    frame.style.display = 'block';
+  };
+  frame.onerror = function(){
+    document.getElementById('viewerLoading').classList.add('hidden');
+    showFallback(model);
+  };
+  frame.src = url;
+
+  // fallback timeout (BioDigital sometimes doesn't fire onload)
+  setTimeout(function(){
+    if(document.getElementById('viewerLoading') &&
+       !document.getElementById('viewerLoading').classList.contains('hidden')){
+      document.getElementById('viewerLoading').classList.add('hidden');
+      if(frame.style.display === 'none') showFallback(model);
+    }
+  }, 8000);
+}
+
+function showFallback(model){
+  var wrap = document.getElementById('viewerWrap');
+  // inject a nice fallback card
+  var fb = document.createElement('div');
+  fb.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#0F1923;color:white;text-align:center;padding:40px';
+  fb.innerHTML =
+    '<div style="font-size:72px">'+model.emoji+'</div>'+
+    '<div style="font-size:20px;font-weight:700;margin-bottom:4px">'+esc(model.name)+'</div>'+
+    '<div style="font-size:14px;opacity:.6;max-width:400px;line-height:1.6">'+esc(model.what||model.desc)+'</div>'+
+    '<div style="margin-top:16px;opacity:.4;font-size:12px">Visualizador 3D indisponível — verifique conexão ou acesse human.biodigital.com</div>';
+  wrap.appendChild(fb);
+}
+
+function reloadModel(){
+  if(current) selectModel(current.id);
+}
+
+// ─── INFO PANEL ───────────────────────────────────────────────────────────────
+function toggleInfo(){
+  if(infoPanelOpen) closeInfo();
+  else openInfo();
+}
+
+function openInfo(){
+  if(!current) return;
+  var panel = document.getElementById('infoPanel');
+  document.getElementById('infoPanelTitle').textContent = current.emoji + ' ' + current.name;
+
+  var tags = (current.tags||[]).map(function(t){
+    return '<span class="tag">'+esc(t)+'</span>';
+  }).join('');
+
+  var clinical = (current.clinical||[]).map(function(c){
+    return '<li>'+esc(c)+'</li>';
+  }).join('');
+
+  document.getElementById('infoPanelBody').innerHTML =
+    '<div class="info-section">'+
+      '<h4>O que é</h4>'+
+      '<p>'+esc(current.what||'')+'</p>'+
+    '</div>'+
+    (clinical ? '<div class="info-section"><h4>Dados clínicos</h4><ul>'+clinical+'</ul></div>' : '')+
+    '<div class="info-section">'+
+      '<h4>Relevância clínica</h4>'+
+      '<p>'+esc(current.relevance||'')+'</p>'+
+    '</div>'+
+    (tags ? '<div class="info-section"><h4>Termos relacionados</h4><div class="tag-list">'+tags+'</div></div>' : '');
+
+  panel.classList.add('open');
+  infoPanelOpen = true;
+  document.getElementById('btnInfo').textContent = '✕ Fechar info';
+}
+
+function closeInfo(){
+  document.getElementById('infoPanel').classList.remove('open');
+  infoPanelOpen = false;
+  document.getElementById('btnInfo').textContent = 'ℹ Info clínica';
+}
+
+// ─── FULLSCREEN ───────────────────────────────────────────────────────────────
+function toggleFullscreen(){
+  var el = document.getElementById('viewerWrap');
+  if(!document.fullscreenElement){
+    (el.requestFullscreen||el.webkitRequestFullscreen).call(el);
+  } else {
+    (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+  }
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
 </body>
 </html>
+
