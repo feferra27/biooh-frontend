@@ -263,33 +263,65 @@
             <strong>Diabetes Tipo 2</strong>
             <div class="desc">Resistência à insulina e metabolismo</div>
           </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/diabetes_mellitus_type_1', this)" data-keywords="diabetes tipo1 autoimune">
+            <strong>Diabetes Tipo 1</strong>
+            <div class="desc">Destruição autoimune de células beta</div>
+          </div>
           <div class="model-card" onclick="loadModel('production/maleAdult/pancreas', this)" data-keywords="pancreas insulina hormonio">
             <strong>Pâncreas</strong>
             <div class="desc">Órgão produtor de insulina</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/metabolic_syndrome', this)" data-keywords="sindrome metabolica obesidade">
+            <strong>Síndrome Metabólica</strong>
+            <div class="desc">Cluster de fatores de risco</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/obesity', this)" data-keywords="obesidade peso gordura">
+            <strong>Obesidade</strong>
+            <div class="desc">Excesso de gordura corporal</div>
           </div>
         </div>
 
         <!-- Categoria: Sistema Cardiovascular -->
         <div class="category">
           <h3>❤️ Cardiovascular</h3>
-          <div class="model-card" onclick="loadModel('cardiovascular_system', this)" data-keywords="coracao circulacao sangue">
-            <strong>Sistema Cardiovascular</strong>
-            <div class="desc">Coração e circulação sanguínea</div>
-          </div>
           <div class="model-card" onclick="loadModel('production/maleAdult/heart', this)" data-keywords="coracao batimento cardiaco">
-            <strong>Coração</strong>
-            <div class="desc">Anatomia cardíaca detalhada</div>
+            <strong>Coração Anatomia</strong>
+            <div class="desc">Câmaras, válvulas e estrutura</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/coronary_arteries', this)" data-keywords="coronarias arterias infarto">
+            <strong>Artérias Coronárias</strong>
+            <div class="desc">Irrigação do músculo cardíaco</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/myocardial_infarction', this)" data-keywords="infarto miocardio ataque">
+            <strong>Infarto do Miocárdio</strong>
+            <div class="desc">Bloqueio coronariano agudo</div>
           </div>
           <div class="model-card" onclick="loadModel('production/maleAdult/hypertension', this)" data-keywords="hipertensao pressao arterial">
-            <strong>Hipertensão</strong>
+            <strong>Hipertensão Arterial</strong>
             <div class="desc">Pressão arterial elevada</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/heart_failure', this)" data-keywords="insuficiencia cardiaca">
+            <strong>Insuficiência Cardíaca</strong>
+            <div class="desc">Coração com bombeamento reduzido</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/atrial_fibrillation', this)" data-keywords="fibrilacao atrial arritmia">
+            <strong>Fibrilação Atrial</strong>
+            <div class="desc">Ritmo cardíaco irregular</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/atherosclerosis', this)" data-keywords="aterosclerose placa arterial">
+            <strong>Aterosclerose</strong>
+            <div class="desc">Acúmulo de placas nas artérias</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/stroke', this)" data-keywords="avc derrame cerebral">
+            <strong>AVC (Acidente Vascular Cerebral)</strong>
+            <div class="desc">Interrupção do fluxo cerebral</div>
           </div>
         </div>
 
         <!-- Categoria: Sistema Respiratório -->
         <div class="category">
           <h3>🫁 Respiratório</h3>
-          <div class="model-card" onclick="loadModel('respiratory_system', this)" data-keywords="pulmao respiracao ar">
+          <div class="model-card" onclick="loadModel('production/maleAdult/respiratory_system', this)" data-keywords="pulmao respiracao ar">
             <strong>Sistema Respiratório</strong>
             <div class="desc">Pulmões e vias aéreas</div>
           </div>
@@ -297,12 +329,24 @@
             <strong>Asma</strong>
             <div class="desc">Inflamação das vias aéreas</div>
           </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/copd', this)" data-keywords="dpoc enfisema bronquite">
+            <strong>DPOC (Doença Pulmonar Obstrutiva)</strong>
+            <div class="desc">Enfisema e bronquite crônica</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/pneumonia', this)" data-keywords="pneumonia infeccao pulmonar">
+            <strong>Pneumonia</strong>
+            <div class="desc">Infecção pulmonar</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/lung_cancer', this)" data-keywords="cancer pulmao tumor">
+            <strong>Câncer de Pulmão</strong>
+            <div class="desc">Tumor pulmonar</div>
+          </div>
         </div>
 
         <!-- Categoria: Sistema Digestivo -->
         <div class="category">
           <h3>🍴 Digestivo</h3>
-          <div class="model-card" onclick="loadModel('digestive_system', this)" data-keywords="estomago intestino digestao">
+          <div class="model-card" onclick="loadModel('production/maleAdult/digestive_system', this)" data-keywords="estomago intestino digestao">
             <strong>Sistema Digestivo</strong>
             <div class="desc">Órgãos da digestão</div>
           </div>
@@ -310,31 +354,143 @@
             <strong>Fígado</strong>
             <div class="desc">Função hepática</div>
           </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/cirrhosis', this)" data-keywords="cirrose figado hepatica">
+            <strong>Cirrose Hepática</strong>
+            <div class="desc">Fibrose e cicatrização do fígado</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/gastroesophageal_reflux', this)" data-keywords="refluxo gerd azia">
+            <strong>Refluxo Gastroesofágico</strong>
+            <div class="desc">DRGE - Refluxo ácido</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/colorectal_cancer', this)" data-keywords="cancer colorretal intestino">
+            <strong>Câncer Colorretal</strong>
+            <div class="desc">Tumor de cólon e reto</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Sistema Renal/Urinário -->
+        <div class="category">
+          <h3>🫘 Renal & Urinário</h3>
+          <div class="model-card" onclick="loadModel('production/maleAdult/urinary_system', this)" data-keywords="rim urina bexiga">
+            <strong>Sistema Urinário</strong>
+            <div class="desc">Rins, ureter, bexiga</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/kidney', this)" data-keywords="rim renal nefrologia">
+            <strong>Rins</strong>
+            <div class="desc">Anatomia e função renal</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/chronic_kidney_disease', this)" data-keywords="doenca renal cronica">
+            <strong>Doença Renal Crônica</strong>
+            <div class="desc">Perda progressiva da função renal</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/kidney_stones', this)" data-keywords="calculo renal pedra">
+            <strong>Cálculos Renais</strong>
+            <div class="desc">Pedras nos rins</div>
+          </div>
         </div>
 
         <!-- Categoria: Sistema Esquelético -->
         <div class="category">
-          <h3>🦴 Esquelético</h3>
-          <div class="model-card" onclick="loadModel('skeletal_system', this)" data-keywords="ossos esqueleto">
+          <h3>🦴 Musculoesquelético</h3>
+          <div class="model-card" onclick="loadModel('production/maleAdult/skeletal_system', this)" data-keywords="ossos esqueleto">
             <strong>Sistema Esquelético</strong>
             <div class="desc">Estrutura óssea completa</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/muscular_system', this)" data-keywords="musculos musculatura">
+            <strong>Sistema Muscular</strong>
+            <div class="desc">Músculos do corpo</div>
           </div>
           <div class="model-card" onclick="loadModel('production/maleAdult/osteoarthritis', this)" data-keywords="artrite articulacao">
             <strong>Osteoartrite</strong>
             <div class="desc">Desgaste articular</div>
           </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/rheumatoid_arthritis', this)" data-keywords="artrite reumatoide autoimune">
+            <strong>Artrite Reumatoide</strong>
+            <div class="desc">Inflamação autoimune das articulações</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/osteoporosis', this)" data-keywords="osteoporose ossos frageis">
+            <strong>Osteoporose</strong>
+            <div class="desc">Fragilidade óssea</div>
+          </div>
         </div>
 
         <!-- Categoria: Sistema Nervoso -->
         <div class="category">
-          <h3>🧠 Nervoso</h3>
-          <div class="model-card" onclick="loadModel('nervous_system', this)" data-keywords="cerebro nervos">
+          <h3>🧠 Neurológico</h3>
+          <div class="model-card" onclick="loadModel('production/maleAdult/nervous_system', this)" data-keywords="cerebro nervos">
             <strong>Sistema Nervoso</strong>
-            <div class="desc">Cérebro e nervos</div>
+            <div class="desc">Cérebro, medula e nervos</div>
           </div>
           <div class="model-card" onclick="loadModel('production/maleAdult/brain', this)" data-keywords="cerebro cortex">
             <strong>Cérebro</strong>
-            <div class="desc">Anatomia cerebral</div>
+            <div class="desc">Anatomia cerebral detalhada</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/alzheimers_disease', this)" data-keywords="alzheimer demencia">
+            <strong>Doença de Alzheimer</strong>
+            <div class="desc">Demência neurodegenerativa</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/parkinsons_disease', this)" data-keywords="parkinson tremor">
+            <strong>Doença de Parkinson</strong>
+            <div class="desc">Distúrbio do movimento</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/multiple_sclerosis', this)" data-keywords="esclerose multipla">
+            <strong>Esclerose Múltipla</strong>
+            <div class="desc">Doença autoimune do SNC</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Endócrino -->
+        <div class="category">
+          <h3>⚗️ Endócrino</h3>
+          <div class="model-card" onclick="loadModel('production/maleAdult/endocrine_system', this)" data-keywords="glandulas hormonios">
+            <strong>Sistema Endócrino</strong>
+            <div class="desc">Glândulas e hormônios</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/thyroid', this)" data-keywords="tireoide hormonio">
+            <strong>Tireoide</strong>
+            <div class="desc">Glândula tireoide</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/hypothyroidism', this)" data-keywords="hipotireoidismo">
+            <strong>Hipotireoidismo</strong>
+            <div class="desc">Baixa função tireoidiana</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/hyperthyroidism', this)" data-keywords="hipertireoidismo">
+            <strong>Hipertireoidismo</strong>
+            <div class="desc">Excesso de hormônio tireoidiano</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Oncologia -->
+        <div class="category">
+          <h3>🎗️ Oncologia</h3>
+          <div class="model-card" onclick="loadModel('production/maleAdult/breast_cancer', this)" data-keywords="cancer mama tumor">
+            <strong>Câncer de Mama</strong>
+            <div class="desc">Tumor mamário</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/prostate_cancer', this)" data-keywords="cancer prostata">
+            <strong>Câncer de Próstata</strong>
+            <div class="desc">Tumor prostático</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/melanoma', this)" data-keywords="melanoma cancer pele">
+            <strong>Melanoma</strong>
+            <div class="desc">Câncer de pele</div>
+          </div>
+        </div>
+
+        <!-- Categoria: Reprodutivo -->
+        <div class="category">
+          <h3>👶 Reprodutivo</h3>
+          <div class="model-card" onclick="loadModel('production/femaleAdult/reproductive_system', this)" data-keywords="utero ovario reprodutivo">
+            <strong>Sistema Reprodutor Feminino</strong>
+            <div class="desc">Útero, ovários, trompas</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/maleAdult/reproductive_system', this)" data-keywords="prostata testiculo">
+            <strong>Sistema Reprodutor Masculino</strong>
+            <div class="desc">Próstata, testículos</div>
+          </div>
+          <div class="model-card" onclick="loadModel('production/femaleAdult/pregnancy', this)" data-keywords="gravidez gestacao feto">
+            <strong>Gravidez</strong>
+            <div class="desc">Desenvolvimento fetal</div>
           </div>
         </div>
       </div>
@@ -563,3 +719,4 @@
   </script>
 </body>
 </html>
+
