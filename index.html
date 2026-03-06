@@ -54,7 +54,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
       gap: 24px;
-      max-width: 900px;
+      max-width: 1300px;
       width: 100%;
       animation: fadeInUp 0.6s ease 0.4s both;
     }
@@ -252,6 +252,22 @@
         </ul>
         <button class="card-button">Abrir Sala de Espera</button>
       </div>
+
+      <!-- Card: Guia do Diagnóstico -->
+      <div class="option-card" onclick="goToGuiaDiagnostico()">
+        <span class="card-icon">📖</span>
+        <h2 class="card-title">Guia do Diagnóstico</h2>
+        <p class="card-description">
+          Biblioteca médica com informações detalhadas sobre doenças cardiovasculares e fontes científicas.
+        </p>
+        <ul class="card-features">
+          <li>5 doenças cardiovasculares</li>
+          <li>Causas, sintomas e prevenção</li>
+          <li>Quick Facts com valores</li>
+          <li>Fontes: SBC, AHA, MS</li>
+        </ul>
+        <button class="card-button">Abrir Guia</button>
+      </div>
     </div>
 
     <div class="footer-info">
@@ -282,11 +298,21 @@
       window.location.href = `waiting-room.html?clinic=${clinic}&api=${api}`;
     }
 
+    function goToGuiaDiagnostico() {
+      // Pegar parâmetros da URL atual
+      const params = new URLSearchParams(window.location.search);
+      const clinic = params.get('clinic') || 'default';
+      
+      window.location.href = `guia-diagnostico.html?clinic=${clinic}`;
+    }
+
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
       if (e.key === '1') goToConsultorio();
       if (e.key === '2') goToWaitingRoom();
+      if (e.key === '3') goToGuiaDiagnostico();
     });
   </script>
 </body>
 </html>
+
