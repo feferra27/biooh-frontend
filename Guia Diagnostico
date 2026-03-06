@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BiOOH - Guia do Diagnostico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#C8102E; --red-light:#FEE2E2;
+  --blue:#1E40AF; --blue-light:#DBEAFE;
+  --green:#059669; --green-light:#D1FAE5;
+  --orange:#EA580C; --orange-light:#FFEDD5;
+  --purple:#7C3AED; --purple-light:#EDE9FE;
+  --ink:#0F172A; --sub:#475569; --muted:#94A3B8;
+  --border:#E2E8F0; --bg:#F8FAFC; --white:#fff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);}
+
+/* HEADER */
+.hdr{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;}
+.hdr-l{display:flex;align-items:center;gap:14px;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-mark{width:32px;height:32px;border-radius:8px;background:var(--red);}
+.hdr-name{font-weight:700;font-size:17px;}
+.hdr-sep{width:1px;height:22px;background:var(--border);}
+.hdr-title{font-size:14px;color:var(--sub);font-weight:500;}
+.back-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;padding:8px 16px;border-radius:8px;font:600 13px 'DM Sans',sans-serif;color:var(--sub);cursor:pointer;transition:all .15s;text-decoration:none;}
+.back-btn:hover{background:var(--bg);color:var(--ink);}
+
+/* LAYOUT */
+.layout{display:flex;height:calc(100% - 64px);overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:320px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.sidebar-top{padding:18px 20px 14px;border-bottom:1px solid var(--border);}
+.sidebar-top h2{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;margin-bottom:4px;}
+.sidebar-top p{font-size:13px;color:var(--sub);}
+.search{position:relative;margin-top:14px;}
+.search-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted);pointer-events:none;}
+.search input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--border);border-radius:8px;font:400 13px 'DM Sans',sans-serif;background:var(--bg);outline:none;transition:border-color .15s;}
+.search input:focus{border-color:#93C5FD;background:#fff;}
+.disease-list{flex:1;overflow-y:auto;padding:12px 16px;}
+.disease-list::-webkit-scrollbar{width:4px;}
+.disease-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* DISEASE ITEM */
+.ditem{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;background:#fff;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px;}
+.ditem:hover{border-color:#CBD5E1;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.ditem.active{border-color:var(--red);background:var(--red-light);}
+.dico{width:44px;height:44px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.dmeta{flex:1;min-width:0;}
+.dname{font-size:14px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ditem.active .dname{color:var(--red);}
+.dtag{font-size:11px;color:var(--muted);font-weight:500;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#fff;}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);}
+.empty-ico{font-size:56px;opacity:.3;}
+.empty-txt{font-size:15px;font-weight:500;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1E40AF 0%,#7C3AED 100%);padding:48px 40px;color:#fff;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="white" opacity="0.03"/></svg>');opacity:.15;}
+.hero-inner{position:relative;z-index:1;max-width:720px;}
+.hero-tag{display:inline-block;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.2);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;}
+.hero-title{font-family:'DM Serif Display',serif;font-size:38px;font-weight:400;line-height:1.2;margin-bottom:14px;}
+.hero-subtitle{font-size:17px;line-height:1.6;opacity:.95;}
+
+/* CARDS */
+.cards{padding:32px 40px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:24px;transition:all .2s;}
+.card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.card-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+.card-ico{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.card-title{flex:1;}
+.card-title h3{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;margin-bottom:4px;}
+.card-title p{font-size:14px;color:var(--sub);}
+.card-body{}
+.card-body p{font-size:15px;line-height:1.7;color:var(--sub);margin-bottom:16px;}
+.card-body ul{list-style:none;padding:0;}
+.card-body ul li{font-size:15px;color:var(--sub);line-height:1.6;padding:7px 0 7px 24px;position:relative;}
+.card-body ul li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700;font-size:16px;}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:14px;}
+.fact-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.fact-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px;}
+.fact-value{font-size:18px;font-weight:700;color:var(--ink);line-height:1.3;}
+
+/* SOURCES */
+.sources{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-top:24px;}
+.sources h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--sub);margin-bottom:12px;}
+.sources-list{display:flex;flex-wrap:wrap;gap:8px;}
+.source-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--sub);transition:all .15s;}
+.source-tag:hover{border-color:var(--blue);color:var(--blue);box-shadow:0 2px 8px rgba(30,64,175,.15);}
+.source-tag::before{content:'📚';font-size:14px;}
+
+/* COLORS */
+.blue{background:var(--blue-light);color:var(--blue);border-color:var(--blue);}
+.green{background:var(--green-light);color:var(--green);border-color:var(--green);}
+.orange{background:var(--orange-light);color:var(--orange);border-color:var(--orange);}
+.purple{background:var(--purple-light);color:var(--purple);border-color:var(--purple);}
+.red{background:var(--red-light);color:var(--red);border-color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-l">
+    <a class="back-btn" href="index.html">← Voltar</a>
+    <div class="hdr-brand"><div class="hdr-mark"></div><span class="hdr-name">BiOOH</span></div>
+    <div class="hdr-sep"></div>
+    <span class="hdr-title">Guia do Diagnostico</span>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <h2>Biblioteca Medica</h2>
+      <p>Informacoes confiavies e atualizadas</p>
+      <div class="search">
+        <span class="search-ico">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar doenca..." oninput="filterDiseases(this.value)">
+      </div>
+    </div>
+    <div class="disease-list" id="diseaseList"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="empty" id="empty">
+      <div class="empty-ico">📖</div>
+      <div class="empty-txt">Selecione uma doenca para ver detalhes</div>
+    </div>
+    <div class="content" id="content" style="display:none"></div>
+  </div>
+
+</div>
+
+<script>
+var DISEASES = [
+  {
+    id: 'colesterol',
+    name: 'Colesterol Alto',
+    tag: 'Dislipidemia',
+    icon: '🩸',
+    color: 'red',
+    hero: {
+      tag: 'Condicao Metabolica',
+      title: 'Colesterol Alto (Hipercolesterolemia)',
+      subtitle: 'O colesterol elevado e um dos principais fatores de risco para doencas cardiovasculares. Segundo a Sociedade Brasileira de Cardiologia (SBC), cerca de 40% dos brasileiros adultos apresentam niveis elevados de colesterol.'
+    },
+    sections: [
+      {
+        icon: '🔬',
+        color: 'blue',
+        title: 'O que causa o colesterol alto?',
+        subtitle: 'Fatores que elevam o LDL (colesterol ruim)',
+        text: 'O colesterol alto resulta principalmente de uma combinacao de fatores geneticos e habitos de vida. A producao excessiva de colesterol pelo figado ou a dificuldade do organismo em remove-lo da circulacao sao as causas principais.',
+        bullets: [
+          'Dieta rica em gorduras saturadas e trans (carnes gordas, frituras, alimentos ultraprocessados)',
+          'Sedentarismo - a falta de atividade fisica reduz o HDL (colesterol bom)',
+          'Obesidade e excesso de peso, especialmente gordura abdominal',
+          'Predisposicao genetica - hipercolesterolemia familiar',
+          'Diabetes tipo 2 mal controlada',
+          'Tabagismo e consumo excessivo de alcool'
+        ]
+      },
+      {
+        icon: '📊',
+        color: 'purple',
+        title: 'Quick Facts sobre Colesterol',
+        subtitle: 'Dados essenciais que todo paciente deve saber',
+        facts: [
+          { label: 'Colesterol Total Ideal', value: '< 190 mg/dL' },
+          { label: 'LDL (ruim) Meta Geral', value: '< 130 mg/dL' },
+          { label: 'LDL Alto Risco Cardiovascular', value: '< 70 mg/dL' },
+          { label: 'LDL Muito Alto Risco', value: '< 50 mg/dL' },
+          { label: 'HDL (bom) Homens', value: '> 40 mg/dL' },
+          { label: 'HDL (bom) Mulheres', value: '> 50 mg/dL' },
+          { label: 'Triglicerideos Ideal', value: '< 150 mg/dL' },
+          { label: 'Frequencia de Exame', value: 'Anual (adultos)' }
+        ]
+      },
+      {
+        icon: '🛡️',
+        color: 'green',
+        title: 'Como prevenir e controlar',
+        subtitle: 'Medidas com evidencia cientifica comprovada',
+        text: 'A prevencao e o controle do colesterol alto dependem principalmente de mudancas no estilo de vida. Estudos mostram que a combinacao de dieta adequada e atividade fisica pode reduzir o LDL em ate 30%.',
+        bullets: [
+          'Adote a dieta mediterranea: rica em vegetais, frutas, graos integrais, azeite e peixes',
+          'Reduza drasticamente gorduras saturadas (< 7% das calorias diarias)',
+          'Elimine gorduras trans completamente da alimentacao',
+          'Pratique 150 minutos de atividade aerobica moderada por semana',
+          'Inclua alimentos ricos em fibras soluveis (aveia, leguminosas, maca)',
+          'Mantenha peso saudavel - cada 10kg perdidos reduz LDL em ~8 mg/dL',
+          'Considere uso de estatinas conforme prescricao medica',
+          'Realize exames de perfil lipidico anualmente ou conforme orientacao'
+        ]
+      }
+    ],
+    sources: [
+      'Sociedade Brasileira de Cardiologia (SBC) - Atualizacao da Diretriz de Dislipidemias 2021',
+      'American Heart Association (AHA) - Cholesterol Management Guidelines 2023',
+      'Ministerio da Saude - Protocolo de Uso de Estatinas 2022',
+      'European Society of Cardiology (ESC) - Dyslipidemia Guidelines 2023'
+    ]
+  },
+  {
+    id: 'hipertensao',
+    name: 'Hipertensao Arterial',
+    tag: 'Pressao Alta',
+    icon: '📈',
+    color: 'orange',
+    hero: {
+      tag: 'Condicao Cardiovascular',
+      title: 'Hipertensao Arterial Sistemica (HAS)',
+      subtitle: 'A hipertensao arterial afeta aproximadamente 32% da populacao adulta brasileira, segundo o Ministerio da Saude. E a principal causa de AVC e insuficiencia cardiaca no pais.'
+    },
+    sections: [
+      {
+        icon: '🔬',
+        color: 'blue',
+        title: 'O que causa hipertensao?',
+        subtitle: 'Fatores que elevam a pressao arterial',
+        text: 'A hipertensao primaria (90% dos casos) nao tem uma causa unica identificavel, mas resulta da interacao de multiplos fatores. A hipertensao secundaria (10%) tem causas especificas trataveís, como doencas renais ou endocrinas.',
+        bullets: [
+          'Consumo excessivo de sodio (sal) - acima de 5g/dia',
+          'Obesidade e sobrepeso - cada 10kg extras aumentam pressao em 2-3 mmHg',
+          'Sedentarismo e falta de atividade fisica regular',
+          'Consumo excessivo de alcool (> 2 doses/dia homens, > 1 dose/dia mulheres)',
+          'Estresse cronico e disturbios do sono (apneia)',
+          'Fatores geneticos - historia familiar de hipertensao',
+          'Idade avancada - rigidez arterial aumenta com os anos',
+          'Doencas renais, endocrinas ou uso de certos medicamentos'
+        ]
+      },
+      {
+        icon: '📊',
+        color: 'purple',
+        title: 'Quick Facts sobre Hipertensao',
+        subtitle: 'Valores de referencia atualizados',
+        facts: [
+          { label: 'Pressao Normal', value: '< 120/80 mmHg' },
+          { label: 'Pre-hipertensao', value: '120-129 / < 80' },
+          { label: 'Hipertensao Estagio 1', value: '130-139 / 80-89' },
+          { label: 'Hipertensao Estagio 2', value: '140-179 / 90-119' },
+          { label: 'Crise Hipertensiva', value: '≥ 180 / ≥ 120' },
+          { label: 'Meta Geral de Tratamento', value: '< 130/80 mmHg' },
+          { label: 'Frequencia de Afericao', value: 'Anual (normal)' },
+          { label: 'MAPA recomendada', value: 'Confirmar diagnostico' }
+        ]
+      },
+      {
+        icon: '🛡️',
+        color: 'green',
+        title: 'Como prevenir e controlar',
+        subtitle: 'Estrategias nao farmacologicas e farmacologicas',
+        text: 'Mudancas no estilo de vida podem reduzir a pressao arterial em 5-20 mmHg. Quando combinadas com medicacao adequada, o controle da hipertensao reduz em 40% o risco de AVC e 25% o risco de infarto.',
+        bullets: [
+          'Reduza sodio para menos de 2g/dia (equivale a 5g de sal)',
+          'Adote a dieta DASH (rica em frutas, vegetais, laticinios desnatados)',
+          'Pratique 150 minutos de exercicio aerobico por semana',
+          'Mantenha peso saudavel - IMC entre 18,5 e 24,9',
+          'Limite alcool a 1-2 doses/dia (homens) ou 1 dose/dia (mulheres)',
+          'Pare de fumar - o tabagismo potencializa lesoes vasculares',
+          'Gerencie estresse com tecnicas de relaxamento e sono adequado',
+          'Use medicacao anti-hipertensiva conforme prescricao medica',
+          'Monitore pressao em casa com aparelho validado'
+        ]
+      }
+    ],
+    sources: [
+      'Sociedade Brasileira de Cardiologia - Diretriz Brasileira de Hipertensao Arterial 2020',
+      'American College of Cardiology / AHA - Hypertension Guidelines 2023',
+      'Ministerio da Saude - Estrategia de Prevencao e Controle da Hipertensao 2022',
+      'European Society of Hypertension (ESH) - Guidelines 2023'
+    ]
+  },
+  {
+    id: 'diabetes',
+    name: 'Diabetes Tipo 2',
+    tag: 'Metabolismo',
+    icon: '🍬',
+    color: 'purple',
+    hero: {
+      tag: 'Condicao Endocrina',
+      title: 'Diabetes Mellitus Tipo 2',
+      subtitle: 'O diabetes tipo 2 afeta 9% da populacao brasileira adulta. A Sociedade Brasileira de Diabetes estima que metade dos casos ainda nao foi diagnosticada, aumentando o risco de complicacoes cardiovasculares silenciosas.'
+    },
+    sections: [
+      {
+        icon: '🔬',
+        color: 'blue',
+        title: 'O que causa diabetes tipo 2?',
+        subtitle: 'Resistencia insulinica e falencia das celulas beta',
+        text: 'O diabetes tipo 2 e caracterizado pela resistencia periferica a insulina (os tecidos nao respondem adequadamente) e pela producao insuficiente de insulina pelo pancreas. Diferentemente do tipo 1, e fortemente associada a obesidade e estilo de vida.',
+        bullets: [
+          'Obesidade, especialmente gordura visceral (abdominal)',
+          'Sedentarismo - musculo inativo consome menos glicose',
+          'Dieta rica em acucares simples e carboidratos refinados',
+          'Historia familiar de diabetes - componente genetico forte',
+          'Sindrome metabolica (pressao alta, dislipidemia, obesidade)',
+          'Idade acima de 45 anos',
+          'Sindrome dos ovarios policisticos (SOP)',
+          'Diabetes gestacional previo',
+          'Uso prolongado de corticoides ou antipsicoticos'
+        ]
+      },
+      {
+        icon: '📊',
+        color: 'purple',
+        title: 'Quick Facts sobre Diabetes',
+        subtitle: 'Criterios diagnosticos e metas terapeuticas',
+        facts: [
+          { label: 'Glicemia Jejum Normal', value: '< 100 mg/dL' },
+          { label: 'Pre-diabetes (Jejum)', value: '100-125 mg/dL' },
+          { label: 'Diabetes (Jejum)', value: '≥ 126 mg/dL' },
+          { label: 'Diabetes (Casual)', value: '≥ 200 mg/dL + sintomas' },
+          { label: 'HbA1c Normal', value: '< 5,7%' },
+          { label: 'HbA1c Pre-diabetes', value: '5,7% - 6,4%' },
+          { label: 'HbA1c Diabetes', value: '≥ 6,5%' },
+          { label: 'Meta HbA1c Geral', value: '< 7%' },
+          { label: 'Meta HbA1c Individualizada', value: '< 6,5% a < 8%' }
+        ]
+      },
+      {
+        icon: '🛡️',
+        color: 'green',
+        title: 'Como prevenir e controlar',
+        subtitle: 'Mudancas de estilo de vida salvam vidas',
+        text: 'O Diabetes Prevention Program (DPP) demonstrou que mudancas intensivas no estilo de vida reduzem em 58% o risco de progressao de pre-diabetes para diabetes. O controle glicemico adequado reduz complicacoes cardiovasculares em 40%.',
+        bullets: [
+          'Perda de peso de 5-10% ja reduz significativamente resistencia insulinica',
+          'Pratique 150-300 minutos de atividade aerobica por semana',
+          'Inclua exercicios resistidos (musculacao) 2-3x/semana',
+          'Adote dieta de baixo indice glicemico (graos integrais, vegetais)',
+          'Evite acucares simples e bebidas adocadas',
+          'Monitore glicemia conforme orientacao (automonitoramento)',
+          'Use metformina como primeira linha de tratamento se necessario',
+          'Mantenha HbA1c dentro da meta individualizada com seu medico',
+          'Realize rastreamento de complicacoes: olhos, rins, pes, nervos',
+          'Controle pressao arterial (< 130/80) e colesterol rigorosamente'
+        ]
+      }
+    ],
+    sources: [
+      'Sociedade Brasileira de Diabetes - Diretrizes 2023-2024',
+      'American Diabetes Association (ADA) - Standards of Care 2024',
+      'International Diabetes Federation (IDF) - Guidelines 2023',
+      'Ministerio da Saude - Protocolo Clinico e Diretrizes Terapeuticas Diabetes Tipo 2'
+    ]
+  },
+  {
+    id: 'obesidade',
+    name: 'Obesidade',
+    tag: 'Excesso de Peso',
+    icon: '⚖️',
+    color: 'orange',
+    hero: {
+      tag: 'Condicao Cronica Multifatorial',
+      title: 'Obesidade e Sobrepeso',
+      subtitle: 'Segundo o Ministerio da Saude, 60% dos brasileiros adultos estao acima do peso, sendo 20% com obesidade. A obesidade e reconhecida pela OMS como uma doenca cronica e um dos principais fatores de risco cardiovascular modificaveis.'
+    },
+    sections: [
+      {
+        icon: '🔬',
+        color: 'blue',
+        title: 'O que causa obesidade?',
+        subtitle: 'Desequilibrio energetico e fatores multifatoriais',
+        text: 'A obesidade resulta de um balanco energetico positivo cronico (consumo maior que gasto) influenciado por fatores geneticos, ambientais, comportamentais e metabolicos. Nao e uma questao de falta de forca de vontade, mas uma condicao medica complexa.',
+        bullets: [
+          'Dieta hipercalorica - excesso de alimentos ultraprocessados ricos em acucar e gordura',
+          'Sedentarismo - reducao progressiva de atividade fisica no dia a dia',
+          'Fatores geneticos - predisposicao hereditaria em 40-70% dos casos',
+          'Disturbios endocrinos (hipotireoidismo, Cushing, SOP)',
+          'Medicamentos que promovem ganho de peso (corticoides, antipsicoticos, insulina)',
+          'Privacao de sono - altera hormônios da saciedade (leptina e grelina)',
+          'Estresse cronico - aumenta cortisol e alimentacao emocional',
+          'Ambiente obesogenico - facilidade de acesso a alimentos caloricos',
+          'Fatores psicologicos - transtornos alimentares e depressao'
+        ]
+      },
+      {
+        icon: '📊',
+        color: 'purple',
+        title: 'Quick Facts sobre Obesidade',
+        subtitle: 'Classificacao e riscos associados',
+        facts: [
+          { label: 'IMC Peso Normal', value: '18,5 - 24,9' },
+          { label: 'IMC Sobrepeso', value: '25,0 - 29,9' },
+          { label: 'IMC Obesidade Grau I', value: '30,0 - 34,9' },
+          { label: 'IMC Obesidade Grau II', value: '35,0 - 39,9' },
+          { label: 'IMC Obesidade Grau III', value: '≥ 40,0' },
+          { label: 'Cintura Risco Homens', value: '> 94 cm' },
+          { label: 'Cintura Risco Mulheres', value: '> 80 cm' },
+          { label: 'Perda Benefica Inicial', value: '5-10% peso' }
+        ]
+      },
+      {
+        icon: '🛡️',
+        color: 'green',
+        title: 'Como prevenir e tratar',
+        subtitle: 'Abordagem multimodal e individualizada',
+        text: 'Perder apenas 5-10% do peso corporal ja reduz significativamente pressao arterial, glicemia e colesterol, diminuindo risco cardiovascular em ate 40%. O tratamento deve ser continuo e multiprofissional.',
+        bullets: [
+          'Estabeleca metas realisticas - perda de 0,5-1 kg/semana e sustentavel',
+          'Adote reducao calorica moderada (500-750 kcal/dia) com nutricao adequada',
+          'Pratique 200-300 minutos de atividade fisica por semana para manutencao',
+          'Inclua treino de forca para preservar massa muscular',
+          'Acompanhamento com nutricionista para reeducacao alimentar',
+          'Apoio psicologico para mudanca comportamental duradoura',
+          'Considere medicacao anti-obesidade (liraglutida, semaglutida) se indicado',
+          'Avalie cirurgia bariatrica se IMC ≥ 40 ou ≥ 35 com comorbidades',
+          'Trate comorbidades associadas (diabetes, hipertensao, apneia do sono)',
+          'Monitoramento continuo - obesidade e doenca cronica que requer seguimento'
+        ]
+      }
+    ],
+    sources: [
+      'Associacao Brasileira para Estudo da Obesidade e Sindrome Metabolica (ABESO) - Diretrizes 2022',
+      'Sociedade Brasileira de Endocrinologia e Metabologia (SBEM) - Obesidade 2023',
+      'World Obesity Federation - Clinical Practice Guidelines 2023',
+      'American College of Cardiology - Obesity Management Guidelines 2023'
+    ]
+  },
+  {
+    id: 'infarto',
+    name: 'Infarto Agudo do Miocardio',
+    tag: 'Emergencia',
+    icon: '🚨',
+    color: 'red',
+    hero: {
+      tag: 'Emergencia Cardiovascular',
+      title: 'Infarto Agudo do Miocardio (IAM)',
+      subtitle: 'O infarto e a principal causa de morte cardiovascular no Brasil, com cerca de 300 mil casos anuais segundo a Sociedade Brasileira de Cardiologia. Cada minuto sem tratamento destroi tecido cardiaco - tempo e musculo.'
+    },
+    sections: [
+      {
+        icon: '🔬',
+        color: 'blue',
+        title: 'O que causa o infarto?',
+        subtitle: 'Obstrucao aguda das arterias coronarias',
+        text: 'O infarto ocorre quando uma placa de aterosclerose se rompe dentro de uma arteria coronaria, formando um coagulo (trombo) que bloqueia completamente o fluxo de sangue. Sem oxigenio, o musculo cardiaco comeca a morrer em minutos.',
+        bullets: [
+          'Aterosclerose - acumulo de placas de gordura nas arterias ao longo dos anos',
+          'Ruptura de placa instavel - desencadeada por inflamacao, estresse ou esforco',
+          'Formacao de trombo (coagulo) no local da ruptura',
+          'Espasmo coronariano - contracao anormal da arteria',
+          'Uso de drogas estimulantes (cocaina, anfetaminas)',
+          'Fatores de risco: tabagismo, diabetes, hipertensao, colesterol alto',
+          'Estresse fisico ou emocional intenso',
+          'Historia familiar de doenca coronariana precoce'
+        ]
+      },
+      {
+        icon: '📊',
+        color: 'purple',
+        title: 'Quick Facts sobre Infarto',
+        subtitle: 'Sinais de alerta e janelas terapeuticas',
+        facts: [
+          { label: 'Janela Trombolise IV', value: 'Ate 12h sintomas' },
+          { label: 'Janela Angioplastia', value: 'Ate 12h (ideal < 90min)' },
+          { label: 'Mortalidade sem Tratamento', value: '~30%' },
+          { label: 'Mortalidade com Tratamento', value: '~5-10%' },
+          { label: 'Tempo Porta-Balao Meta', value: '< 90 minutos' },
+          { label: 'Troponina Elevada', value: 'Confirma lesao' },
+          { label: 'ECG Diagnostico', value: 'Supra ST' },
+          { label: 'Ligue Imediatamente', value: '192 (SAMU)' }
+        ]
+      },
+      {
+        icon: '🛡️',
+        color: 'green',
+        title: 'Como reconhecer e prevenir',
+        subtitle: 'Sinais de alerta e prevencao primaria',
+        text: 'Reconhecer os sintomas e ligar 192 imediatamente pode salvar vidas. A prevencao primaria (evitar o primeiro evento) e muito mais eficaz que tratar depois do infarto.',
+        bullets: [
+          'SINAIS: Dor intensa no peito tipo aperto, pressao ou queimacao',
+          'SINAIS: Dor irradia para braco esquerdo, mandibula, costas ou estomago',
+          'SINAIS: Suor frio, palidez, nausea, falta de ar, tontura',
+          'SINAIS: Mulheres e diabeticos podem ter sintomas atipicos',
+          'ACAO: Ligue 192 imediatamente - NAO dirija ate o hospital',
+          'ACAO: Mastigue 200mg de AAS (aspirina) enquanto aguarda',
+          'PREVENCAO: Controle rigoroso de colesterol (LDL < 70 se alto risco)',
+          'PREVENCAO: Mantenha pressao < 130/80 e glicemia controlada',
+          'PREVENCAO: Pare de fumar - reduz risco em 50% apos 1 ano',
+          'PREVENCAO: Pratique exercicios, dieta saudavel, gerencie estresse'
+        ]
+      }
+    ],
+    sources: [
+      'Sociedade Brasileira de Cardiologia - Diretriz de Infarto com Supradesnivel de ST 2020',
+      'American Heart Association - STEMI Guidelines 2023',
+      'European Society of Cardiology - Acute Coronary Syndrome 2023',
+      'Ministerio da Saude - Linha de Cuidado do Infarto Agudo do Miocardio'
+    ]
+  }
+];
+
+var sel = null;
+
+(function init(){
+  renderList(DISEASES);
+})();
+
+function renderList(diseases){
+  var list = document.getElementById('diseaseList');
+  var html = '';
+  for(var i=0; i<diseases.length; i++){
+    var d = diseases[i];
+    var active = sel && sel.id === d.id ? 'active' : '';
+    html += '<div class="ditem '+active+'" onclick="selectDisease(\''+d.id+'\')">'
+      + '<div class="dico '+d.color+'">'+d.icon+'</div>'
+      + '<div class="dmeta">'
+      + '<div class="dname">'+d.name+'</div>'
+      + '<div class="dtag">'+d.tag+'</div>'
+      + '</div></div>';
+  }
+  list.innerHTML = html;
+}
+
+function filterDiseases(q){
+  q = q.toLowerCase().trim();
+  if(!q){ renderList(DISEASES); return; }
+  var filtered = DISEASES.filter(function(d){
+    return d.name.toLowerCase().includes(q) || d.tag.toLowerCase().includes(q);
+  });
+  renderList(filtered);
+}
+
+function selectDisease(id){
+  var d = DISEASES.find(function(x){ return x.id === id; });
+  if(!d) return;
+  sel = d;
+  renderList(DISEASES);
+  renderContent(d);
+  document.getElementById('empty').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+function renderContent(d){
+  var sectionsHtml = '';
+  for(var i=0; i<d.sections.length; i++){
+    var s = d.sections[i];
+    var bulletsHtml = '';
+    if(s.bullets){
+      bulletsHtml = '<ul>';
+      for(var j=0; j<s.bullets.length; j++){
+        bulletsHtml += '<li>'+s.bullets[j]+'</li>';
+      }
+      bulletsHtml += '</ul>';
+    }
+    var factsHtml = '';
+    if(s.facts){
+      factsHtml = '<div class="fact-grid">';
+      for(var k=0; k<s.facts.length; k++){
+        var f = s.facts[k];
+        factsHtml += '<div class="fact-item">'
+          + '<div class="fact-label">'+f.label+'</div>'
+          + '<div class="fact-value">'+f.value+'</div>'
+          + '</div>';
+      }
+      factsHtml += '</div>';
+    }
+    sectionsHtml += '<div class="card">'
+      + '<div class="card-head">'
+      + '<div class="card-ico '+s.color+'">'+s.icon+'</div>'
+      + '<div class="card-title"><h3>'+s.title+'</h3><p>'+s.subtitle+'</p></div>'
+      + '</div>'
+      + '<div class="card-body">'
+      + (s.text ? '<p>'+s.text+'</p>' : '')
+      + bulletsHtml
+      + factsHtml
+      + '</div>'
+      + '</div>';
+  }
+
+  var sourcesHtml = '';
+  if(d.sources && d.sources.length){
+    sourcesHtml = '<div class="sources"><h4>Fontes Cientificas</h4><div class="sources-list">';
+    for(var m=0; m<d.sources.length; m++){
+      sourcesHtml += '<span class="source-tag">'+d.sources[m]+'</span>';
+    }
+    sourcesHtml += '</div></div>';
+  }
+
+  var content = document.getElementById('content');
+  content.innerHTML = '<div class="hero">'
+    + '<div class="hero-inner">'
+    + '<span class="hero-tag">'+d.hero.tag+'</span>'
+    + '<h1 class="hero-title">'+d.hero.title+'</h1>'
+    + '<p class="hero-subtitle">'+d.hero.subtitle+'</p>'
+    + '</div></div>'
+    + '<div class="cards">'+sectionsHtml+sourcesHtml+'</div>';
+  content.scrollTop = 0;
+}
+</script>
+</body>
+</html>
