@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BiOOH • Consultório Odontológico — Visualizador 3D</title>
+  <link rel="stylesheet" href="assets/styles.css"/>
+  <style>
+    /* Estilos específicos do consultório */
+    .consultorio-container {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+```
+.sidebar {
+  width: 320px;
+  border-right: 1px solid var(--line);
+  background: #FAFBFD;
+  padding: 14px;
+  overflow-y: auto;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar h3 {
+  font-size: 14px;
+  color: #1F3A8A;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin: 16px 0 10px;
+}
+
+.model-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 10px;
+}
+
+.model-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(31, 99, 179, 0.08);
+}
+
+.model-card.active {
+  outline: 2px solid rgba(31, 111, 235, 0.4);
+  background: #F3F8FF;
+}
+
+.model-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+
+.model-card .desc {
+  font-size: 13px;
+  color: var(--mut);
+}
+
+.viewer-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid var(--line);
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--calm);
+  border-color: var(--brand);
+}
+
+.viewer-iframe {
+  flex: 1;
+  border: 0;
+  background: #f5f5f5;
+}
+
+.controls-panel {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.ctrl-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ctrl-btn:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.info-panel {
+  border-top: 1px solid var(--line);
+  background: #fff;
+  padding: 14px 16px;
+  color: var(--mut);
+  line-height: 1.6;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.info-panel.hidden {
+  display: none;
+}
+
+.search-box {
+  margin-bottom: 12px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
+}
+
+.category {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .consultorio-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .controls-panel {
+    flex-direction: row;
+    right: auto;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    top: auto;
+  }
+}
+```
+
+  </style>
+</head>
+<body>
+  <div class="consultorio-container">
+    <!-- Sidebar com lista de modelos -->
+    <aside class="sidebar">
+      <div class="brand" style="margin-bottom: 20px;">
+        <div class="mark"></div>
+        <div class="brandtxt" style="font-size: 18px; font-weight: 900; color: #1F3A8A;">Odontologia</div>
+      </div>
+
+```
+  <div class="search-box">
+    <input 
+      type="text" 
+      id="searchInput" 
+      class="search-input" 
+      placeholder="Buscar modelos..."
+      oninput="filterModels()"
+    />
+  </div>
+
+  <div id="modelsContainer">
+    <!-- Categoria: Condições Dentárias -->
+    <div class="category">
+      <h3>🦷 Condições Dentárias</h3>
+      
+      <div class="model-card active" onclick="loadModel('production/maleAdult/dental_cavities', this)" data-keywords="caries cavidade buraco dente">
+        <strong>Cáries Dentárias</strong>
+        <div class="desc">Deterioração do esmalte dental</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/tooth_sensitivity', this)" data-keywords="sensibilidade dor frio quente">
+        <strong>Sensibilidade Dentária</strong>
+        <div class="desc">Dentes sensíveis ao calor/frio</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/bruxism', this)" data-keywords="bruxismo ranger dentes">
+        <strong>Bruxismo</strong>
+        <div class="desc">Ranger ou apertar os dentes</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/tooth_decay', this)" data-keywords="deterioracao dente apodrecimento">
+        <strong>Deterioração Dentária</strong>
+        <div class="desc">Progressão da cárie</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/gingivitis', this)" data-keywords="gengivite gengiva inflamacao">
+        <strong>Gengivite</strong>
+        <div class="desc">Inflamação das gengivas</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/periodontitis', this)" data-keywords="periodontite doenca periodontal">
+        <strong>Periodontite</strong>
+        <div class="desc">Doença periodontal avançada</div>
+      </div>
+    </div>
+
+    <!-- Categoria: Anatomia e Estrutura -->
+    <div class="category">
+      <h3>🔬 Anatomia Dentária</h3>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/tooth_anatomy', this)" data-keywords="anatomia dente estrutura">
+        <strong>Anatomia do Dente</strong>
+        <div class="desc">Estrutura completa dentária</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/dental_implant', this)" data-keywords="implante dentario protese">
+        <strong>Implante Dentário</strong>
+        <div class="desc">Procedimento de implante</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/root_canal', this)" data-keywords="canal endodontia tratamento">
+        <strong>Tratamento de Canal</strong>
+        <div class="desc">Endodontia - canal radicular</div>
+      </div>
+
+      <div class="model-card" onclick="loadModel('production/maleAdult/wisdom_tooth', this)" data-keywords="siso dente terceiro molar">
+        <strong>Dente do Siso</strong>
+        <div class="desc">Terceiro molar - extração</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Viewer principal -->
+<div class="viewer-container">
+  <div class="viewer-header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="back-btn" onclick="goBack()">← Voltar</button>
+      <div style="color: var(--mut); font-weight: 600;" id="currentModelName">Cáries Dentárias</div>
+    </div>
+    <div style="color: var(--mut); font-size: 14px;">
+      BiOOH • Consultório Odontológico
+    </div>
+  </div>
+
+  <div style="position: relative; flex: 1;">
+    <iframe 
+      id="viewer" 
+      class="viewer-iframe"
+      src="https://human.biodigital.com/viewer/?id=production/maleAdult/dental_cavities&lang=pt"
+      allow="fullscreen; xr-spatial-tracking"
+    ></iframe>
+
+    <div class="controls-panel">
+      <button class="ctrl-btn" onclick="toggleFullscreen()">⛶ Tela Cheia</button>
+      <button class="ctrl-btn" onclick="resetView()">↻ Resetar Visão</button>
+      <button class="ctrl-btn" onclick="toggleInfo()">ℹ Info</button>
+    </div>
+  </div>
+
+  <div class="info-panel hidden" id="infoPanel">
+    <strong>Como usar:</strong> Arraste para rotacionar • Scroll para zoom • Clique nas estruturas para ver detalhes • Use os controles do BioDigital no canto inferior direito
+  </div>
+</div>
+```
+
+  </div>
+
+  <script>
+    let currentCard = null;
+
+    // Função para carregar modelo
+    function loadModel(modelId, cardElement) {
+      const iframe = document.getElementById('viewer');
+      iframe.src = `https://human.biodigital.com/viewer/?id=${modelId}&lang=pt`;
+
+      // Atualizar card ativo
+      document.querySelectorAll('.model-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      cardElement.classList.add('active');
+
+      // Atualizar nome do modelo
+      const modelName = cardElement.querySelector('strong').textContent;
+      document.getElementById('currentModelName').textContent = modelName;
+
+      currentCard = cardElement;
+    }
+
+    // Filtrar modelos por busca
+    function filterModels() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.model-card');
+
+      cards.forEach(card => {
+        const keywords = card.getAttribute('data-keywords') || '';
+        const title = card.querySelector('strong').textContent.toLowerCase();
+        const desc = card.querySelector('.desc').textContent.toLowerCase();
+
+        const matches = keywords.includes(query) || 
+                       title.includes(query) || 
+                       desc.includes(query);
+
+        card.style.display = matches ? 'block' : 'none';
+      });
+
+      // Esconder categorias vazias
+      document.querySelectorAll('.category').forEach(cat => {
+        const visibleCards = cat.querySelectorAll('.model-card[style*="display: block"]').length;
+        const allCards = cat.querySelectorAll('.model-card').length;
+        cat.style.display = (query === '' || visibleCards > 0) ? 'block' : 'none';
+      });
+    }
+
+    // Controles
+    function toggleFullscreen() {
+      const iframe = document.getElementById('viewer');
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      }
+    }
+
+    function resetView() {
+      // Recarregar iframe para resetar visão
+      const iframe = document.getElementById('viewer');
+      const currentSrc = iframe.src;
+      iframe.src = currentSrc;
+    }
+
+    function toggleInfo() {
+      const panel = document.getElementById('infoPanel');
+      panel.classList.toggle('hidden');
+    }
+
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+
+    // Atalhos de teclado
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+      if (e.key === 'r' || e.key === 'R') resetView();
+      if (e.key === 'i' || e.key === 'I') toggleInfo();
+      if (e.key === 'Escape') goBack();
+    });
+  </script>
+
+</body>
+</html>
+
+Em 16 de mar. de 2026, à(s) 11:36, Felipe Ferraretto <felipelf@outlook.com> escreveu:
+
+﻿
+
+<consultorio.html>
+<index (3).html>
