@@ -7,14 +7,29 @@
   <title>BiOOH • Consultório Odontológico — Visualizador 3D</title>
   <link rel="stylesheet" href="assets/styles.css"/>
   <style>
-    /* Estilos específicos do consultório */
-    .consultorio-container {
-      display: flex;
-      min-height: 100vh;
-      background: var(--bg);
+    /* Variáveis CSS */
+    :root {
+      --line: #E2E8F0;
+      --bg: #F8FAFC;
+      --ink: #0F172A;
+      --mut: #6B7280;
+      --brand: #1F6FEB;
+      --calm: #F0F4F8;
     }
 
 ```
+/* Reset básico */
+.brand { display: flex; align-items: center; gap: 10px; }
+.mark { width: 32px; height: 32px; border-radius: 7px; background: #C8102E; }
+.brandtxt { font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
+
+/* Estilos específicos do consultório */
+.consultorio-container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
 .sidebar {
   width: 320px;
   border-right: 1px solid var(--line);
