@@ -16,10 +16,10 @@
 
 ```
 .sidebar {
-  width: 380px;
+  width: 400px;
   border-right: 1px solid var(--line);
   background: #FAFBFD;
-  padding: 20px;
+  padding: 24px;
   overflow-y: auto;
   height: 100vh;
   position: sticky;
@@ -27,27 +27,28 @@
 }
 
 .sidebar h3 {
-  font-size: 13px;
+  font-size: 12px;
   color: #64748B;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.9px;
   text-transform: uppercase;
-  margin: 24px 0 12px;
+  margin: 28px 0 14px;
   font-weight: 700;
 }
 
 .model-card {
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 16px;
+  padding: 18px;
   background: #fff;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .model-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(31, 99, 179, 0.08);
+  border-color: #CBD5E1;
 }
 
 .model-card.active {
@@ -57,9 +58,10 @@
 
 .model-card strong {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   color: var(--ink);
   font-size: 15px;
+  line-height: 1.3;
 }
 
 .model-card .desc {
@@ -195,15 +197,15 @@
 }
 
 .search-box {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .search-input {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 15px;
   background: #fff;
 }
 
@@ -214,7 +216,7 @@
 }
 
 .category {
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 @media (max-width: 768px) {
@@ -331,7 +333,7 @@
   <div class="viewer-header">
     <div style="display: flex; align-items: center; gap: 12px;">
       <button class="back-btn" onclick="goBack()">← Voltar</button>
-      <div style="color: var(--mut); font-weight: 600;" id="currentModelName">Diabetes Tipo 2</div>
+      <div style="color: var(--mut); font-weight: 600;" id="currentModelName">Cáries Dentárias</div>
     </div>
     <div style="color: var(--mut); font-size: 14px;">
       <span id="viewerStatus">🟢 Ativo</span>
@@ -368,9 +370,9 @@
 
   <div class="info-panel" id="infoPanel">
     <div id="modelInfo">
-      🩸 <strong>Diabetes Tipo 2:</strong> Condição crônica que afeta a forma como o corpo processa glicose.
-      A resistência à insulina e a diminuição da produção pancreática levam a níveis elevados de açúcar no sangue.
-      O controle glicêmico, alimentação saudável e atividade física são fundamentais para o tratamento.
+      🦷 <strong>Cáries Dentárias:</strong> Deterioração do esmalte dental causada por ácidos produzidos por bactérias.
+      A placa bacteriana fermenta açúcares e produz ácidos que desmineralizam o dente.
+      Prevenção inclui higiene bucal adequada, redução de açúcar e flúor.
     </div>
   </div>
 </div>
@@ -380,62 +382,50 @@
 
   <script>
     // Configuração e estado
-    let currentModelId = 'production/maleAdult/diabetes_mellitus_type_2';
+    let currentModelId = 'production/maleAdult/dental_cavities';
     let currentModelElement = null;
 
-    // Informações dos modelos
+    // Informações dos modelos odontológicos
     const modelInfo = {
-      'production/maleAdult/diabetes_mellitus_type_2': {
-        name: 'Diabetes Tipo 2',
-        info: '🩸 <strong>Diabetes Tipo 2:</strong> Condição crônica que afeta a forma como o corpo processa glicose. A resistência à insulina e a diminuição da produção pancreática levam a níveis elevados de açúcar no sangue. O controle glicêmico, alimentação saudável e atividade física são fundamentais para o tratamento.'
+      'production/maleAdult/dental_cavities': {
+        name: 'Cáries Dentárias',
+        info: '🦷 <strong>Cáries Dentárias:</strong> Deterioração do esmalte dental causada por ácidos produzidos por bactérias. A placa bacteriana fermenta açúcares e produz ácidos que desmineralizam o dente.'
       },
-      'production/maleAdult/pancreas': {
-        name: 'Pâncreas',
-        info: '🫀 <strong>Pâncreas:</strong> Órgão vital que produz insulina e glucagon, hormônios essenciais para regular o açúcar no sangue. Também secreta enzimas digestivas importantes.'
+      'production/maleAdult/tooth_sensitivity': {
+        name: 'Sensibilidade Dentária',
+        info: '❄️ <strong>Sensibilidade Dentária:</strong> Dor aguda ao contato com estímulos térmicos (frio/quente) ou químicos. Causada pela exposição da dentina através de erosão do esmalte ou retração gengival.'
       },
-      'cardiovascular_system': {
-        name: 'Sistema Cardiovascular',
-        info: '❤️ <strong>Sistema Cardiovascular:</strong> Rede complexa de coração, vasos sanguíneos e sangue que transporta oxigênio e nutrientes por todo o corpo. O coração bombeia cerca de 5 litros de sangue por minuto em repouso.'
+      'production/maleAdult/bruxism': {
+        name: 'Bruxismo',
+        info: '😬 <strong>Bruxismo:</strong> Ranger ou apertar involuntário dos dentes, geralmente durante o sono. Pode causar desgaste dental, dor na mandíbula e cefaleia.'
       },
-      'production/maleAdult/heart': {
-        name: 'Coração',
-        info: '❤️ <strong>Coração:</strong> Músculo que bombeia sangue continuamente. Dividido em quatro câmaras (dois átrios e dois ventrículos), trabalha incansavelmente batendo aproximadamente 100.000 vezes por dia.'
+      'production/maleAdult/tooth_decay': {
+        name: 'Deterioração Dentária',
+        info: '🦷 <strong>Deterioração Dentária:</strong> Progressão da cárie que destrói a estrutura dental. Pode atingir polpa dentária causando dor intensa e necessidade de tratamento de canal.'
       },
-      'production/maleAdult/hypertension': {
-        name: 'Hipertensão',
-        info: '📈 <strong>Hipertensão:</strong> Pressão arterial elevada que força o coração a trabalhar mais. Pode danificar artérias e aumentar risco de doenças cardíacas, AVC e problemas renais.'
+      'production/maleAdult/gingivitis': {
+        name: 'Gengivite',
+        info: '🟥 <strong>Gengivite:</strong> Inflamação das gengivas causada por acúmulo de placa bacteriana. Sinais incluem vermelhidão, inchaço e sangramento ao escovar.'
       },
-      'respiratory_system': {
-        name: 'Sistema Respiratório',
-        info: '🫁 <strong>Sistema Respiratório:</strong> Responsável pela troca de gases, levando oxigênio aos tecidos e removendo dióxido de carbono. Inclui pulmões, brônquios e vias aéreas.'
+      'production/maleAdult/periodontitis': {
+        name: 'Periodontite',
+        info: '⚠️ <strong>Periodontite:</strong> Doença periodontal avançada que afeta osso e tecidos de suporte. Pode levar à perda dentária se não tratada.'
       },
-      'production/maleAdult/asthma': {
-        name: 'Asma',
-        info: '🌬️ <strong>Asma:</strong> Inflamação crônica das vias aéreas que causa estreitamento, produção de muco e dificuldade respiratória. Gatilhos incluem alérgenos, exercício e irritantes.'
+      'production/maleAdult/tooth_anatomy': {
+        name: 'Anatomia do Dente',
+        info: '🔬 <strong>Anatomia do Dente:</strong> Estrutura complexa com esmalte, dentina, polpa, cemento e raiz. Cada componente tem função específica na proteção e nutrição dental.'
       },
-      'digestive_system': {
-        name: 'Sistema Digestivo',
-        info: '🍴 <strong>Sistema Digestivo:</strong> Processa alimentos, extrai nutrientes e elimina resíduos. Inclui boca, esôfago, estômago, intestinos, fígado e pâncreas.'
+      'production/maleAdult/dental_implant': {
+        name: 'Implante Dentário',
+        info: '🦴 <strong>Implante Dentário:</strong> Substituição de raiz dental por pino de titânio osseointegrado. Oferece base sólida para prótese dental permanente.'
       },
-      'production/maleAdult/liver': {
-        name: 'Fígado',
-        info: '🫀 <strong>Fígado:</strong> Maior órgão interno, realiza mais de 500 funções vitais incluindo desintoxicação, produção de bile, armazenamento de nutrientes e metabolismo.'
+      'production/maleAdult/root_canal': {
+        name: 'Tratamento de Canal',
+        info: '🩺 <strong>Tratamento de Canal:</strong> Endodontia que remove polpa infectada ou danificada. Preserva dente natural evitando extração.'
       },
-      'skeletal_system': {
-        name: 'Sistema Esquelético',
-        info: '🦴 <strong>Sistema Esquelético:</strong> 206 ossos que fornecem estrutura, protegem órgãos, produzem células sanguíneas e armazenam minerais. Trabalha com músculos para permitir movimento.'
-      },
-      'production/maleAdult/osteoarthritis': {
-        name: 'Osteoartrite',
-        info: '🦴 <strong>Osteoartrite:</strong> Desgaste da cartilagem articular causando dor, rigidez e redução da mobilidade. Mais comum em joelhos, quadris, mãos e coluna.'
-      },
-      'nervous_system': {
-        name: 'Sistema Nervoso',
-        info: '🧠 <strong>Sistema Nervoso:</strong> Rede de controle do corpo, processa informações sensoriais e coordena ações voluntárias e involuntárias. Dividido em central (cérebro e medula) e periférico.'
-      },
-      'production/maleAdult/brain': {
-        name: 'Cérebro',
-        info: '🧠 <strong>Cérebro:</strong> Centro de comando com aproximadamente 86 bilhões de neurônios. Controla pensamento, memória, emoções, movimento e todas as funções corporais.'
+      'production/maleAdult/wisdom_tooth': {
+        name: 'Dente do Siso',
+        info: '🦷 <strong>Dente do Siso:</strong> Terceiros molares que geralmente erupcionam entre 17-25 anos. Frequentemente requerem extração por falta de espaço ou impactação.'
       }
     };
 
